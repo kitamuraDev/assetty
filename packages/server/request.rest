@@ -1,5 +1,5 @@
 @devBaseUrl = http://localhost:8787
-@prodBaseUrl = TODO: 後から更新
+@prodBaseUrl = https://assetty-server.kitamuradev.workers.dev
 @basePath = api
 @user1Name = Lillie
 @user1Password = Lillie1101
