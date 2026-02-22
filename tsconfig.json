@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    // 言語・ランタイム
+    "lib": ["ESNext", "DOM"],
+    "target": "ESNext",
+    "allowJs": true,
+
+    // モジュール解析とフォーマット
+    "module": "preserve",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+
+    // 型安全性とベストプラクティス
+    "strict": true,
+    "skipLibCheck": true,
+    "allowUnreachableCode": false,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

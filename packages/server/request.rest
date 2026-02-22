@@ -1,0 +1,16 @@
+@devBaseUrl = http://localhost:8787
+@prodBaseUrl = TODO: 後から更新
+@basePath = api
+@user1Name = Lillie
+@user1Password = Lillie1101
+@user2Name = Garcello
+@user2Password = Garcello0319
+
+### ==============================
+### GET: /users/:username
+### ==============================
+GET {{devBaseUrl}}/{{basePath}}/users?name={{user1Name}} HTTP/1.1
+
+###
+
+GET {{prodBaseUrl}}/{{basePath}}/users?name={{user1Name}} HTTP/1.1
