@@ -1,7 +1,7 @@
 {
   "name": "assetty",
   "description": "資産管理SaaS Assetty ... Asset + Tidy（資産を整理する）",
-  "homepage": "",
+  "homepage": "https://assetty-web.kitamuradev.workers.dev/",
   "author": "Masato Kitamura (https://github.com/kitamuraDev)",
   "version": "0.0.0",
   "private": true,
