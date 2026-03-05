@@ -16,7 +16,7 @@ export const createHonoApp = () => {
   app.use(
     '/api/*',
     cors({
-      origin: ['http://localhost:4200', 'https://assetty-web.kitamuradev.workers.dev/'],
+      origin: ['http://localhost:4200', 'https://assetty-web.kitamuradev.workers.dev'],
       allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       credentials: true,
     }),
