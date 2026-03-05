@@ -5,23 +5,79 @@ info:
 servers:
   - url: http://localhost:8787/api
 paths:
-  /users/{id}:
+  /users:
     get:
       parameters:
-        - name: id
-          in: path
+        - name: name
+          in: query
           required: true
+          description: ユーザー名
           schema:
-            type: integer
+            type: string
+            minLength: 1
+            maxLength: 30
+          example: 'Lillie'
       responses:
         '200':
-          description: OK
+          description: ユーザー取得成功
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   id:
-                    type: integer
+                    type: string
+                    description: ユーザーID
                   name:
                     type: string
+                    description: ユーザー名
+                required:
+                  - id
+                  - name
+              examples:
+                success:
+                  summary: 成功レスポンス例
+                  value:
+                    id: 1
+                    name: 'Lillie'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: エラーコード
+          enum:
+            - INVALID_CREDENTIALS
+            - INVALID_TOKEN
+            - INVALID_RESPONSE_DATA
+            - NOT_FOUND
+            - INTERNAL_SERVER_ERROR
+        message:
+          type: string
+          description: エラーメッセージ
+          enum:
+            - Invalid Credentials
+            - Invalid Token
+            - Invalid Response Data
+            - Not Found
+            - Internal Server Error
+      required:
+        - code
+        - message
+  responses:
+    NotFound:
+      description: ユーザーが存在しない
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            notFound:
+              summary: ユーザーが見つからない例
+              value:
+                message: 'Not Found'

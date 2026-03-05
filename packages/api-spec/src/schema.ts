@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/users/{id}": {
+    "/users": {
         parameters: {
             query?: never;
             header?: never;
@@ -13,27 +13,34 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    id: number;
+                query: {
+                    /**
+                     * @description ユーザー名
+                     * @example Lillie
+                     */
+                    name: string;
                 };
+                header?: never;
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
+                /** @description ユーザー取得成功 */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            id?: number;
-                            name?: string;
+                            /** @description ユーザーID */
+                            id: string;
+                            /** @description ユーザー名 */
+                            name: string;
                         };
                     };
                 };
+                404: components["responses"]["NotFound"];
             };
         };
         put?: never;
@@ -47,8 +54,31 @@ export interface paths {
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: never;
-    responses: never;
+    schemas: {
+        ErrorResponse: {
+            /**
+             * @description エラーコード
+             * @enum {string}
+             */
+            code: "INVALID_CREDENTIALS" | "INVALID_TOKEN" | "INVALID_RESPONSE_DATA" | "NOT_FOUND" | "INTERNAL_SERVER_ERROR";
+            /**
+             * @description エラーメッセージ
+             * @enum {string}
+             */
+            message: "Invalid Credentials" | "Invalid Token" | "Invalid Response Data" | "Not Found" | "Internal Server Error";
+        };
+    };
+    responses: {
+        /** @description ユーザーが存在しない */
+        NotFound: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorResponse"];
+            };
+        };
+    };
     parameters: never;
     requestBodies: never;
     headers: never;

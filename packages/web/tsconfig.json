@@ -9,7 +9,12 @@
 
     // Angularのビルドが通らないため、以下のオプションを上書き
     "noEmit": false,
-    "allowImportingTsExtensions": false
+    "allowImportingTsExtensions": false,
+
+    // api-specパッケージのopenapi-typescriptで生成された型定義ファイルをインポートできるようにするための設定
+    "paths": {
+      "@api-spec/*": ["../api-spec/src/*.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
