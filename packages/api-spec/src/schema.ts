@@ -4,43 +4,159 @@
  */
 
 export interface paths {
-    "/users": {
+    "/auth/login": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: {
+        get?: never;
+        put?: never;
+        /** ログイン */
+        post: {
             parameters: {
-                query: {
-                    /**
-                     * @description ユーザー名
-                     * @example Lillie
-                     */
-                    name: string;
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: components["requestBodies"]["LoginRequestBody"];
+            responses: {
+                /** @description ログイン成功 */
+                200: {
+                    headers: {
+                        /** @description アクセストークン（JWT）を HttpOnly Cookie にセット */
+                        "Set-Cookie"?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["LoginSuccessResponse"];
+                    };
                 };
+                /** @description ログイン失敗（ユーザーが存在しないか、パスワードが正しくない） */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** ログアウト */
+        post: {
+            parameters: {
+                query?: never;
                 header?: never;
                 path?: never;
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description ユーザー取得成功 */
+                /** @description ログアウト成功 */
+                204: {
+                    headers: {
+                        /** @description アクセストークン（JWT）を Cookie から削除 */
+                        "Set-Cookie"?: string;
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 認可チェック */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 認可成功 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthCheckResponse"];
+                    };
+                };
+                401: components["responses"]["UnauthorizedError"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/message": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** メッセージ（Assetty）取得 */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description メッセージ取得成功 */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            /** @description ユーザーID */
-                            id: string;
-                            /** @description ユーザー名 */
-                            name: string;
+                            /**
+                             * @description メッセージ
+                             * @enum {string}
+                             */
+                            message: "Assetty";
                         };
                     };
                 };
-                404: components["responses"]["NotFound"];
+                401: components["responses"]["UnauthorizedError"];
             };
         };
         put?: never;
@@ -55,22 +171,36 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description 共通のエラーレスポンス */
         ErrorResponse: {
             /**
              * @description エラーコード
              * @enum {string}
              */
-            code: "INVALID_CREDENTIALS" | "INVALID_TOKEN" | "INVALID_RESPONSE_DATA" | "NOT_FOUND" | "INTERNAL_SERVER_ERROR";
+            code: "INVALID_CREDENTIALS" | "INVALID_ACCESS_TOKEN" | "INVALID_RESPONSE_DATA" | "NOT_FOUND" | "INTERNAL_SERVER_ERROR";
             /**
              * @description エラーメッセージ
              * @enum {string}
              */
-            message: "Invalid Credentials" | "Invalid Token" | "Invalid Response Data" | "Not Found" | "Internal Server Error";
+            message: "Invalid Credentials" | "Invalid Access Token" | "Invalid Response Data" | "Not Found" | "Internal Server Error";
+        };
+        /** @description ログイン成功時のレスポンス */
+        LoginSuccessResponse: {
+            /** @description ユーザー名 */
+            name: string;
+        };
+        /** @description 認可成功時のレスポンス */
+        AuthCheckResponse: {
+            /**
+             * @description 認可成功を表す真偽値
+             * @enum {boolean}
+             */
+            ok: true;
         };
     };
     responses: {
-        /** @description ユーザーが存在しない */
-        NotFound: {
+        /** @description 認可チェック失敗 */
+        UnauthorizedError: {
             headers: {
                 [name: string]: unknown;
             };
@@ -80,7 +210,18 @@ export interface components {
         };
     };
     parameters: never;
-    requestBodies: never;
+    requestBodies: {
+        LoginRequestBody: {
+            content: {
+                "application/json": {
+                    /** @description ユーザー名 */
+                    name: string;
+                    /** @description パスワード */
+                    password: string;
+                };
+            };
+        };
+    };
     headers: never;
     pathItems: never;
 }

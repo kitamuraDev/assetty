@@ -7,6 +7,7 @@ export type Env = {
   Bindings: CloudflareBindings;
   Variables: {
     d1: DrizzleD1Database;
+    userId: string;
   };
 };
 

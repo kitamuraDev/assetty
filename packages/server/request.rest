@@ -7,10 +7,52 @@
 @user2Password = Garcello0319
 
 ### ==============================
-### GET: /users/:username
+### GET: /message
 ### ==============================
-GET {{devBaseUrl}}/{{basePath}}/users?name={{user1Name}} HTTP/1.1
+GET {{devBaseUrl}}/{{basePath}}/message HTTP/1.1
 
 ###
 
-GET {{prodBaseUrl}}/{{basePath}}/users?name={{user1Name}} HTTP/1.1
+GET {{prodBaseUrl}}/{{basePath}}/message HTTP/1.1
+
+### ==============================
+### POST: /auth/login
+### ==============================
+
+POST {{devBaseUrl}}/{{basePath}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "{{user1Name}}",
+  "password": "{{user1Password}}"
+}
+
+###
+
+POST {{prodBaseUrl}}/{{basePath}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "{{user1Name}}",
+  "password": "{{user1Password}}"
+}
+
+### ==============================
+### POST: /auth/logout
+### ==============================
+
+POST {{devBaseUrl}}/{{basePath}}/auth/logout HTTP/1.1
+
+###
+
+POST {{prodBaseUrl}}/{{basePath}}/auth/logout HTTP/1.1
+
+### ==============================
+### GET: /auth/check
+### ==============================
+
+GET {{devBaseUrl}}/{{basePath}}/auth/check HTTP/1.1
+
+###
+
+GET {{prodBaseUrl}}/{{basePath}}/auth/check HTTP/1.1

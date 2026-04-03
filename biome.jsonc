@@ -11,7 +11,7 @@
       "!**/*.d.ts",
       "!packages/server/drizzle.config.ts",
       "!packages/server/drizzle",
-      "!packages/api-spec"
+      "!packages/api-spec/src/schema.ts"
     ]
   },
   "formatter": {
@@ -63,7 +63,7 @@
   },
   "html": {
     "formatter": {
-      "enabled": true
+      "enabled": false
     },
     "parser": {
       "interpolation": true
@@ -72,6 +72,9 @@
   "css": {
     "formatter": {
       "enabled": true
+    },
+    "parser": {
+      "tailwindDirectives": true
     }
   }
 }

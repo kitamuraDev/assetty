@@ -5,55 +5,147 @@ info:
 servers:
   - url: http://localhost:8787/api
 paths:
-  /users:
-    get:
-      parameters:
-        - name: name
-          in: query
-          required: true
-          description: ユーザー名
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 30
-          example: 'Lillie'
+  /auth/login:
+    post:
+      summary: ログイン
+      requestBody:
+        $ref: '#/components/requestBodies/LoginRequestBody'
       responses:
         '200':
-          description: ユーザー取得成功
+          description: ログイン成功
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: アクセストークン（JWT）を HttpOnly Cookie にセット
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginSuccessResponse'
+              examples:
+                success:
+                  summary: 成功レスポンス例
+                  value:
+                    name: Lillie
+        '401':
+          description: ログイン失敗（ユーザーが存在しないか、パスワードが正しくない）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unauthorized:
+                  summary: ログイン失敗レスポンス例
+                  value:
+                    code: INVALID_CREDENTIALS
+                    message: Invalid Credentials
+  /auth/logout:
+    post:
+      summary: ログアウト
+      responses:
+        '204':
+          description: ログアウト成功
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: アクセストークン（JWT）を Cookie から削除
+  /auth/check:
+    get:
+      summary: 認可チェック
+      security:
+        - JwtAuthInCookie: []
+      responses:
+        '200':
+          description: 認可成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthCheckResponse'
+              examples:
+                success:
+                  summary: 成功レスポンス例
+                  value:
+                    ok: true
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /message:
+    get:
+      summary: メッセージ（Assetty）取得
+      security:
+        - JwtAuthInCookie: []
+      responses:
+        '200':
+          description: メッセージ取得成功
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  id:
+                  message:
                     type: string
-                    description: ユーザーID
-                  name:
-                    type: string
-                    description: ユーザー名
+                    description: メッセージ
+                    enum:
+                      - Assetty
                 required:
-                  - id
-                  - name
+                  - message
               examples:
                 success:
                   summary: 成功レスポンス例
                   value:
-                    id: 1
-                    name: 'Lillie'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                    message: 'Assetty'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
 components:
+  requestBodies:
+    LoginRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: /login のリクエストボディ
+            properties:
+              name:
+                type: string
+                description: ユーザー名
+              password:
+                type: string
+                description: パスワード
+            required:
+              - name
+              - password
+          examples:
+            login:
+              summary: ログインリクエスト例
+              value:
+                name: Lillie
+                password: Lillie1101
+  responses:
+    UnauthorizedError:
+      description: 認可チェック失敗
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            unauthorized:
+              summary: 認可失敗レスポンス例
+              value:
+                code: INVALID_ACCESS_TOKEN
+                message: Invalid Access Token
   schemas:
     ErrorResponse:
       type: object
+      description: 共通のエラーレスポンス
       properties:
         code:
           type: string
           description: エラーコード
           enum:
             - INVALID_CREDENTIALS
-            - INVALID_TOKEN
+            - INVALID_ACCESS_TOKEN
             - INVALID_RESPONSE_DATA
             - NOT_FOUND
             - INTERNAL_SERVER_ERROR
@@ -62,22 +154,36 @@ components:
           description: エラーメッセージ
           enum:
             - Invalid Credentials
-            - Invalid Token
+            - Invalid Access Token
             - Invalid Response Data
             - Not Found
             - Internal Server Error
       required:
         - code
         - message
-  responses:
-    NotFound:
-      description: ユーザーが存在しない
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          examples:
-            notFound:
-              summary: ユーザーが見つからない例
-              value:
-                message: 'Not Found'
+    LoginSuccessResponse:
+      type: object
+      description: ログイン成功時のレスポンス
+      properties:
+        name:
+          type: string
+          description: ユーザー名
+      required:
+        - name
+    AuthCheckResponse:
+      type: object
+      description: 認可成功時のレスポンス
+      properties:
+        ok:
+          type: boolean
+          description: 認可成功を表す真偽値
+          enum:
+            - true
+      required:
+        - ok
+  securitySchemes:
+    JwtAuthInCookie:
+      type: apiKey
+      in: cookie
+      name: access_token
+      description: 認可用JWT。ログイン成功時に発行され、以降のリクエストではHttpOnly属性のCookie（access_token）として自動送信される。
