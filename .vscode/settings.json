@@ -1,0 +1,38 @@
+{
+  // `@theme` が引っかかるためignoreで緩和
+  "css.lint.unknownAtRules": "ignore",
+
+  //----------------------------------------------------------
+  // Biome
+  //----------------------------------------------------------
+  "editor.formatOnSave": false,
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit", // lint
+    "source.organizeImports.biome": "explicit" // importの自動整理
+  },
+  "[html]": {
+    "editor.formatOnSave": false // Angularのhtml構文にBiomeが対応していないためoffにする
+  },
+  "[css]": {
+    "editor.formatOnSave": true
+  },
+  "[javascript]": {
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "[json]": {
+    "editor.formatOnSave": true
+  },
+  "[jsonc]": {
+    "editor.formatOnSave": true
+  },
+  "[yaml]": {
+    "editor.formatOnSave": true
+  },
+  "[markdown]": {
+    "editor.formatOnSave": true
+  }
+}

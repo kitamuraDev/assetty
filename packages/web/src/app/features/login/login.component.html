@@ -1,0 +1,93 @@
+@let form = loginForm;
+@let isShowUsernameError = form.name().dirty() && form.name().errors().length > 0;
+@let isShowPasswordError = form.password().dirty() && form.password().errors().length > 0;
+
+<div class="max-w-5xl mx-auto p-6 flex items-center flex-col">
+  <header class="font-heading text-6xl font-extrabold italic my-16">
+    <span>Assetty</span>
+  </header>
+  <main class="w-full">
+    <section>
+      <form class="flex flex-col gap-10">
+
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-1.5">
+            <label for="username" class="w-fit text-sm font-semibold">ユーザー名</label>
+            <div class="w-10/12 relative">
+              <input
+                [formField]="form.name"
+                type="text"
+                id="username"
+                placeholder="入力してください"
+                autocomplete="username"
+                class="w-full px-4 py-4 pr-10 text-xs border rounded-md outline-none bg-gray-100 focus:bg-white"
+                [ngClass]="isShowUsernameError ? 'border-red-600' : 'border-slate-300'"
+              >
+              <button
+                type="button"
+                (click)="form.name().value.set('')"
+                aria-label="ユーザーネームの入力値を削除する"
+                class="w-fit p-2 absolute right-1 top-1/2 -translate-y-1/2 cursor-pointer"
+              >
+                <img src="/icons/close.svg" alt="削除" width="20" height="20">
+              </button>
+            </div>
+
+            @if (isShowUsernameError) {
+              <p class="text-xs text-red-600 -mt-0.75">{{ form.name().errors()[0]?.message }}</p>
+            }
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="password" class="w-fit text-sm font-semibold">パスワード</label>
+            <div class="flex justify-start items-center gap-2">
+              <div class="w-10/12 relative">
+                <input
+                  [formField]="form.password"
+                  [type]="passwordInputType"
+                  id="password"
+                  placeholder="入力してください"
+                  autocomplete="current-password"
+                  class="w-full px-4 py-4 pr-10 text-xs border rounded-md outline-none bg-gray-100 focus:bg-white"
+                  [ngClass]="isShowPasswordError ? 'border-red-600' : 'border-slate-300'"
+                >
+                <button
+                  type="button"
+                  (click)="form.password().value.set('')"
+                  aria-label="パスワードの入力値を削除する"
+                  class="w-fit p-2 absolute right-1 top-1/2 -translate-y-1/2 cursor-pointer"
+                >
+                  <img src="/icons/close.svg" alt="削除" width="20" height="20">
+                </button>
+              </div>
+              <button
+                type="button"
+                (click)="togglePasswordInputType()"
+                aria-label="パスワードの表示切替"
+                class="p-2 cursor-pointer"
+              >
+                <img [src]="`/icons/${passwordInputType === 'password' ? 'visibility_off' : 'visibility_on'}.svg`" alt="パスワード表示切替" width="20" height="20">
+              </button>
+            </div>
+
+            @if (isShowPasswordError) {
+              <p class="text-xs text-red-600 -mt-0.75">{{ form.password().errors()[0]?.message }}</p>
+            }
+          </div>
+        </div>
+
+        <button
+          type="button"
+          (click)="onLogin()"
+          aria-label="ログインする"
+          class="w-full flex justify-center items-center gap-2 px-2 py-3 text-base rounded-lg bg-black text-white cursor-pointer hover:opacity-70 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+          [disabled]="form().invalid()"
+        >
+          <img src="/icons/login.svg" alt="ログインアイコン" width="24" height="24">
+          <span>ログイン</span>
+        </button>
+
+      </form>
+    </section>
+  </main>
+</div>

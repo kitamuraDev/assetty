@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "types": ["./worker-configuration.d.ts", "bun"],
+    "types": ["./worker-configuration.d.ts", "bun", "vitest/globals"],
 
     // api-specパッケージのopenapi-typescriptで生成された型定義ファイルをインポートできるようにするための設定
     "paths": {
