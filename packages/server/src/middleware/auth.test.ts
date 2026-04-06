@@ -1,9 +1,9 @@
-import type { ErrorResponse } from '@api-spec/shared/error.schema';
+import type { ErrorResponseType } from '@api-spec/shared/error.schema';
 import { sign } from 'hono/jwt';
 import type { JWTPayload } from 'hono/utils/jwt/types';
 import { getPlatformProxy } from 'wrangler';
 import app from '..';
-import { getSetCookieHeader, login, logout } from '../features/auth/test.helper';
+import { getSetCookieHeader, login, logout } from '../test/helpers';
 import { jwtAuthMiddleware } from './auth';
 
 const { env } = await getPlatformProxy<CloudflareBindings>();
@@ -32,7 +32,7 @@ describe('jwtAuthMiddleware', () => {
     expect(successRes.status).toBe(200);
     expect(await successRes.json()).toEqual(expectedSuccessResponse);
 
-    const expectedErrorResponse: ErrorResponse = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
+    const expectedErrorResponse: ErrorResponseType = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
     const logoutResponse = await logout(env, { cookie: validCookie });
     const invalidCookie = getSetCookieHeader(logoutResponse.headers);
 
@@ -43,7 +43,7 @@ describe('jwtAuthMiddleware', () => {
   });
 
   it('アクセストークンを保持するcookieがheadersになければ401番を返すこと', async () => {
-    const expectedResponse: ErrorResponse = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
+    const expectedResponse: ErrorResponseType = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
 
     const res = await app.request('/api/message', { method: 'GET' }, env);
 
@@ -52,7 +52,7 @@ describe('jwtAuthMiddleware', () => {
   });
 
   it('アクセストークンを署名する際の秘密鍵が異なる場合は401番を返すこと', async () => {
-    const expectedResponse: ErrorResponse = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
+    const expectedResponse: ErrorResponseType = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
     const payload: JWTPayload = {
       sub: 'some-user-id',
       aud: env.JWT_AUDIENCE,
@@ -71,7 +71,7 @@ describe('jwtAuthMiddleware', () => {
   });
 
   it('アクセストークンのaudが異なる場合は401番を返すこと', async () => {
-    const expectedResponse: ErrorResponse = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
+    const expectedResponse: ErrorResponseType = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
     const payload: JWTPayload = {
       sub: 'some-user-id',
       aud: 'https://other-service-web.com',
@@ -90,7 +90,7 @@ describe('jwtAuthMiddleware', () => {
   });
 
   it('アクセストークンのissが異なる場合は401番を返すこと', async () => {
-    const expectedResponse: ErrorResponse = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
+    const expectedResponse: ErrorResponseType = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
     const payload: JWTPayload = {
       sub: 'some-user-id',
       aud: env.JWT_AUDIENCE,
