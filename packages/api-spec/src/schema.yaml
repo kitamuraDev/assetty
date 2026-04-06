@@ -69,31 +69,24 @@ paths:
                     ok: true
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-  /message:
+  /user:
     get:
-      summary: メッセージ（Assetty）取得
+      summary: ユーザー情報取得
       security:
         - JwtAuthInCookie: []
       responses:
         '200':
-          description: メッセージ取得成功
+          description: ユーザー情報取得成功
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: メッセージ
-                    enum:
-                      - Assetty
-                required:
-                  - message
+                $ref: '#/components/schemas/UserInfoResponse'
               examples:
                 success:
                   summary: 成功レスポンス例
                   value:
-                    message: 'Assetty'
+                    id: tfi4wB9ZRyhzVE7EhIyht
+                    name: Lillie
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
@@ -181,6 +174,19 @@ components:
             - true
       required:
         - ok
+    UserInfoResponse:
+      type: object
+      description: ユーザー情報取得レスポンス
+      properties:
+        id:
+          type: string
+          description: ユーザーID
+        name:
+          type: string
+          description: ユーザー名
+      required:
+        - id
+        - name
   securitySchemes:
     JwtAuthInCookie:
       type: apiKey

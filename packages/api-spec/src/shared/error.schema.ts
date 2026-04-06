@@ -1,3 +1,3 @@
 import type { components } from '../schema';
 
-export type ErrorResponse = components['schemas']['ErrorResponse'];
+export type ErrorResponseType = components['schemas']['ErrorResponse'];

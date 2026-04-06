@@ -1,15 +1,15 @@
-import type { ErrorResponse } from '@api-spec/shared/error.schema';
+import type { ErrorResponseType } from '@api-spec/shared/error.schema';
 import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import type { HTTPResponseError } from 'hono/types';
 import type { Env } from '../app';
 
-export type ErrorCause = Exclude<ErrorResponse['code'], 'INTERNAL_SERVER_ERROR'>; // INTERNAL_SERVER_ERROR は明示的にthrowしないため除外
+export type ErrorCause = Exclude<ErrorResponseType['code'], 'INTERNAL_SERVER_ERROR'>; // INTERNAL_SERVER_ERROR は明示的にthrowしないため除外
 
 export const errorHandlingMiddleware = (
   error: Error | HTTPResponseError,
   c: Context<Env>,
-): ReturnType<typeof c.json<ErrorResponse>> => {
+): ReturnType<typeof c.json<ErrorResponseType>> => {
   const cause = error.cause as ErrorCause;
 
   if (error instanceof HTTPException) {

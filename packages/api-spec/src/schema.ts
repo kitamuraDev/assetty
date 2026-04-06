@@ -124,14 +124,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/message": {
+    "/user": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** メッセージ（Assetty）取得 */
+        /** ユーザー情報取得 */
         get: {
             parameters: {
                 query?: never;
@@ -141,19 +141,13 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description メッセージ取得成功 */
+                /** @description ユーザー情報取得成功 */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            /**
-                             * @description メッセージ
-                             * @enum {string}
-                             */
-                            message: "Assetty";
-                        };
+                        "application/json": components["schemas"]["UserInfoResponse"];
                     };
                 };
                 401: components["responses"]["UnauthorizedError"];
@@ -196,6 +190,13 @@ export interface components {
              * @enum {boolean}
              */
             ok: true;
+        };
+        /** @description ユーザー情報取得レスポンス */
+        UserInfoResponse: {
+            /** @description ユーザーID */
+            id: string;
+            /** @description ユーザー名 */
+            name: string;
         };
     };
     responses: {

@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import type { ErrorResponse } from '@api-spec/shared/error.schema';
+import type { ErrorResponseType } from '@api-spec/shared/error.schema';
 import { type GenericSchema, instance, object, picklist, pipe, safeParse, transform } from 'valibot';
 
 const ErrorCodeList = [
@@ -8,19 +8,19 @@ const ErrorCodeList = [
   'INVALID_RESPONSE_DATA',
   'NOT_FOUND',
   'INTERNAL_SERVER_ERROR',
-] as const satisfies ErrorResponse['code'][];
+] as const satisfies ErrorResponseType['code'][];
 const ErrorMessageList = [
   'Invalid Credentials',
   'Invalid Access Token',
   'Invalid Response Data',
   'Not Found',
   'Internal Server Error',
-] as const satisfies ErrorResponse['message'][];
+] as const satisfies ErrorResponseType['message'][];
 
 const ErrorResponseSchema = object({
   code: picklist(ErrorCodeList),
   message: picklist(ErrorMessageList),
-}) satisfies GenericSchema<ErrorResponse>;
+}) satisfies GenericSchema<ErrorResponseType>;
 
 /**
  * Angular の HttpErrorResponse を、API 定義に基づいたエラー形式に変換・検証するスキーマ

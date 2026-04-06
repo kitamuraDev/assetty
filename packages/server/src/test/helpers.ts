@@ -1,5 +1,5 @@
 import type { LoginRequestBodyType } from '@api-spec/shared/auth.schema';
-import app from '../..';
+import app from '..';
 
 /**
  * ログインを行う
