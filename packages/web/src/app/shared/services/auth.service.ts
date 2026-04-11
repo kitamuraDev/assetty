@@ -25,7 +25,23 @@ export class AuthService {
         this.http.post<LoginSuccessResponseType>(`${this.API_BASE_URL}/auth/login`, body, { credentials: 'include' }),
       );
 
-      this.router.navigate(['/']);
+      await this.router.navigate(['/']);
+    } catch (e) {
+      const result = safeParse(HttpErrorResponseSchema, e);
+
+      if (result.success && result.output.body) {
+        alert(result.output.body.message);
+      } else {
+        alert('予期しないエラーが発生しました');
+      }
+    }
+  }
+
+  async logout(): Promise<void> {
+    try {
+      await firstValueFrom(this.http.post(`${this.API_BASE_URL}/auth/logout`, null, { credentials: 'include' }));
+
+      await this.router.navigate(['/login']);
     } catch (e) {
       const result = safeParse(HttpErrorResponseSchema, e);
 
