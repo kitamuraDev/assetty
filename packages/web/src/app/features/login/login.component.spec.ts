@@ -77,6 +77,29 @@ describe('LoginComponent', () => {
     expect(vi.spyOn(window, 'alert')).toHaveBeenCalledWith('Invalid Credentials');
   });
 
+  it('アプリ側で用意していないエラーが起きた場合、「予期しないエラーが発生しました」というメッセージが alert に表示されること', async () => {
+    mockServer.use(
+      http.post(`${API_BASE_URL}/auth/login`, () => {
+        return HttpResponse.error();
+      }),
+    );
+
+    const { fixture } = await render(LoginComponent, {
+      providers: [provideHttpClient(withFetch())],
+    });
+
+    const usernameInput = screen.getByLabelText('ユーザー名');
+    await user.clear(usernameInput).then(() => user.type(usernameInput, 'valid_user_name'));
+    const passwordInput = screen.getByLabelText('パスワード');
+    await user.clear(passwordInput).then(() => user.type(passwordInput, 'valid_password'));
+
+    const loginButton = screen.getByRole('button', { name: 'ログインする' });
+    await user.click(loginButton);
+    await fixture.whenStable();
+
+    expect(vi.spyOn(window, 'alert')).toHaveBeenCalledWith('予期しないエラーが発生しました');
+  });
+
   it('ユーザー名の入力欄横のバツ印を押下したら、ユーザー名の入力欄が空になること', async () => {
     await render(LoginComponent);
 
