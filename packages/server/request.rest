@@ -56,3 +56,21 @@ GET {{devBaseUrl}}/{{basePath}}/user HTTP/1.1
 ###
 
 GET {{prodBaseUrl}}/{{basePath}}/user HTTP/1.1
+
+### ==============================
+### GET: /assets/monthly
+### ==============================
+GET {{devBaseUrl}}/{{basePath}}/assets/monthly?baseDate=2025-12-01 HTTP/1.1
+
+###
+
+GET {{prodBaseUrl}}/{{basePath}}/assets/monthly?baseDate=2025-12-01 HTTP/1.1
+
+### ==============================
+### GET: /assets/yearly
+### ==============================
+GET {{devBaseUrl}}/{{basePath}}/assets/yearly?baseDate=2025-12-01 HTTP/1.1
+
+###
+
+GET {{prodBaseUrl}}/{{basePath}}/assets/yearly?baseDate=2025-12-01 HTTP/1.1

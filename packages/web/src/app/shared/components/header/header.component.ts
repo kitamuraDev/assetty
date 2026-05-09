@@ -37,7 +37,7 @@ import { AuthService } from '../../services/auth.service';
       [cdkConnectedOverlayPositions]="[{ originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top', offsetY: 12 }]"
       cdkAttachPopoverAsChild
     >
-      <menu ngMenu #userMenu="ngMenu" class="w-[70vw] max-w-70 p-4 rounded-lg bg-slate-50">
+      <menu ngMenu #userMenu="ngMenu" class="w-[70vw] max-w-70 p-4 rounded-lg bg-slate-50 shadow-sm">
         <ng-template ngMenuContent>
           <li ngMenuItem value="ユーザープロフィール" class="flex items-center gap-3">
             <span class="shrink-0 grid place-content-center h-10 w-10 rounded-full text-lg font-bold bg-black text-white">{{ userNameInitial }}</span>

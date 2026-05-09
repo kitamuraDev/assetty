@@ -89,6 +89,92 @@ paths:
                     name: Lillie
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /assets/monthly:
+    get:
+      summary: 月次の資産情報取得
+      security:
+        - JwtAuthInCookie: []
+      parameters:
+        - $ref: '#/components/parameters/BaseDateParameter'
+      responses:
+        '200':
+          description: 月次の資産情報取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssetsInfoResponse'
+              examples:
+                success:
+                  summary: 成功レスポンス例
+                  value:
+                    - yearMonth: '2025-01'
+                      totalAssets: 8919403
+                      assetsByCategories:
+                        - category: 現金
+                          amount: 2014567
+                          rate: 22.6
+                        - category: 債券
+                          amount: 1898234
+                          rate: 21.3
+                        - category: 国内株式
+                          amount: 1928456
+                          rate: 21.6
+                        - category: 投資信託
+                          amount: 1105234
+                          rate: 12.4
+                        - category: REIT
+                          amount: 1214789
+                          rate: 13.6
+                        - category: 年金
+                          amount: 758123
+                          rate: 8.5
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /assets/yearly:
+    get:
+      summary: 年次の資産情報取得
+      security:
+        - JwtAuthInCookie: []
+      parameters:
+        - $ref: '#/components/parameters/BaseDateParameter'
+      responses:
+        '200':
+          description: 年次の資産情報取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssetsInfoResponse'
+              examples:
+                success:
+                  summary: 成功レスポンス例
+                  value:
+                    - yearMonth: '2025-12'
+                      totalAssets: 10945737
+                      assetsByCategories:
+                        - category: 現金
+                          amount: 2538234
+                          rate: 23.2
+                        - category: 債券
+                          amount: 2312567
+                          rate: 21.1
+                        - category: 国内株式
+                          amount: 2408345
+                          rate: 22
+                        - category: 投資信託
+                          amount: 1328234
+                          rate: 12.1
+                        - category: REIT
+                          amount: 1458234
+                          rate: 13.3
+                        - category: 年金
+                          amount: 900123
+                          rate: 8.2
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
 components:
   requestBodies:
@@ -115,6 +201,19 @@ components:
               value:
                 name: Lillie
                 password: Lillie1101
+  parameters:
+    BaseDateParameter:
+      name: baseDate
+      in: query
+      description: 基準日（YYYY-MM-DD形式）
+      required: true
+      schema:
+        type: string
+        format: date
+      examples:
+        baseDate:
+          summary: 基準日例
+          value: "2025-12-01"
   responses:
     UnauthorizedError:
       description: 認可チェック失敗
@@ -187,6 +286,55 @@ components:
       required:
         - id
         - name
+    AssetsInfoResponse:
+      type: object
+      description: 月次・年次の資産情報レスポンス
+      properties:
+        yearMonth:
+          type: string
+          description: 年月（YYYY-MM形式）
+        totalAssets:
+          type: number
+          description: その年月の合計資産額
+        assetsByCategories:
+          type: array
+          description: カテゴリー別の資産情報
+          items:
+            $ref: '#/components/schemas/AssetsCategoryInfo'
+      required:
+        - yearMonth
+        - totalAssets
+        - assetsByCategories
+    AssetsCategoryInfo:
+      type: object
+      description: カテゴリー別資産情報
+      properties:
+        category:
+          type: string
+          description: 資産カテゴリー
+          enum:
+            - 現金
+            - 債券
+            - 国内株式
+            - 海外株式
+            - 投資信託
+            - 現物不動産
+            - REIT
+            - コモディティ
+            - 暗号資産
+            - 年金
+            - 保険
+            - その他
+        amount:
+          type: number
+          description: カテゴリーの資産額
+        rate:
+          type: number
+          description: 全体に占める割合（%）
+      required:
+        - category
+        - amount
+        - rate
   securitySchemes:
     JwtAuthInCookie:
       type: apiKey

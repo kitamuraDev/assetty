@@ -4,10 +4,12 @@ import { HTTPException } from 'hono/http-exception';
 import { safeParse } from 'valibot';
 import { createHonoApp } from '../../app';
 import { users } from '../../db/schema';
+import { jwtAuthMiddleware } from '../../middleware/auth';
 import type { ErrorCause } from '../../middleware/error';
 import { ResponseUserInfoSchema } from './user.schema';
 
 const user = createHonoApp();
+user.use('/*', jwtAuthMiddleware); // アクセストークンの検証（認可制御）
 
 user.get('/', async (c): Promise<ReturnType<typeof c.json<UserInfoResponseType>>> => {
   const userId = c.get('userId');
