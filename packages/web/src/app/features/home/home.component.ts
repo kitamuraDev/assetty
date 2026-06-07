@@ -109,11 +109,12 @@ export default class HomeComponent implements OnInit {
    * @param { active } クリックした棒グラフのグラフ情報
    */
   updateCurrentAssetInfo({ active }: { active?: object[] }): void {
-    const clickedChartIndex = (active as ActiveElement[])[0]?.index;
-    if (clickedChartIndex === undefined) return;
+    const clickedIdx = (active as ActiveElement[])[0]?.index;
+    if (clickedIdx === undefined) return;
 
     const assetsInfo = this.selectedPeriodType() === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
-    const assetIndex = this.selectedPeriodType() === '月次' ? clickedChartIndex + 1 : clickedChartIndex; // 月次の場合は資産情報配列を13 -> 12にいじっているため、+1をして調整
+    const assetIndex =
+      this.selectedPeriodType() === '月次' && assetsInfo.value()?.length === 13 ? clickedIdx + 1 : clickedIdx; // 月次データが13件の場合のみ先頭除外分を調整
     const currentAssetInfo = assetsInfo.value()?.[assetIndex];
 
     this.currentAssetInfo.set(currentAssetInfo);
