@@ -7,6 +7,7 @@ const ErrorCodeList = [
   'INVALID_ACCESS_TOKEN',
   'INVALID_RESPONSE_DATA',
   'NOT_FOUND',
+  'ASSETS_REGISTRATION_FAILED',
   'INTERNAL_SERVER_ERROR',
 ] as const satisfies ErrorResponseType['code'][];
 const ErrorMessageList = [
@@ -14,6 +15,7 @@ const ErrorMessageList = [
   'Invalid Access Token',
   'Invalid Response Data',
   'Not Found',
+  'Assets Registration Failed',
   'Internal Server Error',
 ] as const satisfies ErrorResponseType['message'][];
 

@@ -1,13 +1,14 @@
 import { httpResource } from '@angular/common/http';
 import { Component, DestroyRef, effect, inject, linkedSignal, type OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 import type { AssetsInfoResponseType } from '@api-spec/shared/assets.schema';
 import type { ActiveElement, ChartData } from 'chart.js';
 import { interval } from 'rxjs';
+
 import { environment } from '../../../environments/environment';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { AuthService } from '../../shared/services/auth.service';
+import { DateService } from '../../shared/services/date.service';
 import { AssetDetailsTableComponent } from './components/asset-details-table/asset-details-table.component';
 import { AssetSummaryCardComponent } from './components/asset-summary-card/asset-summary-card.component';
 import { AssetsBarChartComponent } from './components/assets-bar-chart/assets-bar-chart.component';
@@ -47,16 +48,16 @@ export type PeriodType = '月次' | '年次';
 export default class HomeComponent implements OnInit {
   private readonly API_BASE_URL = environment.API_BASE_URL;
   private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly dateService = inject(DateService);
 
   private readonly monthlyAssetsInfo = httpResource<AssetsInfoResponseType[]>(() => ({
-    url: `${this.API_BASE_URL}/assets/monthly?baseDate=${this.getToday()}`,
+    url: `${this.API_BASE_URL}/assets/monthly?baseDate=${this.dateService.getToday()}`,
     method: 'GET',
     credentials: 'include',
   }));
   private readonly yearlyAssetsInfo = httpResource<AssetsInfoResponseType[]>(() => ({
-    url: `${this.API_BASE_URL}/assets/yearly?baseDate=${this.getToday()}`,
+    url: `${this.API_BASE_URL}/assets/yearly?baseDate=${this.dateService.getToday()}`,
     method: 'GET',
     credentials: 'include',
   }));
@@ -84,34 +85,10 @@ export default class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // 1分ごとに認証状態を確認し、認証の有効期限が切れていたらログインページへ遷移させる
     interval(60000)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.verifyAuth());
-  }
-
-  /**
-   * ログインの有効状態を検証する。無効なら`/login`にリダイレクトさせる
-   */
-  private async verifyAuth(): Promise<void> {
-    const isLogin = await this.authService.authCheck();
-
-    if (!isLogin) {
-      await this.router.navigateByUrl('/login');
-      alert('ログイン有効期限が切れました。ログインし直してください');
-    }
-  }
-
-  /**
-   * 本日の日付を返す
-   * @returns 本日の日付（yyyy-mm-dd）
-   */
-  private getToday() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const date = String(today.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${date}`;
+      .subscribe(() => this.authService.verifyAuth());
   }
 
   /**

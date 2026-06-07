@@ -241,6 +241,89 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 月次の資産データ登録 */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: components["requestBodies"]["CreateAssetsRequestBody"];
+            responses: {
+                /** @description 資産データ登録成功 */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CreateAssetsSuccessResponse"];
+                    };
+                };
+                401: components["responses"]["UnauthorizedError"];
+                /** @description 資産データ登録失敗 */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 資産カテゴリの取得 */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description 資産カテゴリの取得成功 */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AssetsCategory"][];
+                    };
+                };
+                401: components["responses"]["UnauthorizedError"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -251,12 +334,12 @@ export interface components {
              * @description エラーコード
              * @enum {string}
              */
-            code: "INVALID_CREDENTIALS" | "INVALID_ACCESS_TOKEN" | "INVALID_RESPONSE_DATA" | "NOT_FOUND" | "INTERNAL_SERVER_ERROR";
+            code: "INVALID_CREDENTIALS" | "INVALID_ACCESS_TOKEN" | "INVALID_RESPONSE_DATA" | "NOT_FOUND" | "ASSETS_REGISTRATION_FAILED" | "INTERNAL_SERVER_ERROR";
             /**
              * @description エラーメッセージ
              * @enum {string}
              */
-            message: "Invalid Credentials" | "Invalid Access Token" | "Invalid Response Data" | "Not Found" | "Internal Server Error";
+            message: "Invalid Credentials" | "Invalid Access Token" | "Invalid Response Data" | "Not Found" | "Assets Registration Failed" | "Internal Server Error";
         };
         /** @description ログイン成功時のレスポンス */
         LoginSuccessResponse: {
@@ -271,6 +354,14 @@ export interface components {
              */
             ok: true;
         };
+        /** @description 資産データ登録成功時のレスポンス */
+        CreateAssetsSuccessResponse: {
+            /**
+             * @description 資産データ登録の成功を表す真偽値
+             * @enum {boolean}
+             */
+            ok: true;
+        };
         /** @description ユーザー情報取得レスポンス */
         UserInfoResponse: {
             /** @description ユーザーID */
@@ -278,26 +369,30 @@ export interface components {
             /** @description ユーザー名 */
             name: string;
         };
-        /** @description 月次・年次の資産情報レスポンス */
+        /** @description 資産カテゴリ */
+        AssetsCategory: {
+            /** @description 資産カテゴリID */
+            id: number;
+            /** @description 資産カテゴリ名 */
+            name: string;
+        };
+        /** @description 資産内訳 */
+        AssetsAllocation: {
+            /** @description 資産カテゴリ名 */
+            category: string;
+            /** @description カテゴリーの資産額 */
+            amount: number;
+            /** @description 全体に占める割合（%） */
+            rate: number;
+        };
+        /** @description 資産情報レスポンス */
         AssetsInfoResponse: {
             /** @description 年月（YYYY-MM形式） */
             yearMonth: string;
             /** @description その年月の合計資産額 */
             totalAssets: number;
             /** @description カテゴリー別の資産情報 */
-            assetsByCategories: components["schemas"]["AssetsCategoryInfo"][];
-        };
-        /** @description カテゴリー別資産情報 */
-        AssetsCategoryInfo: {
-            /**
-             * @description 資産カテゴリー
-             * @enum {string}
-             */
-            category: "現金" | "債券" | "国内株式" | "海外株式" | "投資信託" | "現物不動産" | "REIT" | "コモディティ" | "暗号資産" | "年金" | "保険" | "その他";
-            /** @description カテゴリーの資産額 */
-            amount: number;
-            /** @description 全体に占める割合（%） */
-            rate: number;
+            assetsByCategories: components["schemas"]["AssetsAllocation"][];
         };
     };
     responses: {
@@ -324,6 +419,21 @@ export interface components {
                     /** @description パスワード */
                     password: string;
                 };
+            };
+        };
+        CreateAssetsRequestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * Format: date
+                     * @description 基準日（YYYY-MM-DD形式）
+                     */
+                    date: string;
+                    /** @description 資産額 */
+                    amount: number;
+                    /** @description 資産カテゴリID */
+                    assetCategoryId: number;
+                }[];
             };
         };
     };

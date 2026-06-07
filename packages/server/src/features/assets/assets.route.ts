@@ -1,9 +1,20 @@
-import type { AssetsInfoResponseType } from '@api-spec/shared/assets.schema';
+import type {
+  AssetsCategoryType,
+  AssetsInfoResponseType,
+  CreateAssetsSuccessResponseType,
+} from '@api-spec/shared/assets.schema';
 import { sValidator } from '@hono/standard-validator';
-import { sql } from 'drizzle-orm';
+import { asc, sql } from 'drizzle-orm';
+import { HTTPException } from 'hono/http-exception';
 import { createHonoApp } from '../../app';
+import { assetCategories, monthlyAssets } from '../../db/schema';
 import { jwtAuthMiddleware } from '../../middleware/auth';
-import { type AssetsInfoQueryResponseType, AssetsRequestQuerySchema } from './assets.schema';
+import type { ErrorCause } from '../../middleware/error';
+import {
+  type AssetsInfoQueryResponseType,
+  AssetsRequestQuerySchema,
+  CreateAssetsRequestBodySchema,
+} from './assets.schema';
 
 const assets = createHonoApp();
 assets.use('/*', jwtAuthMiddleware); // アクセストークンの検証（認可制御）
@@ -108,5 +119,41 @@ assets.get(
     return c.json(responseData, 200);
   },
 );
+
+/**
+ * 資産データの登録
+ */
+assets.post(
+  '/',
+  sValidator('json', CreateAssetsRequestBodySchema),
+  async (c): Promise<ReturnType<typeof c.json<CreateAssetsSuccessResponseType, 201>>> => {
+    const userId = c.get('userId');
+    const assetsData = c.req.valid('json');
+    const insertValues = assetsData.map((asset) => ({ ...asset, userId }));
+
+    try {
+      const d1 = c.get('d1');
+      await d1.insert(monthlyAssets).values(insertValues);
+
+      return c.json({ ok: true }, 201);
+    } catch (_e) {
+      throw new HTTPException(500, { cause: 'ASSETS_REGISTRATION_FAILED' satisfies ErrorCause });
+    }
+  },
+);
+
+/**
+ * 資産カテゴリの取得
+ */
+assets.get('/categories', async (c): Promise<ReturnType<typeof c.json<AssetsCategoryType[]>>> => {
+  const d1 = c.get('d1');
+  const result = await d1
+    .select({ id: assetCategories.id, name: assetCategories.name })
+    .from(assetCategories)
+    .orderBy(asc(assetCategories.id))
+    .all();
+
+  return c.json(result, 200);
+});
 
 export default assets;

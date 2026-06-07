@@ -175,6 +175,63 @@ paths:
                           rate: 8.2
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /assets:
+    post:
+      summary: 月次の資産データ登録
+      security:
+        - JwtAuthInCookie: []
+      requestBody:
+        $ref: '#/components/requestBodies/CreateAssetsRequestBody'
+      responses:
+        '201':
+          description: 資産データ登録成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAssetsSuccessResponse'
+              examples:
+                success:
+                  summary: 成功レスポンス例
+                  value:
+                    ok: true
+        '500':
+          description: 資産データ登録失敗
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                assets_registration_failed:
+                  summary: 資産データ登録失敗レスポンス例
+                  value:
+                    code: ASSETS_REGISTRATION_FAILED
+                    message: Assets Registration Failed
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /assets/categories:
+    get:
+      summary: 資産カテゴリの取得
+      security:
+        - JwtAuthInCookie: []
+      responses:
+        '200':
+          description: 資産カテゴリの取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssetsCategory'
+              examples:
+                success:
+                  summary: 成功レスポンス例
+                  value:
+                    - id: 1
+                      name: 現金
+                    - id: 2
+                      name: 債券
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
 components:
   requestBodies:
@@ -201,6 +258,40 @@ components:
               value:
                 name: Lillie
                 password: Lillie1101
+    CreateAssetsRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: array
+            description: 月次の資産データ登録のリクエストボディ
+            items:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: 基準日（YYYY-MM-DD形式）
+                amount:
+                  type: number
+                  description: 資産額
+                assetCategoryId:
+                  type: number
+                  description: 資産カテゴリID
+              required:
+                - date
+                - amount
+                - assetCategoryId
+          examples:
+            create:
+              summary: 資産データ登録リクエスト例
+              value:
+                - date: "2025-12-01"
+                  amount: 2538234
+                  assetCategoryId: 1
+                - date: "2025-12-01"
+                  amount: 2312567
+                  assetCategoryId: 2
   parameters:
     BaseDateParameter:
       name: baseDate
@@ -240,6 +331,7 @@ components:
             - INVALID_ACCESS_TOKEN
             - INVALID_RESPONSE_DATA
             - NOT_FOUND
+            - ASSETS_REGISTRATION_FAILED
             - INTERNAL_SERVER_ERROR
         message:
           type: string
@@ -249,6 +341,7 @@ components:
             - Invalid Access Token
             - Invalid Response Data
             - Not Found
+            - Assets Registration Failed
             - Internal Server Error
       required:
         - code
@@ -273,6 +366,17 @@ components:
             - true
       required:
         - ok
+    CreateAssetsSuccessResponse:
+      type: object
+      description: 資産データ登録成功時のレスポンス
+      properties:
+        ok:
+          type: boolean
+          description: 資産データ登録の成功を表す真偽値
+          enum:
+            - true
+      required:
+        - ok
     UserInfoResponse:
       type: object
       description: ユーザー情報取得レスポンス
@@ -286,9 +390,39 @@ components:
       required:
         - id
         - name
+    AssetsCategory:
+      type: object
+      description: 資産カテゴリ
+      properties:
+        id:
+          type: number
+          description: 資産カテゴリID
+        name:
+          type: string
+          description: 資産カテゴリ名
+      required:
+        - id
+        - name
+    AssetsAllocation:
+      type: object
+      description: 資産内訳
+      properties:
+        category:
+          type: string
+          description: 資産カテゴリ名
+        amount:
+          type: number
+          description: カテゴリーの資産額
+        rate:
+          type: number
+          description: 全体に占める割合（%）
+      required:
+        - category
+        - amount
+        - rate
     AssetsInfoResponse:
       type: object
-      description: 月次・年次の資産情報レスポンス
+      description: 資産情報レスポンス
       properties:
         yearMonth:
           type: string
@@ -300,41 +434,11 @@ components:
           type: array
           description: カテゴリー別の資産情報
           items:
-            $ref: '#/components/schemas/AssetsCategoryInfo'
+            $ref: '#/components/schemas/AssetsAllocation'
       required:
         - yearMonth
         - totalAssets
         - assetsByCategories
-    AssetsCategoryInfo:
-      type: object
-      description: カテゴリー別資産情報
-      properties:
-        category:
-          type: string
-          description: 資産カテゴリー
-          enum:
-            - 現金
-            - 債券
-            - 国内株式
-            - 海外株式
-            - 投資信託
-            - 現物不動産
-            - REIT
-            - コモディティ
-            - 暗号資産
-            - 年金
-            - 保険
-            - その他
-        amount:
-          type: number
-          description: カテゴリーの資産額
-        rate:
-          type: number
-          description: 全体に占める割合（%）
-      required:
-        - category
-        - amount
-        - rate
   securitySchemes:
     JwtAuthInCookie:
       type: apiKey
