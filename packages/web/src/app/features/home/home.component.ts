@@ -125,7 +125,8 @@ export default class HomeComponent implements OnInit {
    * @param periodType 期間タイプ
    */
   private convertToBarChartData(assetsInfo: AssetsInfoResponseType[], periodType: PeriodType): void {
-    const chartData = periodType === '月次' ? assetsInfo.slice(1) : assetsInfo; // 月次の場合のみ先頭を除外（棒グラフには12件のみ表示する）
+    // 月次データが13件の場合のみ先頭を除外（棒グラフには12件のみ表示する）※月次データは当月を含む過去13ヶ月分のデータが最大件数です
+    const chartData = periodType === '月次' && assetsInfo.length === 13 ? assetsInfo.slice(1) : assetsInfo;
 
     const labels = chartData.map((item) => {
       const [year, month] = item.yearMonth.split('-');
