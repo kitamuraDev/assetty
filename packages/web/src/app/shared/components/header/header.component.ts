@@ -2,6 +2,7 @@ import { Menu, MenuContent, MenuItem, MenuTrigger } from '@angular/aria/menu';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { httpResource } from '@angular/common/http';
 import { Component, inject, viewChild } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import type { UserInfoResponseType } from '@api-spec/shared/user.schema';
 import { environment } from '../../../../environments/environment';
@@ -9,7 +10,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
-  imports: [Menu, MenuContent, MenuItem, MenuTrigger, OverlayModule],
+  imports: [RouterLink, Menu, MenuContent, MenuItem, MenuTrigger, OverlayModule],
   template: `
     @let user = userInfo.value();
     @let userNameInitial = user?.name?.at(0);
@@ -39,6 +40,7 @@ import { AuthService } from '../../services/auth.service';
     >
       <menu ngMenu #userMenu="ngMenu" class="w-[70vw] max-w-70 p-4 rounded-lg bg-slate-50 shadow-sm">
         <ng-template ngMenuContent>
+
           <li ngMenuItem value="ユーザープロフィール" class="flex items-center gap-3">
             <span class="shrink-0 grid place-content-center h-10 w-10 rounded-full text-lg font-bold bg-black text-white">{{ userNameInitial }}</span>
             <div class="flex flex-col items-start min-w-0 text-sm text-slate-700">
@@ -48,6 +50,28 @@ import { AuthService } from '../../services/auth.service';
           </li>
 
           <hr class="mt-5 mb-3 -mx-4 border-slate-300" />
+
+          <li ngMenuItem value="マイページ">
+            <a
+              routerLink="/"
+              aria-label="マイページへ遷移する"
+              class="w-full flex justify-start items-center gap-2 px-3 py-3 rounded-lg text-sm text-slate-700 cursor-pointer hover:bg-white"
+            >
+              <img src="/icons/home.svg" alt="マイページアイコン" width="18" height="18">
+              <span>マイページ</span>
+            </a>
+          </li>
+
+          <li ngMenuItem value="資産情報登録">
+            <a
+              routerLink="/register/assets"
+              aria-label="資産情報登録ページへ遷移する"
+              class="w-full flex justify-start items-center gap-2 px-3 py-3 rounded-lg text-sm text-slate-700 cursor-pointer hover:bg-white"
+            >
+              <img src="/icons/register_assets.svg" alt="資産情報登録アイコン" width="18" height="18">
+              <span>資産情報登録</span>
+            </a>
+          </li>
 
           <li ngMenuItem value="ログアウト">
             <button
@@ -78,10 +102,7 @@ export class HeaderComponent {
   userMenu = viewChild<Menu<string>>('userMenu');
 
   onLogout(): void {
-    const isConfirmed = confirm('ログアウトしますか？');
-
-    if (isConfirmed) {
-      this.authService.logout();
-    }
+    if (!confirm('ログアウトしますか？')) return;
+    this.authService.logout();
   }
 }

@@ -1,6 +1,6 @@
 # assetty
 
-TODO: ここにアプリの説明を記載する（何ができるのか）
+資産管理SaaS Assetty ... Asset + Tidy（資産を整理する）
 
 ## セットアップについて
 

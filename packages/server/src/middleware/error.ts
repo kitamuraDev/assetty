@@ -22,6 +22,8 @@ export const errorHandlingMiddleware = (
         return c.json({ code: 'NOT_FOUND', message: 'Not Found' }, 404);
       case 'INVALID_RESPONSE_DATA':
         return c.json({ code: 'INVALID_RESPONSE_DATA', message: 'Invalid Response Data' }, 500);
+      case 'ASSETS_REGISTRATION_FAILED':
+        return c.json({ code: 'ASSETS_REGISTRATION_FAILED', message: 'Assets Registration Failed' }, 500);
       default:
         throw new Error(cause satisfies never);
     }

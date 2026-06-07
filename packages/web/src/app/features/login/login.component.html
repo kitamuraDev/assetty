@@ -78,10 +78,10 @@
 
         <button
           type="button"
-          (click)="onLogin()"
           aria-label="ログインする"
-          class="w-full flex justify-center items-center gap-2 px-2 py-3 text-base rounded-lg bg-black text-white cursor-pointer hover:opacity-70 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+          (click)="onLogin()"
           [disabled]="form().invalid()"
+          class="w-full flex justify-center items-center gap-2 px-2 py-3 text-base rounded-lg bg-black text-white cursor-pointer hover:opacity-70 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
         >
           <img src="/icons/login.svg" alt="ログインアイコン" width="24" height="24">
           <span>ログイン</span>

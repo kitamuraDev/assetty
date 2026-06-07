@@ -64,4 +64,13 @@ export class AuthService {
       return false;
     }
   }
+
+  async verifyAuth(): Promise<void> {
+    const isLogin = await this.authCheck();
+
+    if (!isLogin) {
+      await this.router.navigateByUrl('/login');
+      alert('ログイン有効期限が切れました。ログインし直してください');
+    }
+  }
 }

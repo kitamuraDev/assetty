@@ -9,6 +9,12 @@ export const routes: Routes = [
     data: { title: 'マイページ' },
   },
   {
+    path: 'register/assets',
+    loadComponent: () => import('./features/assets-register/assets-register.component'),
+    canActivate: [authGuard],
+    data: { title: '資産情報登録' },
+  },
+  {
     path: 'login',
     loadComponent: () => import('./features/login/login.component'),
     data: { title: 'ログイン' },
