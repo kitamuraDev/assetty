@@ -16,14 +16,14 @@ export default class LoginComponent {
     validateStandardSchema(schema, LoginRequestBodySchema);
   });
 
-  async onLogin() {
+  async onLogin(): Promise<void> {
     if (this.loginForm().invalid()) return;
 
     await this.authService.login(this.loginForm().value());
   }
 
   passwordInputType: 'password' | 'text' = 'password';
-  togglePasswordInputType() {
+  togglePasswordInputType(): void {
     this.passwordInputType = this.passwordInputType === 'password' ? 'text' : 'password';
   }
 }

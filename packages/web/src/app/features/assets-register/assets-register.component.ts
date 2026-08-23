@@ -143,7 +143,7 @@ export default class AssetsRegisterComponent implements OnInit {
     return this.selectedAssetCategories().map((category) => ({ ...category, amount: 0 }));
   });
 
-  onRegister = async () => {
+  async onRegister(): Promise<void> {
     if (!confirm('資産情報を登録しますか？')) return;
 
     const postAssets = this.selectedAssetCategoriesWithAmount().map((c) => ({
@@ -157,7 +157,7 @@ export default class AssetsRegisterComponent implements OnInit {
     // 選択中の資産カテゴリを初期化して、最新の月次資産情報を取得し直す
     this.selectedAssetCategories.set([]);
     this.monthlyAssetsInfo.reload();
-  };
+  }
 
   ngOnInit(): void {
     // 1分ごとに認証状態を確認し、認証の有効期限が切れていたらログインページへ遷移させる
