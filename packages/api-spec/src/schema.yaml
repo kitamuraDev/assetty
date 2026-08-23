@@ -133,14 +133,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateAssetsSuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: 資産データ登録失敗
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
 
 components:
   requestBodies:
