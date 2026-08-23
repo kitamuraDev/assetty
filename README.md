@@ -18,8 +18,8 @@
 
 1. `package.json(root)` > `version` を更新
 2. `git commit`
-3. `git tag vn.n.n`
-4. `git push origin main --tags`
+3. `git tag <vn.n.n> <commit-id>`
+4. `git push origin --tags`
 
 ## 環境構築について
 
