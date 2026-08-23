@@ -103,6 +103,22 @@ paths:
                   $ref: '#/components/schemas/AssetsInfoResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /assets/categories:
+    get:
+      summary: 資産カテゴリの取得
+      security:
+        - JwtAuthInCookie: []
+      responses:
+        '200':
+          description: 資産カテゴリの取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssetsCategory'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /assets:
     post:
       summary: 月次の資産データ登録
@@ -123,22 +139,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-  /assets/categories:
-    get:
-      summary: 資産カテゴリの取得
-      security:
-        - JwtAuthInCookie: []
-      responses:
-        '200':
-          description: 資産カテゴリの取得成功
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AssetsCategory'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
