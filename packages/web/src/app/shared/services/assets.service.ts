@@ -13,7 +13,7 @@ export class AssetsService {
   private readonly API_BASE_URL = environment.API_BASE_URL;
   private readonly http = inject(HttpClient);
 
-  registerAssets = async (body: CreateAssetsRequestBodyType): Promise<void> => {
+  async registerAssets(body: CreateAssetsRequestBodyType): Promise<void> {
     try {
       await firstValueFrom(
         this.http.post<CreateAssetsSuccessResponseType>(`${this.API_BASE_URL}/assets`, body, {
@@ -31,5 +31,5 @@ export class AssetsService {
         alert('予期しないエラーが発生しました');
       }
     }
-  };
+  }
 }

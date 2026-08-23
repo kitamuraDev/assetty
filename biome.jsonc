@@ -30,7 +30,8 @@
         "noUnusedFunctionParameters": "error"
       },
       "complexity": {
-        "useLiteralKeys": "off"
+        "useLiteralKeys": "off",
+        "useArrowFunction": "error"
       }
     }
   },
