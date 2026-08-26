@@ -1,7 +1,7 @@
 import type {
-  AssetsCategoryType,
-  AssetsInfoResponseType,
-  CreateAssetsSuccessResponseType,
+  AssetCategoryResponseType,
+  AssetInfoResponseType,
+  CreateAssetRecordsSuccessResponseType,
 } from '@api-spec/shared/assets.schema';
 import { sValidator } from '@hono/standard-validator';
 import { asc, sql } from 'drizzle-orm';
@@ -26,7 +26,7 @@ assets.use('/*', jwtAuthMiddleware); // アクセストークンの検証（認�
 assets.get(
   '/monthly',
   sValidator('query', AssetsRequestQuerySchema),
-  async (c): Promise<ReturnType<typeof c.json<AssetsInfoResponseType[]>>> => {
+  async (c): Promise<ReturnType<typeof c.json<AssetInfoResponseType[]>>> => {
     const userId = c.get('userId');
     const { baseDate } = c.req.valid('query');
 
@@ -62,7 +62,7 @@ assets.get(
     const responseData = result.map((row) => ({
       yearMonth: row.year_month,
       totalAssets: row.total_assets,
-      assetsByCategories: JSON.parse(row.assets_by_categories) as AssetsInfoResponseType['assetsByCategories'],
+      assetsByCategories: JSON.parse(row.assets_by_categories) as AssetInfoResponseType['assetsByCategories'],
     }));
 
     return c.json(responseData, 200);
@@ -76,7 +76,7 @@ assets.get(
 assets.get(
   '/yearly',
   sValidator('query', AssetsRequestQuerySchema),
-  async (c): Promise<ReturnType<typeof c.json<AssetsInfoResponseType[]>>> => {
+  async (c): Promise<ReturnType<typeof c.json<AssetInfoResponseType[]>>> => {
     const userId = c.get('userId');
     const { baseDate } = c.req.valid('query');
 
@@ -113,7 +113,7 @@ assets.get(
     const responseData = result.map((row) => ({
       yearMonth: row.year_month,
       totalAssets: row.total_assets,
-      assetsByCategories: JSON.parse(row.assets_by_categories) as AssetsInfoResponseType['assetsByCategories'],
+      assetsByCategories: JSON.parse(row.assets_by_categories) as AssetInfoResponseType['assetsByCategories'],
     }));
 
     return c.json(responseData, 200);
@@ -126,7 +126,7 @@ assets.get(
 assets.post(
   '/',
   sValidator('json', CreateAssetsRequestBodySchema),
-  async (c): Promise<ReturnType<typeof c.json<CreateAssetsSuccessResponseType, 201>>> => {
+  async (c): Promise<ReturnType<typeof c.json<CreateAssetRecordsSuccessResponseType, 201>>> => {
     const userId = c.get('userId');
     const assetsData = c.req.valid('json');
     const insertValues = assetsData.map((asset) => ({ ...asset, userId }));
@@ -145,7 +145,7 @@ assets.post(
 /**
  * 資産カテゴリの取得
  */
-assets.get('/categories', async (c): Promise<ReturnType<typeof c.json<AssetsCategoryType[]>>> => {
+assets.get('/categories', async (c): Promise<ReturnType<typeof c.json<AssetCategoryResponseType[]>>> => {
   const d1 = c.get('d1');
   const result = await d1
     .select({ id: assetCategories.id, name: assetCategories.name })

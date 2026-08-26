@@ -1,7 +1,7 @@
 import { httpResource } from '@angular/common/http';
 import { Component, DestroyRef, effect, inject, linkedSignal, type OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import type { AssetsInfoResponseType } from '@api-spec/shared/assets.schema';
+import type { AssetInfoResponseType } from '@api-spec/shared/assets.schema';
 import type { ActiveElement, ChartData } from 'chart.js';
 import { interval } from 'rxjs';
 
@@ -51,12 +51,12 @@ export default class HomeComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly dateService = inject(DateService);
 
-  private readonly monthlyAssetsInfo = httpResource<AssetsInfoResponseType[]>(() => ({
+  private readonly monthlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
     url: `${this.API_BASE_URL}/assets/monthly?baseDate=${this.dateService.getToday()}`,
     method: 'GET',
     credentials: 'include',
   }));
-  private readonly yearlyAssetsInfo = httpResource<AssetsInfoResponseType[]>(() => ({
+  private readonly yearlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
     url: `${this.API_BASE_URL}/assets/yearly?baseDate=${this.dateService.getToday()}`,
     method: 'GET',
     credentials: 'include',
@@ -125,7 +125,7 @@ export default class HomeComponent implements OnInit {
    * @param assetsInfo 資産情報の配列
    * @param periodType 期間タイプ
    */
-  private convertToBarChartData(assetsInfo: AssetsInfoResponseType[], periodType: PeriodType): void {
+  private convertToBarChartData(assetsInfo: AssetInfoResponseType[], periodType: PeriodType): void {
     // 月次データが13件の場合のみ先頭を除外（棒グラフには12件のみ表示する）※月次データは当月を含む過去13ヶ月分のデータが最大件数です
     const chartData = periodType === '月次' && assetsInfo.length === 13 ? assetsInfo.slice(1) : assetsInfo;
 

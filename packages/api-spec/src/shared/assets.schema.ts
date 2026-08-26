@@ -1,8 +1,8 @@
 import type { components } from '../schema';
 
-export type BaseDateParameterType = components['parameters']['BaseDateParameter'];
-export type AssetsInfoResponseType = components['schemas']['AssetsInfoResponse'];
-export type CreateAssetsRequestBodyType =
-  components['requestBodies']['CreateAssetsRequestBody']['content']['application/json'];
-export type CreateAssetsSuccessResponseType = components['schemas']['CreateAssetsSuccessResponse'];
-export type AssetsCategoryType = components['schemas']['AssetsCategory'];
+export type CreateAssetRecordsRequestBodyType =
+  components['requestBodies']['CreateAssetRecordsRequestBody']['content']['application/json'];
+export type BaseDateQueryParameterType = components['parameters']['BaseDateQueryParameter'];
+export type AssetCategoryResponseType = components['schemas']['AssetCategoryResponse'];
+export type AssetInfoResponseType = components['schemas']['AssetInfoResponse'];
+export type CreateAssetRecordsSuccessResponseType = components['schemas']['CreateAssetRecordsSuccessResponse'];

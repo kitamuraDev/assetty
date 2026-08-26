@@ -3,7 +3,7 @@ import { httpResource } from '@angular/common/http';
 import { Component, computed, DestroyRef, inject, linkedSignal, type OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import type { AssetsCategoryType, AssetsInfoResponseType } from '@api-spec/shared/assets.schema';
+import type { AssetCategoryResponseType, AssetInfoResponseType } from '@api-spec/shared/assets.schema';
 import { interval } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -99,12 +99,12 @@ export default class AssetsRegisterComponent implements OnInit {
   private readonly dateService = inject(DateService);
   private readonly assetsService = inject(AssetsService);
 
-  private readonly monthlyAssetsInfo = httpResource<AssetsInfoResponseType[]>(() => ({
+  private readonly monthlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
     url: `${this.API_BASE_URL}/assets/monthly?baseDate=${this.dateService.getToday()}`,
     method: 'GET',
     credentials: 'include',
   }));
-  private readonly assetCategories = httpResource<AssetsCategoryType[]>(() => ({
+  private readonly assetCategories = httpResource<AssetCategoryResponseType[]>(() => ({
     url: `${this.API_BASE_URL}/assets/categories`,
     method: 'GET',
     credentials: 'include',

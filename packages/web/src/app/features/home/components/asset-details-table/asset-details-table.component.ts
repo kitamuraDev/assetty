@@ -1,6 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, input } from '@angular/core';
-import type { AssetsInfoResponseType } from '@api-spec/shared/assets.schema';
+import type { AssetInfoResponseType } from '@api-spec/shared/assets.schema';
 
 @Component({
   selector: 'app-asset-details-table',
@@ -35,5 +35,5 @@ import type { AssetsInfoResponseType } from '@api-spec/shared/assets.schema';
   `,
 })
 export class AssetDetailsTableComponent {
-  assetInfo = input.required<AssetsInfoResponseType | undefined>();
+  assetInfo = input.required<AssetInfoResponseType | undefined>();
 }
