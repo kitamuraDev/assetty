@@ -174,7 +174,7 @@ components:
         application/json:
           schema:
             type: object
-            description: /login のリクエストボディ
+            description: ログイン のリクエストボディ
             properties:
               name:
                 type: string
@@ -191,7 +191,7 @@ components:
         application/json:
           schema:
             type: array
-            description: 月次の資産データ登録のリクエストボディ
+            description: 月次の資産データ登録 のリクエストボディ
             items:
               type: object
               properties:
