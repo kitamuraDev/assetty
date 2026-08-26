@@ -1,4 +1,4 @@
-import type { ErrorResponseType } from '@api-spec/shared/error.schema';
+import type { ErrorResponseType } from '@api-spec/api-types';
 import { sign } from 'hono/jwt';
 import type { JWTPayload } from 'hono/utils/jwt/types';
 import { getPlatformProxy } from 'wrangler';
@@ -9,7 +9,7 @@ import { jwtAuthMiddleware } from './auth';
 const { env } = await getPlatformProxy<CloudflareBindings>();
 
 describe('jwtAuthMiddleware', () => {
-  app.use('/message', jwtAuthMiddleware); // アクセストークンの検証（認可制御）
+  app.use('/message', jwtAuthMiddleware); // アクセストークンの検証
   app.get('/message', (c) => c.json({ message: 'Assetty' }, 200));
 
   it('/api/message にリクエストする際、アクセストークンが有効であれば200番を返すこと', async () => {

@@ -1,8 +1,8 @@
 import type {
-  AssetsInfoResponseType,
-  BaseDateParameterType,
-  CreateAssetsRequestBodyType,
-} from '@api-spec/shared/assets.schema';
+  AssetInfoResponseType,
+  BaseDateQueryParameterType,
+  CreateAssetRecordsRequestBodyType,
+} from '@api-spec/api-types';
 import {
   array,
   endsWith,
@@ -19,11 +19,11 @@ import {
 
 export const AssetsRequestQuerySchema = object({
   baseDate: pipe(string(), isoDate(), nonEmpty('基準日は必須です')),
-}) satisfies GenericSchema<{ baseDate: BaseDateParameterType }>;
+}) satisfies GenericSchema<{ baseDate: BaseDateQueryParameterType }>;
 
 export type AssetsInfoQueryResponseType = {
-  year_month: AssetsInfoResponseType['yearMonth'];
-  total_assets: AssetsInfoResponseType['totalAssets'];
+  year_month: AssetInfoResponseType['yearMonth'];
+  total_assets: AssetInfoResponseType['totalAssets'];
   assets_by_categories: string;
 };
 
@@ -46,4 +46,4 @@ export const CreateAssetsRequestBodySchema = array(
       minValue(1, '資産カテゴリIDは1以上である必要があります'),
     ),
   }),
-) satisfies GenericSchema<CreateAssetsRequestBodyType>;
+) satisfies GenericSchema<CreateAssetRecordsRequestBodyType>;

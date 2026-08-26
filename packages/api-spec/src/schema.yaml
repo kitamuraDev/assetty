@@ -5,6 +5,9 @@ info:
 servers:
   - url: http://localhost:8787/api
 paths:
+  # ====================================================================================================
+  # ログイン
+  # ====================================================================================================
   /auth/login:
     post:
       summary: ログイン
@@ -22,23 +25,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginSuccessResponse'
-              examples:
-                success:
-                  summary: 成功レスポンス例
-                  value:
-                    name: Lillie
         '401':
           description: ログイン失敗（ユーザーが存在しないか、パスワードが正しくない）
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                unauthorized:
-                  summary: ログイン失敗レスポンス例
-                  value:
-                    code: INVALID_CREDENTIALS
-                    message: Invalid Credentials
+  # ====================================================================================================
+  # ログアウト
+  # ====================================================================================================
   /auth/logout:
     post:
       summary: ログアウト
@@ -50,30 +45,31 @@ paths:
               schema:
                 type: string
               description: アクセストークン（JWT）を Cookie から削除
+  # ====================================================================================================
+  # 認証チェック
+  # ====================================================================================================
   /auth/check:
     get:
-      summary: 認可チェック
+      summary: 認証チェック
       security:
-        - JwtAuthInCookie: []
+        - AccessTokenCookieAuth: []
       responses:
         '200':
-          description: 認可成功
+          description: 認証成功
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthCheckResponse'
-              examples:
-                success:
-                  summary: 成功レスポンス例
-                  value:
-                    ok: true
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+  # ====================================================================================================
+  # ユーザー情報取得
+  # ====================================================================================================
   /user:
     get:
       summary: ユーザー情報取得
       security:
-        - JwtAuthInCookie: []
+        - AccessTokenCookieAuth: []
       responses:
         '200':
           description: ユーザー情報取得成功
@@ -81,21 +77,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserInfoResponse'
-              examples:
-                success:
-                  summary: 成功レスポンス例
-                  value:
-                    id: tfi4wB9ZRyhzVE7EhIyht
-                    name: Lillie
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+  # ====================================================================================================
+  # 月次の資産情報取得
+  # ====================================================================================================
   /assets/monthly:
     get:
       summary: 月次の資産情報取得
       security:
-        - JwtAuthInCookie: []
+        - AccessTokenCookieAuth: []
       parameters:
-        - $ref: '#/components/parameters/BaseDateParameter'
+        - $ref: '#/components/parameters/BaseDateQueryParameter'
       responses:
         '200':
           description: 月次の資産情報取得成功
@@ -104,41 +97,19 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AssetsInfoResponse'
-              examples:
-                success:
-                  summary: 成功レスポンス例
-                  value:
-                    - yearMonth: '2025-01'
-                      totalAssets: 8919403
-                      assetsByCategories:
-                        - category: 現金
-                          amount: 2014567
-                          rate: 22.6
-                        - category: 債券
-                          amount: 1898234
-                          rate: 21.3
-                        - category: 国内株式
-                          amount: 1928456
-                          rate: 21.6
-                        - category: 投資信託
-                          amount: 1105234
-                          rate: 12.4
-                        - category: REIT
-                          amount: 1214789
-                          rate: 13.6
-                        - category: 年金
-                          amount: 758123
-                          rate: 8.5
+                  $ref: '#/components/schemas/AssetInfoResponse'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+  # ====================================================================================================
+  # 年次の資産情報取得
+  # ====================================================================================================
   /assets/yearly:
     get:
       summary: 年次の資産情報取得
       security:
-        - JwtAuthInCookie: []
+        - AccessTokenCookieAuth: []
       parameters:
-        - $ref: '#/components/parameters/BaseDateParameter'
+        - $ref: '#/components/parameters/BaseDateQueryParameter'
       responses:
         '200':
           description: 年次の資産情報取得成功
@@ -147,72 +118,17 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AssetsInfoResponse'
-              examples:
-                success:
-                  summary: 成功レスポンス例
-                  value:
-                    - yearMonth: '2025-12'
-                      totalAssets: 10945737
-                      assetsByCategories:
-                        - category: 現金
-                          amount: 2538234
-                          rate: 23.2
-                        - category: 債券
-                          amount: 2312567
-                          rate: 21.1
-                        - category: 国内株式
-                          amount: 2408345
-                          rate: 22
-                        - category: 投資信託
-                          amount: 1328234
-                          rate: 12.1
-                        - category: REIT
-                          amount: 1458234
-                          rate: 13.3
-                        - category: 年金
-                          amount: 900123
-                          rate: 8.2
+                  $ref: '#/components/schemas/AssetInfoResponse'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
-  /assets:
-    post:
-      summary: 月次の資産データ登録
-      security:
-        - JwtAuthInCookie: []
-      requestBody:
-        $ref: '#/components/requestBodies/CreateAssetsRequestBody'
-      responses:
-        '201':
-          description: 資産データ登録成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateAssetsSuccessResponse'
-              examples:
-                success:
-                  summary: 成功レスポンス例
-                  value:
-                    ok: true
-        '500':
-          description: 資産データ登録失敗
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                assets_registration_failed:
-                  summary: 資産データ登録失敗レスポンス例
-                  value:
-                    code: ASSETS_REGISTRATION_FAILED
-                    message: Assets Registration Failed
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+  # ====================================================================================================
+  # 資産カテゴリの取得
+  # ====================================================================================================
   /assets/categories:
     get:
       summary: 資産カテゴリの取得
       security:
-        - JwtAuthInCookie: []
+        - AccessTokenCookieAuth: []
       responses:
         '200':
           description: 資産カテゴリの取得成功
@@ -221,17 +137,34 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AssetsCategory'
-              examples:
-                success:
-                  summary: 成功レスポンス例
-                  value:
-                    - id: 1
-                      name: 現金
-                    - id: 2
-                      name: 債券
+                  $ref: '#/components/schemas/AssetCategoryResponse'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+  # ====================================================================================================
+  # 資産データ登録
+  # ====================================================================================================
+  /assets:
+    post:
+      summary: 月次の資産データ登録
+      security:
+        - AccessTokenCookieAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/CreateAssetRecordsRequestBody'
+      responses:
+        '201':
+          description: 資産データ登録成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAssetRecordsSuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '500':
+          description: 資産データ登録失敗
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   requestBodies:
@@ -241,7 +174,7 @@ components:
         application/json:
           schema:
             type: object
-            description: /login のリクエストボディ
+            description: ログイン のリクエストボディ
             properties:
               name:
                 type: string
@@ -252,19 +185,13 @@ components:
             required:
               - name
               - password
-          examples:
-            login:
-              summary: ログインリクエスト例
-              value:
-                name: Lillie
-                password: Lillie1101
-    CreateAssetsRequestBody:
+    CreateAssetRecordsRequestBody:
       required: true
       content:
         application/json:
           schema:
             type: array
-            description: 月次の資産データ登録のリクエストボディ
+            description: 月次の資産データ登録 のリクエストボディ
             items:
               type: object
               properties:
@@ -282,18 +209,9 @@ components:
                 - date
                 - amount
                 - assetCategoryId
-          examples:
-            create:
-              summary: 資産データ登録リクエスト例
-              value:
-                - date: "2025-12-01"
-                  amount: 2538234
-                  assetCategoryId: 1
-                - date: "2025-12-01"
-                  amount: 2312567
-                  assetCategoryId: 2
+
   parameters:
-    BaseDateParameter:
+    BaseDateQueryParameter:
       name: baseDate
       in: query
       description: 基準日（YYYY-MM-DD形式）
@@ -301,23 +219,15 @@ components:
       schema:
         type: string
         format: date
-      examples:
-        baseDate:
-          summary: 基準日例
-          value: "2025-12-01"
+
   responses:
-    UnauthorizedError:
-      description: 認可チェック失敗
+    UnauthorizedErrorResponse:
+      description: 認証チェック失敗
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-          examples:
-            unauthorized:
-              summary: 認可失敗レスポンス例
-              value:
-                code: INVALID_ACCESS_TOKEN
-                message: Invalid Access Token
+
   schemas:
     ErrorResponse:
       type: object
@@ -357,22 +267,11 @@ components:
         - name
     AuthCheckResponse:
       type: object
-      description: 認可成功時のレスポンス
+      description: 認証チェック成功時のレスポンス
       properties:
         ok:
           type: boolean
-          description: 認可成功を表す真偽値
-          enum:
-            - true
-      required:
-        - ok
-    CreateAssetsSuccessResponse:
-      type: object
-      description: 資産データ登録成功時のレスポンス
-      properties:
-        ok:
-          type: boolean
-          description: 資産データ登録の成功を表す真偽値
+          description: 認証チェック成功を表す真偽値
           enum:
             - true
       required:
@@ -390,7 +289,7 @@ components:
       required:
         - id
         - name
-    AssetsCategory:
+    AssetCategoryResponse:
       type: object
       description: 資産カテゴリ
       properties:
@@ -403,7 +302,7 @@ components:
       required:
         - id
         - name
-    AssetsAllocation:
+    AssetAllocationSchema:
       type: object
       description: 資産内訳
       properties:
@@ -420,7 +319,7 @@ components:
         - category
         - amount
         - rate
-    AssetsInfoResponse:
+    AssetInfoResponse:
       type: object
       description: 資産情報レスポンス
       properties:
@@ -434,14 +333,26 @@ components:
           type: array
           description: カテゴリー別の資産情報
           items:
-            $ref: '#/components/schemas/AssetsAllocation'
+            $ref: '#/components/schemas/AssetAllocationSchema'
       required:
         - yearMonth
         - totalAssets
         - assetsByCategories
+    CreateAssetRecordsSuccessResponse:
+      type: object
+      description: 資産データ登録成功時のレスポンス
+      properties:
+        ok:
+          type: boolean
+          description: 資産データ登録の成功を表す真偽値
+          enum:
+            - true
+      required:
+        - ok
+
   securitySchemes:
-    JwtAuthInCookie:
+    AccessTokenCookieAuth:
       type: apiKey
       in: cookie
       name: access_token
-      description: 認可用JWT。ログイン成功時に発行され、以降のリクエストではHttpOnly属性のCookie（access_token）として自動送信される。
+      description: 認証チェック用JWT。ログイン成功時に発行され、以降のリクエストではHttpOnly属性のCookie（access_token）として自動送信される。

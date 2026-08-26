@@ -1,8 +1,7 @@
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import type { AuthCheckResponseType, LoginSuccessResponseType } from '@api-spec/shared/auth.schema';
-import type { ErrorResponseType } from '@api-spec/shared/error.schema';
+import type { AuthCheckResponseType, ErrorResponseType, LoginSuccessResponseType } from '@api-spec/api-types';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { environment } from '../../../environments/environment';

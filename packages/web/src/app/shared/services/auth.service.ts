@@ -1,11 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import type {
-  AuthCheckResponseType,
-  LoginRequestBodyType,
-  LoginSuccessResponseType,
-} from '@api-spec/shared/auth.schema';
+import type { AuthCheckResponseType, LoginRequestBodyType, LoginSuccessResponseType } from '@api-spec/api-types';
 import { firstValueFrom } from 'rxjs';
 import { safeParse } from 'valibot';
 import { environment } from '../../../environments/environment';

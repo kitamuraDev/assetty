@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import type { CreateAssetsRequestBodyType, CreateAssetsSuccessResponseType } from '@api-spec/shared/assets.schema';
+import type { CreateAssetRecordsRequestBodyType, CreateAssetRecordsSuccessResponseType } from '@api-spec/api-types';
 import { firstValueFrom } from 'rxjs';
 import { safeParse } from 'valibot';
 import { environment } from '../../../environments/environment';
@@ -13,10 +13,10 @@ export class AssetsService {
   private readonly API_BASE_URL = environment.API_BASE_URL;
   private readonly http = inject(HttpClient);
 
-  async registerAssets(body: CreateAssetsRequestBodyType): Promise<void> {
+  async registerAssets(body: CreateAssetRecordsRequestBodyType): Promise<void> {
     try {
       await firstValueFrom(
-        this.http.post<CreateAssetsSuccessResponseType>(`${this.API_BASE_URL}/assets`, body, {
+        this.http.post<CreateAssetRecordsSuccessResponseType>(`${this.API_BASE_URL}/assets`, body, {
           credentials: 'include',
         }),
       );

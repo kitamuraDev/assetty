@@ -1,4 +1,4 @@
-import type { AuthCheckResponseType, LoginSuccessResponseType } from '@api-spec/shared/auth.schema';
+import type { AuthCheckResponseType, LoginSuccessResponseType } from '@api-spec/api-types';
 import { sValidator } from '@hono/standard-validator';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';

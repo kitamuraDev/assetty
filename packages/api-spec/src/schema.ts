@@ -94,7 +94,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** 認可チェック */
+        /** 認証チェック */
         get: {
             parameters: {
                 query?: never;
@@ -104,7 +104,7 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description 認可成功 */
+                /** @description 認証成功 */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -113,7 +113,7 @@ export interface paths {
                         "application/json": components["schemas"]["AuthCheckResponse"];
                     };
                 };
-                401: components["responses"]["UnauthorizedError"];
+                401: components["responses"]["UnauthorizedErrorResponse"];
             };
         };
         put?: never;
@@ -150,7 +150,7 @@ export interface paths {
                         "application/json": components["schemas"]["UserInfoResponse"];
                     };
                 };
-                401: components["responses"]["UnauthorizedError"];
+                401: components["responses"]["UnauthorizedErrorResponse"];
             };
         };
         put?: never;
@@ -173,7 +173,7 @@ export interface paths {
             parameters: {
                 query: {
                     /** @description 基準日（YYYY-MM-DD形式） */
-                    baseDate: components["parameters"]["BaseDateParameter"];
+                    baseDate: components["parameters"]["BaseDateQueryParameter"];
                 };
                 header?: never;
                 path?: never;
@@ -187,10 +187,10 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["AssetsInfoResponse"][];
+                        "application/json": components["schemas"]["AssetInfoResponse"][];
                     };
                 };
-                401: components["responses"]["UnauthorizedError"];
+                401: components["responses"]["UnauthorizedErrorResponse"];
             };
         };
         put?: never;
@@ -213,7 +213,7 @@ export interface paths {
             parameters: {
                 query: {
                     /** @description 基準日（YYYY-MM-DD形式） */
-                    baseDate: components["parameters"]["BaseDateParameter"];
+                    baseDate: components["parameters"]["BaseDateQueryParameter"];
                 };
                 header?: never;
                 path?: never;
@@ -227,60 +227,14 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["AssetsInfoResponse"][];
+                        "application/json": components["schemas"]["AssetInfoResponse"][];
                     };
                 };
-                401: components["responses"]["UnauthorizedError"];
+                401: components["responses"]["UnauthorizedErrorResponse"];
             };
         };
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/assets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** 月次の資産データ登録 */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: components["requestBodies"]["CreateAssetsRequestBody"];
-            responses: {
-                /** @description 資産データ登録成功 */
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["CreateAssetsSuccessResponse"];
-                    };
-                };
-                401: components["responses"]["UnauthorizedError"];
-                /** @description 資産データ登録失敗 */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-            };
-        };
         delete?: never;
         options?: never;
         head?: never;
@@ -310,14 +264,60 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["AssetsCategory"][];
+                        "application/json": components["schemas"]["AssetCategoryResponse"][];
                     };
                 };
-                401: components["responses"]["UnauthorizedError"];
+                401: components["responses"]["UnauthorizedErrorResponse"];
             };
         };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 月次の資産データ登録 */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: components["requestBodies"]["CreateAssetRecordsRequestBody"];
+            responses: {
+                /** @description 資産データ登録成功 */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CreateAssetRecordsSuccessResponse"];
+                    };
+                };
+                401: components["responses"]["UnauthorizedErrorResponse"];
+                /** @description 資産データ登録失敗 */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -346,18 +346,10 @@ export interface components {
             /** @description ユーザー名 */
             name: string;
         };
-        /** @description 認可成功時のレスポンス */
+        /** @description 認証チェック成功時のレスポンス */
         AuthCheckResponse: {
             /**
-             * @description 認可成功を表す真偽値
-             * @enum {boolean}
-             */
-            ok: true;
-        };
-        /** @description 資産データ登録成功時のレスポンス */
-        CreateAssetsSuccessResponse: {
-            /**
-             * @description 資産データ登録の成功を表す真偽値
+             * @description 認証チェック成功を表す真偽値
              * @enum {boolean}
              */
             ok: true;
@@ -370,14 +362,14 @@ export interface components {
             name: string;
         };
         /** @description 資産カテゴリ */
-        AssetsCategory: {
+        AssetCategoryResponse: {
             /** @description 資産カテゴリID */
             id: number;
             /** @description 資産カテゴリ名 */
             name: string;
         };
         /** @description 資産内訳 */
-        AssetsAllocation: {
+        AssetAllocationSchema: {
             /** @description 資産カテゴリ名 */
             category: string;
             /** @description カテゴリーの資産額 */
@@ -386,18 +378,26 @@ export interface components {
             rate: number;
         };
         /** @description 資産情報レスポンス */
-        AssetsInfoResponse: {
+        AssetInfoResponse: {
             /** @description 年月（YYYY-MM形式） */
             yearMonth: string;
             /** @description その年月の合計資産額 */
             totalAssets: number;
             /** @description カテゴリー別の資産情報 */
-            assetsByCategories: components["schemas"]["AssetsAllocation"][];
+            assetsByCategories: components["schemas"]["AssetAllocationSchema"][];
+        };
+        /** @description 資産データ登録成功時のレスポンス */
+        CreateAssetRecordsSuccessResponse: {
+            /**
+             * @description 資産データ登録の成功を表す真偽値
+             * @enum {boolean}
+             */
+            ok: true;
         };
     };
     responses: {
-        /** @description 認可チェック失敗 */
-        UnauthorizedError: {
+        /** @description 認証チェック失敗 */
+        UnauthorizedErrorResponse: {
             headers: {
                 [name: string]: unknown;
             };
@@ -408,7 +408,7 @@ export interface components {
     };
     parameters: {
         /** @description 基準日（YYYY-MM-DD形式） */
-        BaseDateParameter: string;
+        BaseDateQueryParameter: string;
     };
     requestBodies: {
         LoginRequestBody: {
@@ -421,7 +421,7 @@ export interface components {
                 };
             };
         };
-        CreateAssetsRequestBody: {
+        CreateAssetRecordsRequestBody: {
             content: {
                 "application/json": {
                     /**

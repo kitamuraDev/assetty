@@ -1,4 +1,4 @@
-import type { ErrorResponseType } from '@api-spec/shared/error.schema';
+import type { ErrorResponseType } from '@api-spec/api-types';
 import { getPlatformProxy } from 'wrangler';
 import app from '../..';
 import { getSetCookieHeader, login } from '../../test/helpers';

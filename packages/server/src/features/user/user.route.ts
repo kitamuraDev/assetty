@@ -1,4 +1,4 @@
-import type { UserInfoResponseType } from '@api-spec/shared/user.schema';
+import type { UserInfoResponseType } from '@api-spec/api-types';
 import { eq } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
 import { safeParse } from 'valibot';
@@ -9,7 +9,7 @@ import type { ErrorCause } from '../../middleware/error';
 import { ResponseUserInfoSchema } from './user.schema';
 
 const user = createHonoApp();
-user.use('/*', jwtAuthMiddleware); // アクセストークンの検証（認可制御）
+user.use('/*', jwtAuthMiddleware); // アクセストークンの検証
 
 user.get('/', async (c): Promise<ReturnType<typeof c.json<UserInfoResponseType>>> => {
   const userId = c.get('userId');

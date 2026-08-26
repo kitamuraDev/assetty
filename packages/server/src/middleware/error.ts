@@ -1,4 +1,4 @@
-import type { ErrorResponseType } from '@api-spec/shared/error.schema';
+import type { ErrorResponseType } from '@api-spec/api-types';
 import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import type { HTTPResponseError } from 'hono/types';
