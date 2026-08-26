@@ -46,16 +46,16 @@ paths:
                 type: string
               description: アクセストークン（JWT）を Cookie から削除
   # ====================================================================================================
-  # 認可チェック
+  # 認証チェック
   # ====================================================================================================
   /auth/check:
     get:
-      summary: 認可チェック
+      summary: 認証チェック
       security:
         - AccessTokenCookieAuth: []
       responses:
         '200':
-          description: 認可成功
+          description: 認証成功
           content:
             application/json:
               schema:
@@ -222,7 +222,7 @@ components:
 
   responses:
     UnauthorizedErrorResponse:
-      description: 認可チェック失敗
+      description: 認証チェック失敗
       content:
         application/json:
           schema:
@@ -267,11 +267,11 @@ components:
         - name
     AuthCheckResponse:
       type: object
-      description: 認可成功時のレスポンス
+      description: 認証チェック成功時のレスポンス
       properties:
         ok:
           type: boolean
-          description: 認可成功を表す真偽値
+          description: 認証チェック成功を表す真偽値
           enum:
             - true
       required:
@@ -355,4 +355,4 @@ components:
       type: apiKey
       in: cookie
       name: access_token
-      description: 認可用JWT。ログイン成功時に発行され、以降のリクエストではHttpOnly属性のCookie（access_token）として自動送信される。
+      description: 認証チェック用JWT。ログイン成功時に発行され、以降のリクエストではHttpOnly属性のCookie（access_token）として自動送信される。

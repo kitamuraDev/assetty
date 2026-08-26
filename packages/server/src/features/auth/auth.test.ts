@@ -96,7 +96,7 @@ describe('POST: /auth/logout', async () => {
 });
 
 describe('POST: /auth/check', async () => {
-  it('認可情報が有効であれば200番を返す', async () => {
+  it('認証情報が有効であれば200番を返す', async () => {
     const loginResponse = await login(env, { name: env.TEST_USER_NAME, password: env.TEST_USER_PASSWORD });
     const cookie = getSetCookieHeader(loginResponse.headers);
 
@@ -106,7 +106,7 @@ describe('POST: /auth/check', async () => {
     expect(await res.json()).toEqual({ ok: true });
   });
 
-  it('認可情報が無効であれば401番を返す', async () => {
+  it('認証情報が無効であれば401番を返す', async () => {
     const expectedResponse: ErrorResponseType = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
 
     const res = await app.request('/api/auth/check', { method: 'GET' }, env);

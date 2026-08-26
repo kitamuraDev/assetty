@@ -9,7 +9,7 @@ import { jwtAuthMiddleware } from './auth';
 const { env } = await getPlatformProxy<CloudflareBindings>();
 
 describe('jwtAuthMiddleware', () => {
-  app.use('/message', jwtAuthMiddleware); // アクセストークンの検証（認可制御）
+  app.use('/message', jwtAuthMiddleware); // アクセストークンの検証
   app.get('/message', (c) => c.json({ message: 'Assetty' }, 200));
 
   it('/api/message にリクエストする際、アクセストークンが有効であれば200番を返すこと', async () => {

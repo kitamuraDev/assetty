@@ -17,7 +17,7 @@ import {
 } from './assets.schema';
 
 const assets = createHonoApp();
-assets.use('/*', jwtAuthMiddleware); // アクセストークンの検証（認可制御）
+assets.use('/*', jwtAuthMiddleware); // アクセストークンの検証
 
 /**
  * 基準月から13ヶ月分の資産データを取得

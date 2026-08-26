@@ -94,7 +94,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** 認可チェック */
+        /** 認証チェック */
         get: {
             parameters: {
                 query?: never;
@@ -104,7 +104,7 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description 認可成功 */
+                /** @description 認証成功 */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -346,10 +346,10 @@ export interface components {
             /** @description ユーザー名 */
             name: string;
         };
-        /** @description 認可成功時のレスポンス */
+        /** @description 認証チェック成功時のレスポンス */
         AuthCheckResponse: {
             /**
-             * @description 認可成功を表す真偽値
+             * @description 認証チェック成功を表す真偽値
              * @enum {boolean}
              */
             ok: true;
@@ -396,7 +396,7 @@ export interface components {
         };
     };
     responses: {
-        /** @description 認可チェック失敗 */
+        /** @description 認証チェック失敗 */
         UnauthorizedErrorResponse: {
             headers: {
                 [name: string]: unknown;
