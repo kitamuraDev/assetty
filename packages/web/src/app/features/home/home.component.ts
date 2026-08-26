@@ -1,7 +1,7 @@
 import { httpResource } from '@angular/common/http';
 import { Component, DestroyRef, effect, inject, linkedSignal, type OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import type { AssetInfoResponseType } from '@api-spec/shared/assets.schema';
+import type { AssetInfoResponseType } from '@api-spec/api-types';
 import type { ActiveElement, ChartData } from 'chart.js';
 import { interval } from 'rxjs';
 

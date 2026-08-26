@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import type { ErrorResponseType } from '@api-spec/shared/error.schema';
+import type { ErrorResponseType } from '@api-spec/api-types';
 import { type GenericSchema, instance, object, picklist, pipe, safeParse, transform } from 'valibot';
 
 const ErrorCodeList = [

@@ -1,5 +1,4 @@
-import type { LoginSuccessResponseType } from '@api-spec/shared/auth.schema';
-import type { ErrorResponseType } from '@api-spec/shared/error.schema';
+import type { ErrorResponseType, LoginSuccessResponseType } from '@api-spec/api-types';
 import { decode } from 'hono/jwt';
 import { getPlatformProxy } from 'wrangler';
 import app from '../..';

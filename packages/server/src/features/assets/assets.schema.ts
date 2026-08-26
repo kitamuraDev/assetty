@@ -2,7 +2,7 @@ import type {
   AssetInfoResponseType,
   BaseDateQueryParameterType,
   CreateAssetRecordsRequestBodyType,
-} from '@api-spec/shared/assets.schema';
+} from '@api-spec/api-types';
 import {
   array,
   endsWith,

@@ -1,6 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, input } from '@angular/core';
-import type { AssetInfoResponseType } from '@api-spec/shared/assets.schema';
+import type { AssetInfoResponseType } from '@api-spec/api-types';
 
 @Component({
   selector: 'app-asset-details-table',

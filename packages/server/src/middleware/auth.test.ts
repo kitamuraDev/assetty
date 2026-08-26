@@ -1,4 +1,4 @@
-import type { ErrorResponseType } from '@api-spec/shared/error.schema';
+import type { ErrorResponseType } from '@api-spec/api-types';
 import { sign } from 'hono/jwt';
 import type { JWTPayload } from 'hono/utils/jwt/types';
 import { getPlatformProxy } from 'wrangler';

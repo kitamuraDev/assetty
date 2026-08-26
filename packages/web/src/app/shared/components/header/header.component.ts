@@ -4,7 +4,7 @@ import { httpResource } from '@angular/common/http';
 import { Component, inject, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import type { UserInfoResponseType } from '@api-spec/shared/user.schema';
+import type { UserInfoResponseType } from '@api-spec/api-types';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../services/auth.service';
 

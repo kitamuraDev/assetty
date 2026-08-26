@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/vitest';
 
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import type { UserInfoResponseType } from '@api-spec/shared/user.schema';
+import type { UserInfoResponseType } from '@api-spec/api-types';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';

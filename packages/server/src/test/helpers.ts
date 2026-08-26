@@ -1,4 +1,4 @@
-import type { LoginRequestBodyType } from '@api-spec/shared/auth.schema';
+import type { LoginRequestBodyType } from '@api-spec/api-types';
 import app from '..';
 
 /**

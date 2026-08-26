@@ -1,9 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import type {
-  CreateAssetRecordsRequestBodyType,
-  CreateAssetRecordsSuccessResponseType,
-} from '@api-spec/shared/assets.schema';
+import type { CreateAssetRecordsRequestBodyType, CreateAssetRecordsSuccessResponseType } from '@api-spec/api-types';
 import { firstValueFrom } from 'rxjs';
 import { safeParse } from 'valibot';
 import { environment } from '../../../environments/environment';

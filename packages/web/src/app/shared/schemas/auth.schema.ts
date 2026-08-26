@@ -1,5 +1,5 @@
 import { signal } from '@angular/core';
-import type { LoginRequestBodyType } from '@api-spec/shared/auth.schema';
+import type { LoginRequestBodyType } from '@api-spec/api-types';
 import { type GenericSchema, nonEmpty, object, pipe, string } from 'valibot';
 
 export const LoginRequestBodySchema = object({

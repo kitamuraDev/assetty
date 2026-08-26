@@ -2,7 +2,7 @@ import type {
   AssetCategoryResponseType,
   AssetInfoResponseType,
   CreateAssetRecordsSuccessResponseType,
-} from '@api-spec/shared/assets.schema';
+} from '@api-spec/api-types';
 import { sValidator } from '@hono/standard-validator';
 import { asc, sql } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';

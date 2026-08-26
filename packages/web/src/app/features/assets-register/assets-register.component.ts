@@ -3,7 +3,7 @@ import { httpResource } from '@angular/common/http';
 import { Component, computed, DestroyRef, inject, linkedSignal, type OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import type { AssetCategoryResponseType, AssetInfoResponseType } from '@api-spec/shared/assets.schema';
+import type { AssetCategoryResponseType, AssetInfoResponseType } from '@api-spec/api-types';
 import { interval } from 'rxjs';
 
 import { environment } from '../../../environments/environment';

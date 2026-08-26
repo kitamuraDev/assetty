@@ -1,4 +1,4 @@
-import type { UserInfoResponseType } from '@api-spec/shared/user.schema';
+import type { UserInfoResponseType } from '@api-spec/api-types';
 import { eq } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
 import { safeParse } from 'valibot';
