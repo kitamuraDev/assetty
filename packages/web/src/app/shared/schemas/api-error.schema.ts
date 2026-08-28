@@ -5,7 +5,6 @@ import { type GenericSchema, instance, object, picklist, pipe, safeParse, transf
 const ErrorCodeList = [
   'INVALID_CREDENTIALS',
   'INVALID_ACCESS_TOKEN',
-  'INVALID_RESPONSE_DATA',
   'NOT_FOUND',
   'ASSETS_REGISTRATION_FAILED',
   'INTERNAL_SERVER_ERROR',
@@ -13,7 +12,6 @@ const ErrorCodeList = [
 const ErrorMessageList = [
   'Invalid Credentials',
   'Invalid Access Token',
-  'Invalid Response Data',
   'Not Found',
   'Assets Registration Failed',
   'Internal Server Error',
