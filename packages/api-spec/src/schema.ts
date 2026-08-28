@@ -334,12 +334,12 @@ export interface components {
              * @description エラーコード
              * @enum {string}
              */
-            code: "INVALID_CREDENTIALS" | "INVALID_ACCESS_TOKEN" | "INVALID_RESPONSE_DATA" | "NOT_FOUND" | "ASSETS_REGISTRATION_FAILED" | "INTERNAL_SERVER_ERROR";
+            code: "INVALID_CREDENTIALS" | "INVALID_ACCESS_TOKEN" | "NOT_FOUND" | "ASSETS_REGISTRATION_FAILED" | "INTERNAL_SERVER_ERROR";
             /**
              * @description エラーメッセージ
              * @enum {string}
              */
-            message: "Invalid Credentials" | "Invalid Access Token" | "Invalid Response Data" | "Not Found" | "Assets Registration Failed" | "Internal Server Error";
+            message: "Invalid Credentials" | "Invalid Access Token" | "Not Found" | "Assets Registration Failed" | "Internal Server Error";
         };
         /** @description ログイン成功時のレスポンス */
         LoginSuccessResponse: {
