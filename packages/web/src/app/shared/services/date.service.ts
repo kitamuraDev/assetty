@@ -9,13 +9,12 @@ export class DateService {
    * @returns YYYY-MM形式の年月の配列
    */
   generatePast13YearMonths(): string[] {
-    return Array.from({ length: 13 }, (_, i) => {
-      const date = new Date();
-      const currentMonthDate = new Date(date.getFullYear(), date.getMonth() - i, 1); // 各月を1日に設定
-      const year = currentMonthDate.getFullYear();
-      const month = String(currentMonthDate.getMonth() + 1).padStart(2, '0');
+    const date = new Date();
 
-      return `${year}-${month}`;
+    return Array.from({ length: 13 }, (_, i) => {
+      const currentMonthDate = new Date(date.getFullYear(), date.getMonth() - i, 1); // 各月を1日に設定
+
+      return this.formatYearMonth(currentMonthDate);
     });
   }
 
@@ -24,11 +23,7 @@ export class DateService {
    * @returns 現在の年月（YYYY-MM）
    */
   getCurrentYearMonth(): string {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-
-    return `${year}-${month}`;
+    return this.formatYearMonth(new Date());
   }
 
   /**
@@ -36,11 +31,29 @@ export class DateService {
    * @returns 本日の日付（YYYY-MM-DD）
    */
   getToday(): string {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const date = String(today.getDate()).padStart(2, '0');
+    return this.formatDate(new Date());
+  }
 
-    return `${year}-${month}-${date}`;
+  /**
+   * 指定した日付を`YYYY-MM`形式に変換する
+   * @param date 変換対象の日付
+   * @returns 年月（YYYY-MM）
+   */
+  private formatYearMonth(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+
+    return `${year}-${month}`;
+  }
+
+  /**
+   * 指定した日付を`YYYY-MM-DD`形式に変換する
+   * @param date 変換対象の日付
+   * @returns 日付（YYYY-MM-DD）
+   */
+  private formatDate(date: Date): string {
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${this.formatYearMonth(date)}-${day}`;
   }
 }
