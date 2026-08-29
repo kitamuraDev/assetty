@@ -61,7 +61,7 @@ auth.post('/logout', (c): ReturnType<typeof c.newResponse> => {
 });
 
 auth.get('/check', jwtAuthMiddleware, (c): ReturnType<typeof c.json<AuthCheckResponseType>> => {
-  return c.json({ ok: true });
+  return c.json({ ok: true }, 200);
 });
 
 export default auth;

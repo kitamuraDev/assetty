@@ -126,7 +126,7 @@ assets.get(
 assets.post(
   '/',
   sValidator('json', CreateAssetsRequestBodySchema),
-  async (c): Promise<ReturnType<typeof c.json<CreateAssetRecordsSuccessResponseType, 201>>> => {
+  async (c): Promise<ReturnType<typeof c.json<CreateAssetRecordsSuccessResponseType>>> => {
     const userId = c.get('userId');
     const assetsData = c.req.valid('json');
     const insertValues = assetsData.map((asset) => ({ ...asset, userId }));
