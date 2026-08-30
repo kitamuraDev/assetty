@@ -3,6 +3,7 @@ import type { ErrorResponseType } from '@api-spec/api-types';
 import { type GenericSchema, instance, object, picklist, pipe, safeParse, transform } from 'valibot';
 
 const ErrorCodeList = [
+  'VALIDATION_ERROR',
   'INVALID_CREDENTIALS',
   'INVALID_ACCESS_TOKEN',
   'NOT_FOUND',
@@ -10,6 +11,7 @@ const ErrorCodeList = [
   'INTERNAL_SERVER_ERROR',
 ] as const satisfies ErrorResponseType['code'][];
 const ErrorMessageList = [
+  'Validation Error',
   'Invalid Credentials',
   'Invalid Access Token',
   'Not Found',
