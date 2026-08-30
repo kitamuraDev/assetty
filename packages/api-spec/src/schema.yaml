@@ -25,6 +25,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginSuccessResponse'
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
         '401':
           description: ログイン失敗（ユーザーが存在しないか、パスワードが正しくない）
           content:
@@ -98,6 +100,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/AssetInfoResponse'
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedErrorResponse'
   # ====================================================================================================
@@ -119,6 +123,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/AssetInfoResponse'
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedErrorResponse'
   # ====================================================================================================
@@ -157,6 +163,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateAssetRecordsSuccessResponse'
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedErrorResponse'
         '500':
@@ -227,6 +235,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
+    ValidationErrorResponse:
+      description: バリデーションエラー
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
 
   schemas:
     ErrorResponse:
@@ -237,6 +251,7 @@ components:
           type: string
           description: エラーコード
           enum:
+            - VALIDATION_ERROR
             - INVALID_CREDENTIALS
             - INVALID_ACCESS_TOKEN
             - NOT_FOUND
@@ -246,6 +261,7 @@ components:
           type: string
           description: エラーメッセージ
           enum:
+            - Validation Error
             - Invalid Credentials
             - Invalid Access Token
             - Not Found

@@ -2,10 +2,13 @@ import { signal } from '@angular/core';
 import type { LoginRequestBodyType } from '@api-spec/api-types';
 import { type GenericSchema, nonEmpty, object, pipe, string } from 'valibot';
 
-export const LoginRequestBodySchema = object({
-  name: pipe(string(), nonEmpty('ユーザーネームは必須です')),
-  password: pipe(string(), nonEmpty('パスワードは必須です')),
-}) satisfies GenericSchema<LoginRequestBodyType>;
+export const LoginRequestBodySchema = object(
+  {
+    name: pipe(string(), nonEmpty('ユーザーネームは必須です')),
+    password: pipe(string(), nonEmpty('パスワードは必須です')),
+  },
+  'ログイン情報の各項目は必須です',
+) satisfies GenericSchema<LoginRequestBodyType>;
 
 export const loginModel = signal<LoginRequestBodyType>({
   name: '',

@@ -3,13 +3,12 @@ import type {
   AssetInfoResponseType,
   CreateAssetRecordsSuccessResponseType,
 } from '@api-spec/api-types';
-import { sValidator } from '@hono/standard-validator';
 import { asc, sql } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
 import { createHonoApp } from '../../app';
 import { assetCategories, monthlyAssets } from '../../db/schema';
 import { jwtAuthMiddleware } from '../../middleware/auth';
-import type { ErrorCause } from '../../middleware/error';
+import { customValidationErrorMiddleware, type ErrorCause } from '../../middleware/error';
 import {
   type AssetsInfoQueryResponseType,
   AssetsRequestQuerySchema,
@@ -25,7 +24,7 @@ assets.use('/*', jwtAuthMiddleware); // アクセストークンの検証
  */
 assets.get(
   '/monthly',
-  sValidator('query', AssetsRequestQuerySchema),
+  customValidationErrorMiddleware('query', AssetsRequestQuerySchema),
   async (c): Promise<ReturnType<typeof c.json<AssetInfoResponseType[]>>> => {
     const userId = c.get('userId');
     const { baseDate } = c.req.valid('query');
@@ -75,7 +74,7 @@ assets.get(
  */
 assets.get(
   '/yearly',
-  sValidator('query', AssetsRequestQuerySchema),
+  customValidationErrorMiddleware('query', AssetsRequestQuerySchema),
   async (c): Promise<ReturnType<typeof c.json<AssetInfoResponseType[]>>> => {
     const userId = c.get('userId');
     const { baseDate } = c.req.valid('query');
@@ -125,7 +124,7 @@ assets.get(
  */
 assets.post(
   '/',
-  sValidator('json', CreateAssetsRequestBodySchema),
+  customValidationErrorMiddleware('json', CreateAssetsRequestBodySchema),
   async (c): Promise<ReturnType<typeof c.json<CreateAssetRecordsSuccessResponseType>>> => {
     const userId = c.get('userId');
     const assetsData = c.req.valid('json');

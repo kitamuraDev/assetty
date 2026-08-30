@@ -34,6 +34,7 @@ export interface paths {
                         "application/json": components["schemas"]["LoginSuccessResponse"];
                     };
                 };
+                400: components["responses"]["ValidationErrorResponse"];
                 /** @description ログイン失敗（ユーザーが存在しないか、パスワードが正しくない） */
                 401: {
                     headers: {
@@ -190,6 +191,7 @@ export interface paths {
                         "application/json": components["schemas"]["AssetInfoResponse"][];
                     };
                 };
+                400: components["responses"]["ValidationErrorResponse"];
                 401: components["responses"]["UnauthorizedErrorResponse"];
             };
         };
@@ -230,6 +232,7 @@ export interface paths {
                         "application/json": components["schemas"]["AssetInfoResponse"][];
                     };
                 };
+                400: components["responses"]["ValidationErrorResponse"];
                 401: components["responses"]["UnauthorizedErrorResponse"];
             };
         };
@@ -306,6 +309,7 @@ export interface paths {
                         "application/json": components["schemas"]["CreateAssetRecordsSuccessResponse"];
                     };
                 };
+                400: components["responses"]["ValidationErrorResponse"];
                 401: components["responses"]["UnauthorizedErrorResponse"];
                 /** @description 資産データ登録失敗 */
                 500: {
@@ -334,12 +338,12 @@ export interface components {
              * @description エラーコード
              * @enum {string}
              */
-            code: "INVALID_CREDENTIALS" | "INVALID_ACCESS_TOKEN" | "NOT_FOUND" | "ASSETS_REGISTRATION_FAILED" | "INTERNAL_SERVER_ERROR";
+            code: "VALIDATION_ERROR" | "INVALID_CREDENTIALS" | "INVALID_ACCESS_TOKEN" | "NOT_FOUND" | "ASSETS_REGISTRATION_FAILED" | "INTERNAL_SERVER_ERROR";
             /**
              * @description エラーメッセージ
              * @enum {string}
              */
-            message: "Invalid Credentials" | "Invalid Access Token" | "Not Found" | "Assets Registration Failed" | "Internal Server Error";
+            message: "Validation Error" | "Invalid Credentials" | "Invalid Access Token" | "Not Found" | "Assets Registration Failed" | "Internal Server Error";
         };
         /** @description ログイン成功時のレスポンス */
         LoginSuccessResponse: {
@@ -398,6 +402,15 @@ export interface components {
     responses: {
         /** @description 認証チェック失敗 */
         UnauthorizedErrorResponse: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorResponse"];
+            };
+        };
+        /** @description バリデーションエラー */
+        ValidationErrorResponse: {
             headers: {
                 [name: string]: unknown;
             };

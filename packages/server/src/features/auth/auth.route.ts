@@ -1,23 +1,21 @@
 import type { AuthCheckResponseType, LoginSuccessResponseType } from '@api-spec/api-types';
-import { sValidator } from '@hono/standard-validator';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { deleteCookie, setCookie } from 'hono/cookie';
 import { HTTPException } from 'hono/http-exception';
 import { sign } from 'hono/jwt';
 import type { JWTPayload } from 'hono/utils/jwt/types';
-
 import { createHonoApp } from '../../app';
 import { users } from '../../db/schema';
 import { jwtAuthMiddleware } from '../../middleware/auth';
-import type { ErrorCause } from '../../middleware/error';
+import { customValidationErrorMiddleware, type ErrorCause } from '../../middleware/error';
 import { LoginRequestBodySchema } from './auth.schema';
 
 const auth = createHonoApp();
 
 auth.post(
   '/login',
-  sValidator('json', LoginRequestBodySchema),
+  customValidationErrorMiddleware('json', LoginRequestBodySchema),
   async (c): Promise<ReturnType<typeof c.json<LoginSuccessResponseType>>> => {
     const { name, password } = c.req.valid('json');
 
