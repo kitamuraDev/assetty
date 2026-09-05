@@ -190,9 +190,7 @@ components:
               password:
                 type: string
                 description: パスワード
-            required:
-              - name
-              - password
+            required: [name, password]
     CreateAssetRecordsRequestBody:
       required: true
       content:
@@ -213,10 +211,7 @@ components:
                 assetCategoryId:
                   type: number
                   description: 資産カテゴリID
-              required:
-                - date
-                - amount
-                - assetCategoryId
+              required: [date, amount, assetCategoryId]
 
   parameters:
     BaseDateQueryParameter:
@@ -343,8 +338,7 @@ components:
         name:
           type: string
           description: ユーザー名
-      required:
-        - name
+      required: [name]
     AuthCheckResponse:
       type: object
       description: 認証チェック成功時のレスポンス
@@ -352,10 +346,8 @@ components:
         ok:
           type: boolean
           description: 認証チェック成功を表す真偽値
-          enum:
-            - true
-      required:
-        - ok
+          enum: [true]
+      required: [ok]
     UserInfoResponse:
       type: object
       description: ユーザー情報取得レスポンス
@@ -366,9 +358,7 @@ components:
         name:
           type: string
           description: ユーザー名
-      required:
-        - id
-        - name
+      required: [id, name]
     AssetCategoryResponse:
       type: object
       description: 資産カテゴリ
@@ -379,9 +369,7 @@ components:
         name:
           type: string
           description: 資産カテゴリ名
-      required:
-        - id
-        - name
+      required: [id, name]
     AssetAllocationSchema:
       type: object
       description: 資産内訳
@@ -395,10 +383,7 @@ components:
         rate:
           type: number
           description: 全体に占める割合（%）
-      required:
-        - category
-        - amount
-        - rate
+      required: [category, amount, rate]
     AssetInfoResponse:
       type: object
       description: 資産情報レスポンス
@@ -414,10 +399,7 @@ components:
           description: カテゴリー別の資産情報
           items:
             $ref: '#/components/schemas/AssetAllocationSchema'
-      required:
-        - yearMonth
-        - totalAssets
-        - assetsByCategories
+      required: [yearMonth, totalAssets, assetsByCategories]
     CreateAssetRecordsSuccessResponse:
       type: object
       description: 資産データ登録成功時のレスポンス
@@ -425,10 +407,8 @@ components:
         ok:
           type: boolean
           description: 資産データ登録の成功を表す真偽値
-          enum:
-            - true
-      required:
-        - ok
+          enum: [true]
+      required: [ok]
 
   securitySchemes:
     AccessTokenCookieAuth:
