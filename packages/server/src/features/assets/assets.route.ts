@@ -8,7 +8,7 @@ import { HTTPException } from 'hono/http-exception';
 import { createHonoApp } from '../../app';
 import { assetCategories, monthlyAssets } from '../../db/schema';
 import { jwtAuthMiddleware } from '../../middleware/auth';
-import { customValidationErrorMiddleware, type ErrorCause } from '../../middleware/error';
+import { customValidationErrorMiddleware, type ErrorCode } from '../../middleware/error';
 import {
   type AssetsInfoQueryResponseType,
   AssetsRequestQuerySchema,
@@ -136,7 +136,7 @@ assets.post(
 
       return c.json({ ok: true }, 201);
     } catch (_e) {
-      throw new HTTPException(500, { cause: 'ASSETS_REGISTRATION_FAILED' satisfies ErrorCause });
+      throw new HTTPException(500, { cause: 'ASSETS_REGISTRATION_FAILED' satisfies ErrorCode });
     }
   },
 );

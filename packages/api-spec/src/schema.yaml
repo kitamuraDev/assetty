@@ -32,7 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/InvalidCredentialsErrorResponse'
   # ====================================================================================================
   # ログアウト
   # ====================================================================================================
@@ -172,7 +172,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/AssetsRegistrationFailedErrorResponse'
 
 components:
   requestBodies:
@@ -190,9 +190,7 @@ components:
               password:
                 type: string
                 description: パスワード
-            required:
-              - name
-              - password
+            required: [name, password]
     CreateAssetRecordsRequestBody:
       required: true
       content:
@@ -213,10 +211,7 @@ components:
                 assetCategoryId:
                   type: number
                   description: 資産カテゴリID
-              required:
-                - date
-                - amount
-                - assetCategoryId
+              required: [date, amount, assetCategoryId]
 
   parameters:
     BaseDateQueryParameter:
@@ -234,42 +229,108 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/InvalidAccessTokenErrorResponse'
     ValidationErrorResponse:
       description: バリデーションエラー
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/ValidationErrorResponse'
 
   schemas:
     ErrorResponse:
+      description: エラー種別ごとのレスポンスを包含する共通型
+      oneOf:
+        - $ref: '#/components/schemas/ValidationErrorResponse'
+        - $ref: '#/components/schemas/InvalidCredentialsErrorResponse'
+        - $ref: '#/components/schemas/InvalidAccessTokenErrorResponse'
+        - $ref: '#/components/schemas/NotFoundErrorResponse'
+        - $ref: '#/components/schemas/AssetsRegistrationFailedErrorResponse'
+        - $ref: '#/components/schemas/InternalServerErrorResponse'
+    ValidationErrorResponse:
       type: object
-      description: 共通のエラーレスポンス
+      description: バリデーションエラー
       properties:
         code:
           type: string
-          description: エラーコード
-          enum:
-            - VALIDATION_ERROR
-            - INVALID_CREDENTIALS
-            - INVALID_ACCESS_TOKEN
-            - NOT_FOUND
-            - ASSETS_REGISTRATION_FAILED
-            - INTERNAL_SERVER_ERROR
+          enum: [VALIDATION_ERROR]
         message:
           type: string
-          description: エラーメッセージ
-          enum:
-            - Validation Error
-            - Invalid Credentials
-            - Invalid Access Token
-            - Not Found
-            - Assets Registration Failed
-            - Internal Server Error
-      required:
-        - code
-        - message
+          enum: [Validation Error]
+        status:
+          type: integer
+          enum: [400]
+      required: [code, message, status]
+    InvalidCredentialsErrorResponse:
+      type: object
+      description: 認証失敗（ユーザーが存在しないか、パスワードが正しくない）
+      properties:
+        code:
+          type: string
+          enum: [INVALID_CREDENTIALS]
+        message:
+          type: string
+          enum: [Invalid Credentials]
+        status:
+          type: integer
+          enum: [401]
+      required: [code, message, status]
+    InvalidAccessTokenErrorResponse:
+      type: object
+      description: 認証失敗（無効なアクセストークン）
+      properties:
+        code:
+          type: string
+          enum: [INVALID_ACCESS_TOKEN]
+        message:
+          type: string
+          enum: [Invalid Access Token]
+        status:
+          type: integer
+          enum: [401]
+      required: [code, message, status]
+    NotFoundErrorResponse:
+      type: object
+      description: リソースが見つからない
+      properties:
+        code:
+          type: string
+          enum: [NOT_FOUND]
+        message:
+          type: string
+          enum: [Not Found]
+        status:
+          type: integer
+          enum: [404]
+      required: [code, message, status]
+    AssetsRegistrationFailedErrorResponse:
+      type: object
+      description: 資産情報の登録失敗
+      properties:
+        code:
+          type: string
+          enum: [ASSETS_REGISTRATION_FAILED]
+        message:
+          type: string
+          enum: [Assets Registration Failed]
+        status:
+          type: integer
+          enum: [500]
+      required: [code, message, status]
+    InternalServerErrorResponse:
+      type: object
+      description: 予期しない内部サーバーエラー（どれにも該当しない場合に返す）
+      properties:
+        code:
+          type: string
+          enum: [INTERNAL_SERVER_ERROR]
+        message:
+          type: string
+          enum: [Internal Server Error]
+        status:
+          type: integer
+          enum: [500]
+      required: [code, message, status]
     LoginSuccessResponse:
       type: object
       description: ログイン成功時のレスポンス
@@ -277,8 +338,7 @@ components:
         name:
           type: string
           description: ユーザー名
-      required:
-        - name
+      required: [name]
     AuthCheckResponse:
       type: object
       description: 認証チェック成功時のレスポンス
@@ -286,10 +346,8 @@ components:
         ok:
           type: boolean
           description: 認証チェック成功を表す真偽値
-          enum:
-            - true
-      required:
-        - ok
+          enum: [true]
+      required: [ok]
     UserInfoResponse:
       type: object
       description: ユーザー情報取得レスポンス
@@ -300,9 +358,7 @@ components:
         name:
           type: string
           description: ユーザー名
-      required:
-        - id
-        - name
+      required: [id, name]
     AssetCategoryResponse:
       type: object
       description: 資産カテゴリ
@@ -313,9 +369,7 @@ components:
         name:
           type: string
           description: 資産カテゴリ名
-      required:
-        - id
-        - name
+      required: [id, name]
     AssetAllocationSchema:
       type: object
       description: 資産内訳
@@ -329,10 +383,7 @@ components:
         rate:
           type: number
           description: 全体に占める割合（%）
-      required:
-        - category
-        - amount
-        - rate
+      required: [category, amount, rate]
     AssetInfoResponse:
       type: object
       description: 資産情報レスポンス
@@ -348,10 +399,7 @@ components:
           description: カテゴリー別の資産情報
           items:
             $ref: '#/components/schemas/AssetAllocationSchema'
-      required:
-        - yearMonth
-        - totalAssets
-        - assetsByCategories
+      required: [yearMonth, totalAssets, assetsByCategories]
     CreateAssetRecordsSuccessResponse:
       type: object
       description: 資産データ登録成功時のレスポンス
@@ -359,10 +407,8 @@ components:
         ok:
           type: boolean
           description: 資産データ登録の成功を表す真偽値
-          enum:
-            - true
-      required:
-        - ok
+          enum: [true]
+      required: [ok]
 
   securitySchemes:
     AccessTokenCookieAuth:

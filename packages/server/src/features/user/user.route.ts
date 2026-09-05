@@ -4,7 +4,7 @@ import { HTTPException } from 'hono/http-exception';
 import { createHonoApp } from '../../app';
 import { users } from '../../db/schema';
 import { jwtAuthMiddleware } from '../../middleware/auth';
-import type { ErrorCause } from '../../middleware/error';
+import type { ErrorCode } from '../../middleware/error';
 
 const user = createHonoApp();
 user.use('/*', jwtAuthMiddleware); // アクセストークンの検証
@@ -18,7 +18,7 @@ user.get('/', async (c): Promise<ReturnType<typeof c.json<UserInfoResponseType>>
   // 認証の先にあるAPIなので、論理的にはユーザが見つからないケースはないはずだが、防御的に404エラーを返しておく
   // ただし、今後「退会機能」を追加する場合は適切にアクセストークンの無効化を行わなければ、退会済みユーザーのアクセストークンでここまで到達できてしまうため要注意
   if (!result) {
-    throw new HTTPException(404, { cause: 'NOT_FOUND' satisfies ErrorCause });
+    throw new HTTPException(404, { cause: 'NOT_FOUND' satisfies ErrorCode });
   }
 
   return c.json(result, 200);

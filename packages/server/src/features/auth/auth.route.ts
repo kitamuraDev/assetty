@@ -8,7 +8,7 @@ import type { JWTPayload } from 'hono/utils/jwt/types';
 import { createHonoApp } from '../../app';
 import { users } from '../../db/schema';
 import { jwtAuthMiddleware } from '../../middleware/auth';
-import { customValidationErrorMiddleware, type ErrorCause } from '../../middleware/error';
+import { customValidationErrorMiddleware, type ErrorCode } from '../../middleware/error';
 import { LoginRequestBodySchema } from './auth.schema';
 
 const auth = createHonoApp();
@@ -23,12 +23,12 @@ auth.post(
     const result = await d1.select().from(users).where(eq(users.name, name)).get();
 
     if (!result) {
-      throw new HTTPException(401, { cause: 'INVALID_CREDENTIALS' satisfies ErrorCause });
+      throw new HTTPException(401, { cause: 'INVALID_CREDENTIALS' satisfies ErrorCode });
     }
 
     const isPasswordMatch = await bcrypt.compare(password, result.password);
     if (!isPasswordMatch) {
-      throw new HTTPException(401, { cause: 'INVALID_CREDENTIALS' satisfies ErrorCause });
+      throw new HTTPException(401, { cause: 'INVALID_CREDENTIALS' satisfies ErrorCode });
     }
 
     const payload: JWTPayload = {
