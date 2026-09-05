@@ -41,7 +41,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
+                        "application/json": components["schemas"]["InvalidCredentialsErrorResponse"];
                     };
                 };
             };
@@ -317,7 +317,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
+                        "application/json": components["schemas"]["AssetsRegistrationFailedErrorResponse"];
                     };
                 };
             };
@@ -332,18 +332,61 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** @description 共通のエラーレスポンス */
-        ErrorResponse: {
-            /**
-             * @description エラーコード
-             * @enum {string}
-             */
-            code: "VALIDATION_ERROR" | "INVALID_CREDENTIALS" | "INVALID_ACCESS_TOKEN" | "NOT_FOUND" | "ASSETS_REGISTRATION_FAILED" | "INTERNAL_SERVER_ERROR";
-            /**
-             * @description エラーメッセージ
-             * @enum {string}
-             */
-            message: "Validation Error" | "Invalid Credentials" | "Invalid Access Token" | "Not Found" | "Assets Registration Failed" | "Internal Server Error";
+        /** @description エラー種別ごとのレスポンスを包含する共通型 */
+        ErrorResponse: components["schemas"]["ValidationErrorResponse"] | components["schemas"]["InvalidCredentialsErrorResponse"] | components["schemas"]["InvalidAccessTokenErrorResponse"] | components["schemas"]["NotFoundErrorResponse"] | components["schemas"]["AssetsRegistrationFailedErrorResponse"] | components["schemas"]["InternalServerErrorResponse"];
+        /** @description バリデーションエラー */
+        ValidationErrorResponse: {
+            /** @enum {string} */
+            code: "VALIDATION_ERROR";
+            /** @enum {string} */
+            message: "Validation Error";
+            /** @enum {integer} */
+            status: 400;
+        };
+        /** @description 認証失敗（ユーザーが存在しないか、パスワードが正しくない） */
+        InvalidCredentialsErrorResponse: {
+            /** @enum {string} */
+            code: "INVALID_CREDENTIALS";
+            /** @enum {string} */
+            message: "Invalid Credentials";
+            /** @enum {integer} */
+            status: 401;
+        };
+        /** @description 認証失敗（無効なアクセストークン） */
+        InvalidAccessTokenErrorResponse: {
+            /** @enum {string} */
+            code: "INVALID_ACCESS_TOKEN";
+            /** @enum {string} */
+            message: "Invalid Access Token";
+            /** @enum {integer} */
+            status: 401;
+        };
+        /** @description リソースが見つからない */
+        NotFoundErrorResponse: {
+            /** @enum {string} */
+            code: "NOT_FOUND";
+            /** @enum {string} */
+            message: "Not Found";
+            /** @enum {integer} */
+            status: 404;
+        };
+        /** @description 資産情報の登録失敗 */
+        AssetsRegistrationFailedErrorResponse: {
+            /** @enum {string} */
+            code: "ASSETS_REGISTRATION_FAILED";
+            /** @enum {string} */
+            message: "Assets Registration Failed";
+            /** @enum {integer} */
+            status: 500;
+        };
+        /** @description 予期しない内部サーバーエラー（どれにも該当しない場合に返す） */
+        InternalServerErrorResponse: {
+            /** @enum {string} */
+            code: "INTERNAL_SERVER_ERROR";
+            /** @enum {string} */
+            message: "Internal Server Error";
+            /** @enum {integer} */
+            status: 500;
         };
         /** @description ログイン成功時のレスポンス */
         LoginSuccessResponse: {
@@ -406,7 +449,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                "application/json": components["schemas"]["ErrorResponse"];
+                "application/json": components["schemas"]["InvalidAccessTokenErrorResponse"];
             };
         };
         /** @description バリデーションエラー */
@@ -415,7 +458,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                "application/json": components["schemas"]["ErrorResponse"];
+                "application/json": components["schemas"]["ValidationErrorResponse"];
             };
         };
     };

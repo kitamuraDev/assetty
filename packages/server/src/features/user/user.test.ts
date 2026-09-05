@@ -1,4 +1,4 @@
-import type { ErrorResponseType } from '@api-spec/api-types';
+import type { ErrorResponseBodyType } from '@api-spec/api-types';
 import { getPlatformProxy } from 'wrangler';
 import app from '../..';
 import { getSetCookieHeader, login } from '../../test/helpers';
@@ -17,7 +17,7 @@ describe('GET: /user', () => {
   });
 
   it('未ログインであれば401番を返すこと', async () => {
-    const expectedResponse: ErrorResponseType = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
+    const expectedResponse: ErrorResponseBodyType = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
 
     const res = await app.request('/api/user', { method: 'GET' }, env);
 

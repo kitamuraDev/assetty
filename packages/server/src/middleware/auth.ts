@@ -3,12 +3,12 @@ import { getCookie } from 'hono/cookie';
 import { HTTPException } from 'hono/http-exception';
 import { verify } from 'hono/jwt';
 import type { Env } from '../app';
-import type { ErrorCause } from './error';
+import type { ErrorCode } from './error';
 
 export const jwtAuthMiddleware = async (c: Context<Env>, next: Next): Promise<void> => {
   const token = getCookie(c, c.env.JWT_ACCESS_TOKEN);
   if (!token) {
-    throw new HTTPException(401, { cause: 'INVALID_ACCESS_TOKEN' satisfies ErrorCause });
+    throw new HTTPException(401, { cause: 'INVALID_ACCESS_TOKEN' satisfies ErrorCode });
   }
 
   try {
@@ -21,6 +21,6 @@ export const jwtAuthMiddleware = async (c: Context<Env>, next: Next): Promise<vo
 
     await next();
   } catch (_e) {
-    throw new HTTPException(401, { cause: 'INVALID_ACCESS_TOKEN' satisfies ErrorCause });
+    throw new HTTPException(401, { cause: 'INVALID_ACCESS_TOKEN' satisfies ErrorCode });
   }
 };

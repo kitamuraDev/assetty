@@ -1,12 +1,13 @@
-import type { ErrorResponseType } from '@api-spec/api-types';
+import type { ErrorResponseBodyType, ErrorResponseType } from '@api-spec/api-types';
 import { sValidator } from '@hono/standard-validator';
 import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import type { HTTPResponseError, ValidationTargets } from 'hono/types';
 import type { BaseIssue, BaseSchema, BaseSchemaAsync } from 'valibot';
 import type { Env } from '../app';
+import { ERROR_RESPONSE } from './error-response';
 
-export type ErrorCause = Exclude<ErrorResponseType['code'], 'INTERNAL_SERVER_ERROR'>; // INTERNAL_SERVER_ERROR は明示的にthrowしないため除外
+export type ErrorCode = Exclude<ErrorResponseType['code'], 'INTERNAL_SERVER_ERROR'>; // INTERNAL_SERVER_ERROR は明示的にthrowしないため除外
 
 /**
  * 共通エラーハンドリングを管理するミドルウェア
@@ -17,28 +18,17 @@ export type ErrorCause = Exclude<ErrorResponseType['code'], 'INTERNAL_SERVER_ERR
 export const errorHandlingMiddleware = (
   error: Error | HTTPResponseError,
   c: Context<Env>,
-): ReturnType<typeof c.json<ErrorResponseType>> => {
-  const cause = error.cause as ErrorCause;
+): ReturnType<typeof c.json<ErrorResponseBodyType>> => {
+  const code = error.cause as ErrorCode;
 
   if (error instanceof HTTPException) {
-    switch (cause) {
-      case 'VALIDATION_ERROR':
-        return c.json({ code: 'VALIDATION_ERROR', message: 'Validation Error' }, 400);
-      case 'INVALID_CREDENTIALS':
-        return c.json({ code: 'INVALID_CREDENTIALS', message: 'Invalid Credentials' }, 401);
-      case 'INVALID_ACCESS_TOKEN':
-        return c.json({ code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' }, 401);
-      case 'NOT_FOUND':
-        return c.json({ code: 'NOT_FOUND', message: 'Not Found' }, 404);
-      case 'ASSETS_REGISTRATION_FAILED':
-        return c.json({ code: 'ASSETS_REGISTRATION_FAILED', message: 'Assets Registration Failed' }, 500);
-      default:
-        throw new Error(cause satisfies never);
-    }
+    const response = ERROR_RESPONSE[code];
+    return c.json({ code: response.code, message: response.message } as ErrorResponseBodyType, response.status); // TODO: as typeじゃなくて綺麗な型定義で解決したい
   }
 
   // 予期しないサーバーエラー
-  return c.json({ code: 'INTERNAL_SERVER_ERROR', message: 'Internal Server Error' }, 500);
+  const response = ERROR_RESPONSE.INTERNAL_SERVER_ERROR;
+  return c.json({ code: response.code, message: response.message }, response.status);
 };
 
 /**
@@ -57,6 +47,6 @@ export const customValidationErrorMiddleware = <
 ) => {
   return sValidator(target, schema, (result, _c) => {
     if (result.success) return result.data;
-    throw new HTTPException(400, { cause: 'VALIDATION_ERROR' satisfies ErrorCause });
+    throw new HTTPException(400, { cause: 'VALIDATION_ERROR' satisfies ErrorCode });
   });
 };

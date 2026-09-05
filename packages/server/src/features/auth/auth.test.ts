@@ -1,4 +1,4 @@
-import type { ErrorResponseType, LoginSuccessResponseType } from '@api-spec/api-types';
+import type { ErrorResponseBodyType, LoginSuccessResponseType } from '@api-spec/api-types';
 import { decode } from 'hono/jwt';
 import { getPlatformProxy } from 'wrangler';
 import app from '../..';
@@ -65,7 +65,7 @@ describe('POST: /auth/login', () => {
   });
 
   it('存在しないユーザー名の場合、認証失敗を示す401番が返ること', async () => {
-    const expectedResponse: ErrorResponseType = { code: 'INVALID_CREDENTIALS', message: 'Invalid Credentials' };
+    const expectedResponse: ErrorResponseBodyType = { code: 'INVALID_CREDENTIALS', message: 'Invalid Credentials' };
 
     const res = await login(env, { name: 'unknown_user', password: env.TEST_USER_PASSWORD });
 
@@ -74,7 +74,7 @@ describe('POST: /auth/login', () => {
   });
 
   it('パスワードに誤りがある場合、認証失敗を示す401番が返ること', async () => {
-    const expectedResponse: ErrorResponseType = { code: 'INVALID_CREDENTIALS', message: 'Invalid Credentials' };
+    const expectedResponse: ErrorResponseBodyType = { code: 'INVALID_CREDENTIALS', message: 'Invalid Credentials' };
 
     const res = await login(env, { name: env.TEST_USER_NAME, password: 'incorrect_password' });
 
@@ -107,7 +107,7 @@ describe('POST: /auth/check', async () => {
   });
 
   it('認証情報が無効であれば401番を返す', async () => {
-    const expectedResponse: ErrorResponseType = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
+    const expectedResponse: ErrorResponseBodyType = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
 
     const res = await app.request('/api/auth/check', { method: 'GET' }, env);
 

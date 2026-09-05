@@ -1,28 +1,42 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import type { ErrorResponseType } from '@api-spec/api-types';
-import { type GenericSchema, instance, object, picklist, pipe, safeParse, transform } from 'valibot';
+import type { ErrorResponseBodyType, ErrorResponseType } from '@api-spec/api-types';
+import { instance, literal, object, pipe, safeParse, transform, union } from 'valibot';
 
-const ErrorCodeList = [
-  'VALIDATION_ERROR',
-  'INVALID_CREDENTIALS',
-  'INVALID_ACCESS_TOKEN',
-  'NOT_FOUND',
-  'ASSETS_REGISTRATION_FAILED',
-  'INTERNAL_SERVER_ERROR',
-] as const satisfies ErrorResponseType['code'][];
-const ErrorMessageList = [
-  'Validation Error',
-  'Invalid Credentials',
-  'Invalid Access Token',
-  'Not Found',
-  'Assets Registration Failed',
-  'Internal Server Error',
-] as const satisfies ErrorResponseType['message'][];
+/**
+ * エラー種別ごとのレスポンスを定義する定数
+ */
+export const ERROR_RESPONSE = {
+  VALIDATION_ERROR: {
+    code: 'VALIDATION_ERROR',
+    message: 'Validation Error',
+  },
+  INVALID_CREDENTIALS: {
+    code: 'INVALID_CREDENTIALS',
+    message: 'Invalid Credentials',
+  },
+  INVALID_ACCESS_TOKEN: {
+    code: 'INVALID_ACCESS_TOKEN',
+    message: 'Invalid Access Token',
+  },
+  NOT_FOUND: {
+    code: 'NOT_FOUND',
+    message: 'Not Found',
+  },
+  ASSETS_REGISTRATION_FAILED: {
+    code: 'ASSETS_REGISTRATION_FAILED',
+    message: 'Assets Registration Failed',
+  },
+  INTERNAL_SERVER_ERROR: {
+    code: 'INTERNAL_SERVER_ERROR',
+    message: 'Internal Server Error',
+  },
+} as const satisfies Record<ErrorResponseType['code'], ErrorResponseBodyType>;
 
-const ErrorResponseSchema = object({
-  code: picklist(ErrorCodeList),
-  message: picklist(ErrorMessageList),
-}) satisfies GenericSchema<ErrorResponseType>;
+const ErrorResponseSchema = union([
+  ...Object.values(ERROR_RESPONSE).map(({ code, message }) =>
+    object({ code: literal(code), message: literal(message) }),
+  ),
+]);
 
 /**
  * Angular の HttpErrorResponse を、API 定義に基づいたエラー形式に変換・検証するスキーマ
