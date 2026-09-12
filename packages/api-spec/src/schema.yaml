@@ -238,6 +238,15 @@ components:
             $ref: '#/components/schemas/ValidationErrorResponse'
 
   schemas:
+    ErrorDetails:
+      type: array
+      description: エラー詳細（バリデーションエラーなどの複数の詳細エラーを詰め込む配列）
+      items:
+        type: object
+        properties:
+          message:
+            type: string
+        required: [message]
     ErrorResponse:
       description: エラー種別ごとのレスポンスを包含する共通型
       oneOf:
@@ -251,86 +260,116 @@ components:
       type: object
       description: バリデーションエラー
       properties:
-        code:
-          type: string
-          enum: [VALIDATION_ERROR]
-        message:
-          type: string
-          enum: [Validation Error]
         status:
           type: integer
           enum: [400]
-      required: [code, message, status]
+        code:
+          type: string
+          enum: [VALIDATION_ERROR]
+        title:
+          type: string
+          enum: [Validation Error]
+        message:
+          type: string
+          enum: [Validation Error]
+        errors:
+          $ref: '#/components/schemas/ErrorDetails'
+      required: [status, code, title, message]
     InvalidCredentialsErrorResponse:
       type: object
       description: 認証失敗（ユーザーが存在しないか、パスワードが正しくない）
       properties:
-        code:
-          type: string
-          enum: [INVALID_CREDENTIALS]
-        message:
-          type: string
-          enum: [Invalid Credentials]
         status:
           type: integer
           enum: [401]
-      required: [code, message, status]
+        code:
+          type: string
+          enum: [INVALID_CREDENTIALS]
+        title:
+          type: string
+          enum: [Invalid Credentials]
+        message:
+          type: string
+          enum: [Invalid Credentials]
+        errors:
+          $ref: '#/components/schemas/ErrorDetails'
+      required: [status, code, title, message]
     InvalidAccessTokenErrorResponse:
       type: object
       description: 認証失敗（無効なアクセストークン）
       properties:
-        code:
-          type: string
-          enum: [INVALID_ACCESS_TOKEN]
-        message:
-          type: string
-          enum: [Invalid Access Token]
         status:
           type: integer
           enum: [401]
-      required: [code, message, status]
+        code:
+          type: string
+          enum: [INVALID_ACCESS_TOKEN]
+        title:
+          type: string
+          enum: [Invalid Access Token]
+        message:
+          type: string
+          enum: [Invalid Access Token]
+        errors:
+          $ref: '#/components/schemas/ErrorDetails'
+      required: [status, code, title, message]
     NotFoundErrorResponse:
       type: object
       description: リソースが見つからない
       properties:
-        code:
-          type: string
-          enum: [NOT_FOUND]
-        message:
-          type: string
-          enum: [Not Found]
         status:
           type: integer
           enum: [404]
-      required: [code, message, status]
+        code:
+          type: string
+          enum: [NOT_FOUND]
+        title:
+          type: string
+          enum: [Not Found]
+        message:
+          type: string
+          enum: [Not Found]
+        errors:
+          $ref: '#/components/schemas/ErrorDetails'
+      required: [status, code, title, message]
     AssetsRegistrationFailedErrorResponse:
       type: object
       description: 資産情報の登録失敗
       properties:
-        code:
-          type: string
-          enum: [ASSETS_REGISTRATION_FAILED]
-        message:
-          type: string
-          enum: [Assets Registration Failed]
         status:
           type: integer
           enum: [500]
-      required: [code, message, status]
+        code:
+          type: string
+          enum: [ASSETS_REGISTRATION_FAILED]
+        title:
+          type: string
+          enum: [Assets Registration Failed]
+        message:
+          type: string
+          enum: [Assets Registration Failed]
+        errors:
+          $ref: '#/components/schemas/ErrorDetails'
+      required: [status, code, title, message]
     InternalServerErrorResponse:
       type: object
       description: 予期しない内部サーバーエラー（どれにも該当しない場合に返す）
       properties:
-        code:
-          type: string
-          enum: [INTERNAL_SERVER_ERROR]
-        message:
-          type: string
-          enum: [Internal Server Error]
         status:
           type: integer
           enum: [500]
-      required: [code, message, status]
+        code:
+          type: string
+          enum: [INTERNAL_SERVER_ERROR]
+        title:
+          type: string
+          enum: [Internal Server Error]
+        message:
+          type: string
+          enum: [Internal Server Error]
+        errors:
+          $ref: '#/components/schemas/ErrorDetails'
+      required: [status, code, title, message]
     LoginSuccessResponse:
       type: object
       description: ログイン成功時のレスポンス

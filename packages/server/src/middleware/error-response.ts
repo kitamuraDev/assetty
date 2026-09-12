@@ -5,33 +5,39 @@ import type { ErrorResponseType } from '@api-spec/api-types';
  */
 export const ERROR_RESPONSE = {
   VALIDATION_ERROR: {
-    code: 'VALIDATION_ERROR',
-    message: 'Validation Error',
     status: 400,
+    code: 'VALIDATION_ERROR',
+    title: 'Validation Error',
+    message: 'Validation Error',
   },
   INVALID_CREDENTIALS: {
-    code: 'INVALID_CREDENTIALS',
-    message: 'Invalid Credentials',
     status: 401,
+    code: 'INVALID_CREDENTIALS',
+    title: 'Invalid Credentials',
+    message: 'Invalid Credentials',
   },
   INVALID_ACCESS_TOKEN: {
-    code: 'INVALID_ACCESS_TOKEN',
-    message: 'Invalid Access Token',
     status: 401,
+    code: 'INVALID_ACCESS_TOKEN',
+    title: 'Invalid Access Token',
+    message: 'Invalid Access Token',
   },
   NOT_FOUND: {
-    code: 'NOT_FOUND',
-    message: 'Not Found',
     status: 404,
+    code: 'NOT_FOUND',
+    title: 'Not Found',
+    message: 'Not Found',
   },
   ASSETS_REGISTRATION_FAILED: {
-    code: 'ASSETS_REGISTRATION_FAILED',
-    message: 'Assets Registration Failed',
     status: 500,
+    code: 'ASSETS_REGISTRATION_FAILED',
+    title: 'Assets Registration Failed',
+    message: 'Assets Registration Failed',
   },
   INTERNAL_SERVER_ERROR: {
-    code: 'INTERNAL_SERVER_ERROR',
-    message: 'Internal Server Error',
     status: 500,
+    code: 'INTERNAL_SERVER_ERROR',
+    title: 'Internal Server Error',
+    message: 'Internal Server Error',
   },
 } as const satisfies Record<ErrorResponseType['code'], ErrorResponseType>;

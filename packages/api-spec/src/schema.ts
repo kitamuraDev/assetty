@@ -332,61 +332,83 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description エラー詳細（バリデーションエラーなどの複数の詳細エラーを詰め込む配列） */
+        ErrorDetails: {
+            message: string;
+        }[];
         /** @description エラー種別ごとのレスポンスを包含する共通型 */
         ErrorResponse: components["schemas"]["ValidationErrorResponse"] | components["schemas"]["InvalidCredentialsErrorResponse"] | components["schemas"]["InvalidAccessTokenErrorResponse"] | components["schemas"]["NotFoundErrorResponse"] | components["schemas"]["AssetsRegistrationFailedErrorResponse"] | components["schemas"]["InternalServerErrorResponse"];
         /** @description バリデーションエラー */
         ValidationErrorResponse: {
+            /** @enum {integer} */
+            status: 400;
             /** @enum {string} */
             code: "VALIDATION_ERROR";
             /** @enum {string} */
+            title: "Validation Error";
+            /** @enum {string} */
             message: "Validation Error";
-            /** @enum {integer} */
-            status: 400;
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 認証失敗（ユーザーが存在しないか、パスワードが正しくない） */
         InvalidCredentialsErrorResponse: {
+            /** @enum {integer} */
+            status: 401;
             /** @enum {string} */
             code: "INVALID_CREDENTIALS";
             /** @enum {string} */
+            title: "Invalid Credentials";
+            /** @enum {string} */
             message: "Invalid Credentials";
-            /** @enum {integer} */
-            status: 401;
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 認証失敗（無効なアクセストークン） */
         InvalidAccessTokenErrorResponse: {
+            /** @enum {integer} */
+            status: 401;
             /** @enum {string} */
             code: "INVALID_ACCESS_TOKEN";
             /** @enum {string} */
+            title: "Invalid Access Token";
+            /** @enum {string} */
             message: "Invalid Access Token";
-            /** @enum {integer} */
-            status: 401;
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description リソースが見つからない */
         NotFoundErrorResponse: {
+            /** @enum {integer} */
+            status: 404;
             /** @enum {string} */
             code: "NOT_FOUND";
             /** @enum {string} */
+            title: "Not Found";
+            /** @enum {string} */
             message: "Not Found";
-            /** @enum {integer} */
-            status: 404;
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 資産情報の登録失敗 */
         AssetsRegistrationFailedErrorResponse: {
+            /** @enum {integer} */
+            status: 500;
             /** @enum {string} */
             code: "ASSETS_REGISTRATION_FAILED";
             /** @enum {string} */
+            title: "Assets Registration Failed";
+            /** @enum {string} */
             message: "Assets Registration Failed";
-            /** @enum {integer} */
-            status: 500;
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 予期しない内部サーバーエラー（どれにも該当しない場合に返す） */
         InternalServerErrorResponse: {
+            /** @enum {integer} */
+            status: 500;
             /** @enum {string} */
             code: "INTERNAL_SERVER_ERROR";
             /** @enum {string} */
+            title: "Internal Server Error";
+            /** @enum {string} */
             message: "Internal Server Error";
-            /** @enum {integer} */
-            status: 500;
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description ログイン成功時のレスポンス */
         LoginSuccessResponse: {

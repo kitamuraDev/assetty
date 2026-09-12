@@ -8,6 +8,7 @@ import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { environment } from '../../../environments/environment';
+import { ERROR_RESPONSE } from '../../shared/schemas/api-error.schema';
 import LoginComponent from './login.component';
 
 const mockServer = setupServer();
@@ -53,10 +54,7 @@ describe('LoginComponent', () => {
   it('ログインに失敗したら、エラーレスポンスのメッセージが alert に表示されること', async () => {
     mockServer.use(
       http.post(`${API_BASE_URL}/auth/login`, () => {
-        return HttpResponse.json<ErrorResponseBodyType>(
-          { code: 'INVALID_CREDENTIALS', message: 'Invalid Credentials' },
-          { status: 401 },
-        );
+        return HttpResponse.json<ErrorResponseBodyType>(ERROR_RESPONSE.INVALID_CREDENTIALS, { status: 401 });
       }),
     );
 

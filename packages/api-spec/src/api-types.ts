@@ -15,6 +15,7 @@ export type BaseDateQueryParameterType = components['parameters']['BaseDateQuery
 // ====================================================================================================
 // schemas
 // ====================================================================================================
+export type ErrorDetailsType = components['schemas']['ErrorDetails'];
 export type ErrorResponseType = components['schemas']['ErrorResponse'];
 export type LoginSuccessResponseType = components['schemas']['LoginSuccessResponse'];
 export type AuthCheckResponseType = components['schemas']['AuthCheckResponse'];
