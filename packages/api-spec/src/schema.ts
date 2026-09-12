@@ -345,9 +345,9 @@ export interface components {
             /** @enum {string} */
             code: "VALIDATION_ERROR";
             /** @enum {string} */
-            title: "Validation Error";
+            title: "入力内容をご確認ください";
             /** @enum {string} */
-            message: "Validation Error";
+            message: "入力内容に誤りがあるため処理を完了できませんでした。各項目をご確認のうえ、再度お試しください。";
             errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 認証失敗（ユーザーが存在しないか、パスワードが正しくない） */
@@ -357,9 +357,9 @@ export interface components {
             /** @enum {string} */
             code: "INVALID_CREDENTIALS";
             /** @enum {string} */
-            title: "Invalid Credentials";
+            title: "ログイン情報をご確認ください";
             /** @enum {string} */
-            message: "Invalid Credentials";
+            message: "ユーザー名またはパスワードが正しくないためログインできませんでした。入力内容をご確認のうえ、再度お試しください。";
             errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 認証失敗（無効なアクセストークン） */
@@ -369,9 +369,9 @@ export interface components {
             /** @enum {string} */
             code: "INVALID_ACCESS_TOKEN";
             /** @enum {string} */
-            title: "Invalid Access Token";
+            title: "ログイン状態をご確認ください";
             /** @enum {string} */
-            message: "Invalid Access Token";
+            message: "認証情報が無効または期限切れのため処理を続行できませんでした。再度ログインしてからお試しください。";
             errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description リソースが見つからない */
@@ -381,9 +381,9 @@ export interface components {
             /** @enum {string} */
             code: "NOT_FOUND";
             /** @enum {string} */
-            title: "Not Found";
+            title: "対象の情報をご確認ください";
             /** @enum {string} */
-            message: "Not Found";
+            message: "指定された情報は見つからないか、すでに削除されています。指定された内容をご確認のうえ、再度お試しください。";
             errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 資産情報の登録失敗 */
@@ -393,9 +393,9 @@ export interface components {
             /** @enum {string} */
             code: "ASSETS_REGISTRATION_FAILED";
             /** @enum {string} */
-            title: "Assets Registration Failed";
+            title: "資産情報の登録を再度お試しください";
             /** @enum {string} */
-            message: "Assets Registration Failed";
+            message: "資産情報の登録中に問題が発生しました。しばらく時間をおいてから再度お試しください。解決しない場合は、管理者にお問い合わせください。";
             errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 予期しない内部サーバーエラー（どれにも該当しない場合に返す） */
@@ -405,9 +405,9 @@ export interface components {
             /** @enum {string} */
             code: "INTERNAL_SERVER_ERROR";
             /** @enum {string} */
-            title: "Internal Server Error";
+            title: "時間をおいて再度お試しください";
             /** @enum {string} */
-            message: "Internal Server Error";
+            message: "サーバーで予期しない問題が発生したため処理を完了できませんでした。しばらく時間をおいてから再度お試しください。解決しない場合は、管理者にお問い合わせください。";
             errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description ログイン成功時のレスポンス */

@@ -71,7 +71,9 @@ describe('LoginComponent', () => {
     await user.click(loginButton);
     await fixture.whenStable();
 
-    expect(vi.spyOn(window, 'alert')).toHaveBeenCalledWith('Invalid Credentials');
+    expect(vi.spyOn(window, 'alert')).toHaveBeenCalledWith(
+      'ユーザー名またはパスワードが正しくないためログインできませんでした。入力内容をご確認のうえ、再度お試しください。',
+    );
   });
 
   it('アプリ側で用意していないエラーが起きた場合、「予期しないエラーが発生しました」というメッセージが alert に表示されること', async () => {
