@@ -1,7 +1,7 @@
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import type { AuthCheckResponseType, ErrorResponseBodyType, LoginSuccessResponseType } from '@api-spec/api-types';
+import type { AuthCheckResponseType, ErrorResponseType, LoginSuccessResponseType } from '@api-spec/api-types';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { environment } from '../../../environments/environment';
@@ -47,7 +47,7 @@ describe('AuthService', () => {
     it('ログインに失敗したら、エラーレスポンスのメッセージが alert に表示されること', async () => {
       mockServer.use(
         http.post(`${API_BASE_URL}/auth/login`, () => {
-          return HttpResponse.json<ErrorResponseBodyType>(ERROR_RESPONSE.INVALID_CREDENTIALS, { status: 401 });
+          return HttpResponse.json<ErrorResponseType>(ERROR_RESPONSE.INVALID_CREDENTIALS, { status: 401 });
         }),
       );
       const alertSpy = vi.spyOn(window, 'alert');
@@ -117,7 +117,7 @@ describe('AuthService', () => {
     it('無効な認証状態であれば false を返すこと', async () => {
       mockServer.use(
         http.get(`${API_BASE_URL}/auth/check`, () => {
-          return HttpResponse.json<ErrorResponseBodyType>(ERROR_RESPONSE.INVALID_ACCESS_TOKEN, { status: 401 });
+          return HttpResponse.json<ErrorResponseType>(ERROR_RESPONSE.INVALID_ACCESS_TOKEN, { status: 401 });
         }),
       );
 

@@ -1,4 +1,4 @@
-import type { ErrorDetailsType, ErrorResponseBodyType, ErrorResponseType } from '@api-spec/api-types';
+import type { ErrorDetailsType, ErrorResponseType } from '@api-spec/api-types';
 import { sValidator } from '@hono/standard-validator';
 import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
@@ -19,20 +19,17 @@ export type ErrorCause = { code: ErrorCode; errors?: ErrorDetailsType };
 export const errorHandlingMiddleware = (
   error: Error | HTTPResponseError,
   c: Context<Env>,
-): ReturnType<typeof c.json<ErrorResponseBodyType>> => {
+): ReturnType<typeof c.json<ErrorResponseType>> => {
   if (error instanceof HTTPException) {
     const { code, errors } = error.cause as ErrorCause;
-    const response = ERROR_RESPONSE[code];
+    const { status, ...body } = ERROR_RESPONSE[code];
 
-    return c.json(
-      { code: response.code, title: response.title, message: response.message, errors } as ErrorResponseBodyType, // TODO: as typeじゃなくて綺麗な型定義で解決したい
-      response.status,
-    );
+    return c.json({ ...body, errors }, status);
   }
 
   // 予期しないサーバーエラー
-  const response = ERROR_RESPONSE.INTERNAL_SERVER_ERROR;
-  return c.json({ code: response.code, title: response.title, message: response.message }, response.status);
+  const { status, ...body } = ERROR_RESPONSE.INTERNAL_SERVER_ERROR;
+  return c.json(body, status);
 };
 
 /**

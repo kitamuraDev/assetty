@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import type { ErrorDetailsType, ErrorResponseBodyType, ErrorResponseType } from '@api-spec/api-types';
+import type { ErrorDetailsType, ErrorResponseType } from '@api-spec/api-types';
 import {
   array,
   type GenericSchema,
@@ -52,7 +52,7 @@ export const ERROR_RESPONSE = {
     message:
       'サーバーで予期しない問題が発生したため処理を完了できませんでした。しばらく時間をおいてから再度お試しください。解決しない場合は、管理者にお問い合わせください。',
   },
-} as const satisfies Record<ErrorResponseType['code'], ErrorResponseBodyType>;
+} as const satisfies Record<ErrorResponseType['code'], ErrorResponseType>;
 
 const ErrorDetailsSchema = array(object({ message: string() })) satisfies GenericSchema<ErrorDetailsType>;
 const ErrorResponseSchema = union([

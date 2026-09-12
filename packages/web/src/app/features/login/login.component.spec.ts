@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 
 import { Location } from '@angular/common';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import type { ErrorResponseBodyType, LoginSuccessResponseType } from '@api-spec/api-types';
+import type { ErrorResponseType, LoginSuccessResponseType } from '@api-spec/api-types';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
@@ -54,7 +54,7 @@ describe('LoginComponent', () => {
   it('ログインに失敗したら、エラーレスポンスのメッセージが alert に表示されること', async () => {
     mockServer.use(
       http.post(`${API_BASE_URL}/auth/login`, () => {
-        return HttpResponse.json<ErrorResponseBodyType>(ERROR_RESPONSE.INVALID_CREDENTIALS, { status: 401 });
+        return HttpResponse.json<ErrorResponseType>(ERROR_RESPONSE.INVALID_CREDENTIALS, { status: 401 });
       }),
     );
 

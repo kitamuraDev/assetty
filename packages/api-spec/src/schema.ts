@@ -341,7 +341,7 @@ export interface components {
         /** @description バリデーションエラー */
         ValidationErrorResponse: {
             /** @enum {integer} */
-            status: 400;
+            status?: 400;
             /** @enum {string} */
             code: "VALIDATION_ERROR";
             /** @enum {string} */
@@ -353,7 +353,7 @@ export interface components {
         /** @description 認証失敗（ユーザーが存在しないか、パスワードが正しくない） */
         InvalidCredentialsErrorResponse: {
             /** @enum {integer} */
-            status: 401;
+            status?: 401;
             /** @enum {string} */
             code: "INVALID_CREDENTIALS";
             /** @enum {string} */
@@ -365,7 +365,7 @@ export interface components {
         /** @description 認証失敗（無効なアクセストークン） */
         InvalidAccessTokenErrorResponse: {
             /** @enum {integer} */
-            status: 401;
+            status?: 401;
             /** @enum {string} */
             code: "INVALID_ACCESS_TOKEN";
             /** @enum {string} */
@@ -377,7 +377,7 @@ export interface components {
         /** @description リソースが見つからない */
         NotFoundErrorResponse: {
             /** @enum {integer} */
-            status: 404;
+            status?: 404;
             /** @enum {string} */
             code: "NOT_FOUND";
             /** @enum {string} */
@@ -389,7 +389,7 @@ export interface components {
         /** @description 資産情報の登録失敗 */
         AssetsRegistrationFailedErrorResponse: {
             /** @enum {integer} */
-            status: 500;
+            status?: 500;
             /** @enum {string} */
             code: "ASSETS_REGISTRATION_FAILED";
             /** @enum {string} */
@@ -401,7 +401,7 @@ export interface components {
         /** @description 予期しない内部サーバーエラー（どれにも該当しない場合に返す） */
         InternalServerErrorResponse: {
             /** @enum {integer} */
-            status: 500;
+            status?: 500;
             /** @enum {string} */
             code: "INTERNAL_SERVER_ERROR";
             /** @enum {string} */
