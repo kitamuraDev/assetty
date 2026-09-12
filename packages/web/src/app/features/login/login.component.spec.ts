@@ -2,12 +2,13 @@ import '@testing-library/jest-dom/vitest';
 
 import { Location } from '@angular/common';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import type { ErrorResponseBodyType, LoginSuccessResponseType } from '@api-spec/api-types';
+import type { ErrorResponseType, LoginSuccessResponseType } from '@api-spec/api-types';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { environment } from '../../../environments/environment';
+import { ERROR_RESPONSE } from '../../shared/schemas/api-error.schema';
 import LoginComponent from './login.component';
 
 const mockServer = setupServer();
@@ -53,10 +54,7 @@ describe('LoginComponent', () => {
   it('ログインに失敗したら、エラーレスポンスのメッセージが alert に表示されること', async () => {
     mockServer.use(
       http.post(`${API_BASE_URL}/auth/login`, () => {
-        return HttpResponse.json<ErrorResponseBodyType>(
-          { code: 'INVALID_CREDENTIALS', message: 'Invalid Credentials' },
-          { status: 401 },
-        );
+        return HttpResponse.json<ErrorResponseType>(ERROR_RESPONSE.INVALID_CREDENTIALS, { status: 401 });
       }),
     );
 
@@ -73,7 +71,9 @@ describe('LoginComponent', () => {
     await user.click(loginButton);
     await fixture.whenStable();
 
-    expect(vi.spyOn(window, 'alert')).toHaveBeenCalledWith('Invalid Credentials');
+    expect(vi.spyOn(window, 'alert')).toHaveBeenCalledWith(
+      'ユーザー名またはパスワードが正しくないためログインできませんでした。入力内容をご確認のうえ、再度お試しください。',
+    );
   });
 
   it('アプリ側で用意していないエラーが起きた場合、「予期しないエラーが発生しました」というメッセージが alert に表示されること', async () => {

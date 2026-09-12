@@ -1,6 +1,6 @@
-import type { ErrorResponseBodyType } from '@api-spec/api-types';
 import { getPlatformProxy } from 'wrangler';
 import app from '../..';
+import { ERROR_RESPONSE } from '../../middleware/error-response';
 import { getSetCookieHeader, login } from '../../test/helpers';
 
 const { env } = await getPlatformProxy<CloudflareBindings>();
@@ -17,7 +17,7 @@ describe('GET: /user', () => {
   });
 
   it('未ログインであれば401番を返すこと', async () => {
-    const expectedResponse: ErrorResponseBodyType = { code: 'INVALID_ACCESS_TOKEN', message: 'Invalid Access Token' };
+    const { status, ...expectedResponse } = ERROR_RESPONSE.INVALID_ACCESS_TOKEN;
 
     const res = await app.request('/api/user', { method: 'GET' }, env);
 

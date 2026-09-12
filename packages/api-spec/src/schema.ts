@@ -332,61 +332,83 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description エラー詳細（バリデーションエラーなどの複数の詳細エラーを詰め込む配列） */
+        ErrorDetails: {
+            message: string;
+        }[];
         /** @description エラー種別ごとのレスポンスを包含する共通型 */
         ErrorResponse: components["schemas"]["ValidationErrorResponse"] | components["schemas"]["InvalidCredentialsErrorResponse"] | components["schemas"]["InvalidAccessTokenErrorResponse"] | components["schemas"]["NotFoundErrorResponse"] | components["schemas"]["AssetsRegistrationFailedErrorResponse"] | components["schemas"]["InternalServerErrorResponse"];
         /** @description バリデーションエラー */
         ValidationErrorResponse: {
+            /** @enum {integer} */
+            status?: 400;
             /** @enum {string} */
             code: "VALIDATION_ERROR";
             /** @enum {string} */
-            message: "Validation Error";
-            /** @enum {integer} */
-            status: 400;
+            title: "入力内容をご確認ください";
+            /** @enum {string} */
+            message: "入力内容に誤りがあるため処理を完了できませんでした。各項目をご確認のうえ、再度お試しください。";
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 認証失敗（ユーザーが存在しないか、パスワードが正しくない） */
         InvalidCredentialsErrorResponse: {
+            /** @enum {integer} */
+            status?: 401;
             /** @enum {string} */
             code: "INVALID_CREDENTIALS";
             /** @enum {string} */
-            message: "Invalid Credentials";
-            /** @enum {integer} */
-            status: 401;
+            title: "ログイン情報をご確認ください";
+            /** @enum {string} */
+            message: "ユーザー名またはパスワードが正しくないためログインできませんでした。入力内容をご確認のうえ、再度お試しください。";
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 認証失敗（無効なアクセストークン） */
         InvalidAccessTokenErrorResponse: {
+            /** @enum {integer} */
+            status?: 401;
             /** @enum {string} */
             code: "INVALID_ACCESS_TOKEN";
             /** @enum {string} */
-            message: "Invalid Access Token";
-            /** @enum {integer} */
-            status: 401;
+            title: "ログイン状態をご確認ください";
+            /** @enum {string} */
+            message: "認証情報が無効または期限切れのため処理を続行できませんでした。再度ログインしてからお試しください。";
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description リソースが見つからない */
         NotFoundErrorResponse: {
+            /** @enum {integer} */
+            status?: 404;
             /** @enum {string} */
             code: "NOT_FOUND";
             /** @enum {string} */
-            message: "Not Found";
-            /** @enum {integer} */
-            status: 404;
+            title: "対象の情報をご確認ください";
+            /** @enum {string} */
+            message: "指定された情報は見つからないか、すでに削除されています。指定された内容をご確認のうえ、再度お試しください。";
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 資産情報の登録失敗 */
         AssetsRegistrationFailedErrorResponse: {
+            /** @enum {integer} */
+            status?: 500;
             /** @enum {string} */
             code: "ASSETS_REGISTRATION_FAILED";
             /** @enum {string} */
-            message: "Assets Registration Failed";
-            /** @enum {integer} */
-            status: 500;
+            title: "資産情報の登録を再度お試しください";
+            /** @enum {string} */
+            message: "資産情報の登録中に問題が発生しました。しばらく時間をおいてから再度お試しください。解決しない場合は、管理者にお問い合わせください。";
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description 予期しない内部サーバーエラー（どれにも該当しない場合に返す） */
         InternalServerErrorResponse: {
+            /** @enum {integer} */
+            status?: 500;
             /** @enum {string} */
             code: "INTERNAL_SERVER_ERROR";
             /** @enum {string} */
-            message: "Internal Server Error";
-            /** @enum {integer} */
-            status: 500;
+            title: "時間をおいて再度お試しください";
+            /** @enum {string} */
+            message: "サーバーで予期しない問題が発生したため処理を完了できませんでした。しばらく時間をおいてから再度お試しください。解決しない場合は、管理者にお問い合わせください。";
+            errors?: components["schemas"]["ErrorDetails"];
         };
         /** @description ログイン成功時のレスポンス */
         LoginSuccessResponse: {

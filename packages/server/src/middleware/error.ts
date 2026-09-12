@@ -1,4 +1,4 @@
-import type { ErrorResponseBodyType, ErrorResponseType } from '@api-spec/api-types';
+import type { ErrorDetailsType, ErrorResponseType } from '@api-spec/api-types';
 import { sValidator } from '@hono/standard-validator';
 import type { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
@@ -8,6 +8,7 @@ import type { Env } from '../app';
 import { ERROR_RESPONSE } from './error-response';
 
 export type ErrorCode = Exclude<ErrorResponseType['code'], 'INTERNAL_SERVER_ERROR'>; // INTERNAL_SERVER_ERROR は明示的にthrowしないため除外
+export type ErrorCause = { code: ErrorCode; errors?: ErrorDetailsType };
 
 /**
  * 共通エラーハンドリングを管理するミドルウェア
@@ -18,17 +19,17 @@ export type ErrorCode = Exclude<ErrorResponseType['code'], 'INTERNAL_SERVER_ERRO
 export const errorHandlingMiddleware = (
   error: Error | HTTPResponseError,
   c: Context<Env>,
-): ReturnType<typeof c.json<ErrorResponseBodyType>> => {
-  const code = error.cause as ErrorCode;
-
+): ReturnType<typeof c.json<ErrorResponseType>> => {
   if (error instanceof HTTPException) {
-    const response = ERROR_RESPONSE[code];
-    return c.json({ code: response.code, message: response.message } as ErrorResponseBodyType, response.status); // TODO: as typeじゃなくて綺麗な型定義で解決したい
+    const { code, errors } = error.cause as ErrorCause;
+    const { status, ...body } = ERROR_RESPONSE[code];
+
+    return c.json({ ...body, errors }, status);
   }
 
   // 予期しないサーバーエラー
-  const response = ERROR_RESPONSE.INTERNAL_SERVER_ERROR;
-  return c.json({ code: response.code, message: response.message }, response.status);
+  const { status, ...body } = ERROR_RESPONSE.INTERNAL_SERVER_ERROR;
+  return c.json(body, status);
 };
 
 /**
@@ -47,6 +48,8 @@ export const customValidationErrorMiddleware = <
 ) => {
   return sValidator(target, schema, (result, _c) => {
     if (result.success) return result.data;
-    throw new HTTPException(400, { cause: 'VALIDATION_ERROR' satisfies ErrorCode });
+
+    const errors = [...new Set(result.error.map((e) => e.message))].map((message) => ({ message })); // messageの重複を除外してErrorDetailsTypeに変換
+    throw new HTTPException(400, { cause: { code: 'VALIDATION_ERROR', errors } satisfies ErrorCause });
   });
 };
