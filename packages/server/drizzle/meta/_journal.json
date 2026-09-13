@@ -15,6 +15,13 @@
       "when": 1778050267731,
       "tag": "0001_chubby_vulture",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1789277768644,
+      "tag": "0002_wealthy_avengers",
+      "breakpoints": true
     }
   ]
 }

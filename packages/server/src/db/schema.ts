@@ -32,7 +32,7 @@ export const monthlyAssets = sqliteTable(
   'monthly_assets',
   {
     id: integer('id').primaryKey(),
-    date: text('date').default(sql`(strftime('%Y-%m-01', CURRENT_TIMESTAMP))`).notNull(),
+    date: text('date').notNull(),
     amount: integer('amount').notNull(),
     createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
     updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
