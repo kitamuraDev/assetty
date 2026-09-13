@@ -2,14 +2,15 @@
   "name": "server",
   "scripts": {
     "dev": "bun run db:seed:local && wrangler dev",
+    "test": "bun run db:seed:local && vitest",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "deploy": "wrangler deploy --minify",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings",
     "dz:studio": "bun run --env-file ./.dev.vars drizzle-kit studio",
     "dz:generate": "bun run --env-file ./.dev.vars drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply ASSETTY_D1 --local",
     "db:migrate:remote": "wrangler d1 migrations apply ASSETTY_D1 --remote",
-    "db:seed:local": "wrangler d1 execute ASSETTY_D1 --local --file=./src/db/seed.sql",
-    "test": "bun run db:seed:local && vitest"
+    "db:seed:local": "wrangler d1 execute ASSETTY_D1 --local --file=./src/db/seed.sql"
   },
   "dependencies": {
     "@hono/standard-validator": "^0.2.2",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@types/bun": "^1.3.9",
     "drizzle-kit": "^0.31.9",
+    "typescript": "^7.0.2",
     "vitest": "^4.0.18",
     "wrangler": "^4.67.0"
   }
