@@ -81,6 +81,16 @@
     - [web](https://dash.cloudflare.com/1bb29f99325f1fc901be8e1c2e58c5f6/workers/services/view/assetty-web/production/settings)
 3. README.md / AGENTS.md の整備
 
+## DBスキーマを変更する手順
+
+1. Drizzleのスキーマファイル（`schema.ts`）を変更する
+2. `bun run dz:generate` でマイグレーションファイルを生成する
+3. 生成されたマイグレーションSQLに問題がないか確認する
+4. 必要なら `seed.sql` を更新
+5. `bun run db:migrate:local` でローカルDBにマイグレーションを適用させる
+6. テストを実行して不具合が起きていないか確認する
+7. `bun run db:migrate:remote` で本番DBにマイグレーションを適用させる
+
 ## モノレポについて
 
 ### 採用理由
