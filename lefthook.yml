@@ -6,6 +6,8 @@ pre-commit:
       run: bun run biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
       stage_fixed: true
     typecheck:
+      glob: "**/*.{ts,js,html,sql}"
       run: bun run --filter '*' typecheck
     unit_test:
+      glob: "**/*.{ts,js,html,sql}"
       run: bun run --filter '*' test
