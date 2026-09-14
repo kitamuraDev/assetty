@@ -16,12 +16,13 @@ import {
   pipe,
   string,
 } from 'valibot';
+import { getMissingKeyValidationMessage } from '../../validation/messages';
 
 export const AssetsRequestQuerySchema = object(
   {
     baseDate: pipe(string(), isoDate('日付形式はYYYY-MM-DDである必要があります'), nonEmpty('基準日は必須です')),
   },
-  '基準日は必須です',
+  getMissingKeyValidationMessage,
 ) satisfies GenericSchema<{ baseDate: BaseDateQueryParameterType }>;
 
 export const CreateAssetsRequestBodySchema = array(
@@ -44,7 +45,7 @@ export const CreateAssetsRequestBodySchema = array(
         minValue(1, '資産カテゴリIDは1以上である必要があります'),
       ),
     },
-    '資産データの各項目は必須です',
+    getMissingKeyValidationMessage,
   ),
 ) satisfies GenericSchema<CreateAssetRecordsRequestBodyType>;
 
