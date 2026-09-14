@@ -49,7 +49,7 @@ export const customValidationErrorMiddleware = <
   return sValidator(target, schema, (result, _c) => {
     if (result.success) return result.data;
 
-    const errors = [...new Set(result.error.map((e) => e.message))].map((message) => ({ message })); // messageの重複を除外してErrorDetailsTypeに変換
+    const errors = result.error.map((e) => ({ message: e.message }));
     throw new HTTPException(400, { cause: { code: 'VALIDATION_ERROR', errors } satisfies ErrorCause });
   });
 };
