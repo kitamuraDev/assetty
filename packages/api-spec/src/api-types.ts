@@ -10,7 +10,7 @@ export type CreateAssetRecordsRequestBodyType =
 // ====================================================================================================
 // parameters
 // ====================================================================================================
-export type BaseDateQueryParameterType = components['parameters']['BaseDateQueryParameter'];
+export type AssetsRequestQueryParameterType = components['parameters']['AssetsRequestQueryParameter'];
 
 // ====================================================================================================
 // schemas

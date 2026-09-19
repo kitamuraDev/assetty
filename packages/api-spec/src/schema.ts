@@ -174,7 +174,7 @@ export interface paths {
             parameters: {
                 query: {
                     /** @description 基準日（YYYY-MM-DD形式） */
-                    baseDate: components["parameters"]["BaseDateQueryParameter"];
+                    baseDate: components["parameters"]["AssetsRequestQueryParameter"];
                 };
                 header?: never;
                 path?: never;
@@ -215,7 +215,7 @@ export interface paths {
             parameters: {
                 query: {
                     /** @description 基準日（YYYY-MM-DD形式） */
-                    baseDate: components["parameters"]["BaseDateQueryParameter"];
+                    baseDate: components["parameters"]["AssetsRequestQueryParameter"];
                 };
                 header?: never;
                 path?: never;
@@ -486,7 +486,7 @@ export interface components {
     };
     parameters: {
         /** @description 基準日（YYYY-MM-DD形式） */
-        BaseDateQueryParameter: string;
+        AssetsRequestQueryParameter: string;
     };
     requestBodies: {
         LoginRequestBody: {

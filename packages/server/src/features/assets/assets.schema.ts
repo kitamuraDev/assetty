@@ -1,4 +1,4 @@
-import type { BaseDateQueryParameterType, CreateAssetRecordsRequestBodyType } from '@api-spec/api-types';
+import type { AssetsRequestQueryParameterType, CreateAssetRecordsRequestBodyType } from '@api-spec/api-types';
 import {
   array,
   endsWith,
@@ -14,14 +14,14 @@ import {
 } from 'valibot';
 import { getMissingKeyValidationMessage } from '../../validation/messages';
 
-export const AssetsRequestQuerySchema = object(
+export const AssetsRequestQueryParameterSchema = object(
   {
     baseDate: pipe(string(), isoDate('日付形式はYYYY-MM-DDである必要があります'), nonEmpty('基準日は必須です')),
   },
   getMissingKeyValidationMessage,
-) satisfies GenericSchema<{ baseDate: BaseDateQueryParameterType }>;
+) satisfies GenericSchema<{ baseDate: AssetsRequestQueryParameterType }>;
 
-export const CreateAssetsRequestBodySchema = array(
+export const CreateAssetRecordsRequestBodySchema = array(
   object(
     {
       date: pipe(

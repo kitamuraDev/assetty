@@ -9,7 +9,7 @@ import { createHonoApp } from '../../app';
 import { assetCategories, monthlyAssets } from '../../db/schema';
 import { jwtAuthMiddleware } from '../../middleware/auth';
 import { customValidationErrorMiddleware, type ErrorCause } from '../../middleware/error';
-import { AssetsRequestQuerySchema, CreateAssetsRequestBodySchema } from './assets.schema';
+import { AssetsRequestQueryParameterSchema, CreateAssetRecordsRequestBodySchema } from './assets.schema';
 
 const assets = createHonoApp();
 assets.use('/*', jwtAuthMiddleware); // アクセストークンの検証
@@ -20,7 +20,7 @@ assets.use('/*', jwtAuthMiddleware); // アクセストークンの検証
  */
 assets.get(
   '/monthly',
-  customValidationErrorMiddleware('query', AssetsRequestQuerySchema),
+  customValidationErrorMiddleware('query', AssetsRequestQueryParameterSchema),
   async (c): Promise<ReturnType<typeof c.json<AssetInfoResponseType[]>>> => {
     const userId = c.get('userId');
     const { baseDate } = c.req.valid('query');
@@ -80,7 +80,7 @@ assets.get(
  */
 assets.get(
   '/yearly',
-  customValidationErrorMiddleware('query', AssetsRequestQuerySchema),
+  customValidationErrorMiddleware('query', AssetsRequestQueryParameterSchema),
   async (c): Promise<ReturnType<typeof c.json<AssetInfoResponseType[]>>> => {
     const userId = c.get('userId');
     const { baseDate } = c.req.valid('query');
@@ -140,7 +140,7 @@ assets.get(
  */
 assets.post(
   '/',
-  customValidationErrorMiddleware('json', CreateAssetsRequestBodySchema),
+  customValidationErrorMiddleware('json', CreateAssetRecordsRequestBodySchema),
   async (c): Promise<ReturnType<typeof c.json<CreateAssetRecordsSuccessResponseType>>> => {
     const userId = c.get('userId');
     const assetsData = c.req.valid('json');
