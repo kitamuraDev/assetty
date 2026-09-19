@@ -1,8 +1,4 @@
-import type {
-  AssetInfoResponseType,
-  BaseDateQueryParameterType,
-  CreateAssetRecordsRequestBodyType,
-} from '@api-spec/api-types';
+import type { BaseDateQueryParameterType, CreateAssetRecordsRequestBodyType } from '@api-spec/api-types';
 import {
   array,
   endsWith,
@@ -48,9 +44,3 @@ export const CreateAssetsRequestBodySchema = array(
     getMissingKeyValidationMessage,
   ),
 ) satisfies GenericSchema<CreateAssetRecordsRequestBodyType>;
-
-export type AssetsInfoQueryResponseType = {
-  year_month: AssetInfoResponseType['yearMonth'];
-  total_assets: AssetInfoResponseType['totalAssets'];
-  assets_by_categories: string;
-};
