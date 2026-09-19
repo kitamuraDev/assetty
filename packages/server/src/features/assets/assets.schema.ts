@@ -16,10 +16,10 @@ import { getMissingKeyValidationMessage } from '../../validation/messages';
 
 export const AssetsRequestQueryParameterSchema = object(
   {
-    baseDate: pipe(string(), isoDate('日付形式はYYYY-MM-DDである必要があります'), nonEmpty('基準日は必須です')),
+    base_date: pipe(string(), isoDate('日付形式はYYYY-MM-DDである必要があります'), nonEmpty('基準日は必須です')),
   },
   getMissingKeyValidationMessage,
-) satisfies GenericSchema<{ baseDate: AssetsRequestQueryParameterType }>;
+) satisfies GenericSchema<{ base_date: AssetsRequestQueryParameterType }>;
 
 export const CreateAssetRecordsRequestBodySchema = array(
   object(

@@ -215,7 +215,7 @@ components:
 
   parameters:
     AssetsRequestQueryParameter:
-      name: baseDate
+      name: base_date
       in: query
       description: 基準日（YYYY-MM-DD形式）
       required: true

@@ -23,7 +23,7 @@ assets.get(
   customValidationErrorMiddleware('query', AssetsRequestQueryParameterSchema),
   async (c): Promise<ReturnType<typeof c.json<AssetInfoResponseType[]>>> => {
     const userId = c.get('userId');
-    const { baseDate } = c.req.valid('query');
+    const { base_date } = c.req.valid('query');
 
     const d1 = c.get('d1');
     const monthlyStats = d1.$with('monthly_stats').as(
@@ -40,8 +40,8 @@ assets.get(
         .where(
           and(
             eq(monthlyAssets.userId, userId),
-            gte(monthlyAssets.date, sql`date(${baseDate}, '-12 months', 'start of month')`),
-            lte(monthlyAssets.date, sql`date(${baseDate}, 'start of month')`),
+            gte(monthlyAssets.date, sql`date(${base_date}, '-12 months', 'start of month')`),
+            lte(monthlyAssets.date, sql`date(${base_date}, 'start of month')`),
           ),
         ),
     );
@@ -83,7 +83,7 @@ assets.get(
   customValidationErrorMiddleware('query', AssetsRequestQueryParameterSchema),
   async (c): Promise<ReturnType<typeof c.json<AssetInfoResponseType[]>>> => {
     const userId = c.get('userId');
-    const { baseDate } = c.req.valid('query');
+    const { base_date } = c.req.valid('query');
 
     const d1 = c.get('d1');
     const yearlyStats = d1.$with('yearly_stats').as(
@@ -100,8 +100,8 @@ assets.get(
         .where(
           and(
             eq(monthlyAssets.userId, userId),
-            gte(monthlyAssets.date, sql`date(${baseDate}, '-4 years', 'start of year')`),
-            lte(monthlyAssets.date, sql`date(${baseDate}, 'start of month')`),
+            gte(monthlyAssets.date, sql`date(${base_date}, '-4 years', 'start of year')`),
+            lte(monthlyAssets.date, sql`date(${base_date}, 'start of month')`),
             eq(sql<string>`strftime('%m', ${monthlyAssets.date})`, '12'),
           ),
         ),

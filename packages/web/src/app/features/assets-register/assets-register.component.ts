@@ -100,7 +100,7 @@ export default class AssetsRegisterComponent implements OnInit {
   private readonly assetsService = inject(AssetsService);
 
   private readonly monthlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
-    url: `${this.API_BASE_URL}/assets/monthly?baseDate=${this.dateService.getToday()}`,
+    url: `${this.API_BASE_URL}/assets/monthly?base_date=${this.dateService.getToday()}`,
     method: 'GET',
     credentials: 'include',
   }));

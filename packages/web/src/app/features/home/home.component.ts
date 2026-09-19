@@ -52,12 +52,12 @@ export default class HomeComponent implements OnInit {
   private readonly dateService = inject(DateService);
 
   private readonly monthlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
-    url: `${this.API_BASE_URL}/assets/monthly?baseDate=${this.dateService.getToday()}`,
+    url: `${this.API_BASE_URL}/assets/monthly?base_date=${this.dateService.getToday()}`,
     method: 'GET',
     credentials: 'include',
   }));
   private readonly yearlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
-    url: `${this.API_BASE_URL}/assets/yearly?baseDate=${this.dateService.getToday()}`,
+    url: `${this.API_BASE_URL}/assets/yearly?base_date=${this.dateService.getToday()}`,
     method: 'GET',
     credentials: 'include',
   }));
