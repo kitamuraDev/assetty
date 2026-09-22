@@ -162,19 +162,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/assets/monthly": {
+    "/assets": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** 月次の資産情報取得 */
+        /** 資産情報取得 */
         get: {
             parameters: {
                 query: {
                     /** @description 基準日（YYYY-MM-DD形式） */
-                    base_date: components["parameters"]["AssetsRequestQueryParameter"];
+                    base_date: components["parameters"]["AssetsBaseDateQueryParameter"];
+                    /** @description 取得月数（基準日から過去何ヶ月分の資産情報を取得するかの数値） */
+                    months_ago: components["parameters"]["AssetsMonthsAgoQueryParameter"];
+                    /** @description 年次フラグ（12月だけを取得するかどうかのフラグ） */
+                    year_end_only: components["parameters"]["AssetsYearEndOnlyQueryParameter"];
                 };
                 header?: never;
                 path?: never;
@@ -182,7 +186,7 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description 月次の資産情報取得成功 */
+                /** @description 資産情報取得成功 */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -196,48 +200,38 @@ export interface paths {
             };
         };
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/assets/yearly": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 年次の資産情報取得 */
-        get: {
+        /** 月次の資産情報登録 */
+        post: {
             parameters: {
-                query: {
-                    /** @description 基準日（YYYY-MM-DD形式） */
-                    base_date: components["parameters"]["AssetsRequestQueryParameter"];
-                };
+                query?: never;
                 header?: never;
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody: components["requestBodies"]["CreateAssetRecordsRequestBody"];
             responses: {
-                /** @description 年次の資産情報取得成功 */
-                200: {
+                /** @description 資産情報登録成功 */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["AssetInfoResponse"][];
+                        "application/json": components["schemas"]["CreateAssetRecordsSuccessResponse"];
                     };
                 };
                 400: components["responses"]["ValidationErrorResponse"];
                 401: components["responses"]["UnauthorizedErrorResponse"];
+                /** @description 資産情報登録失敗 */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AssetsRegistrationFailedErrorResponse"];
+                    };
+                };
             };
         };
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -275,53 +269,6 @@ export interface paths {
         };
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/assets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** 月次の資産データ登録 */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: components["requestBodies"]["CreateAssetRecordsRequestBody"];
-            responses: {
-                /** @description 資産データ登録成功 */
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["CreateAssetRecordsSuccessResponse"];
-                    };
-                };
-                400: components["responses"]["ValidationErrorResponse"];
-                401: components["responses"]["UnauthorizedErrorResponse"];
-                /** @description 資産データ登録失敗 */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["AssetsRegistrationFailedErrorResponse"];
-                    };
-                };
-            };
-        };
         delete?: never;
         options?: never;
         head?: never;
@@ -455,10 +402,10 @@ export interface components {
             /** @description カテゴリー別の資産情報 */
             assetsByCategories: components["schemas"]["AssetAllocationSchema"][];
         };
-        /** @description 資産データ登録成功時のレスポンス */
+        /** @description 資産情報登録成功時のレスポンス */
         CreateAssetRecordsSuccessResponse: {
             /**
-             * @description 資産データ登録の成功を表す真偽値
+             * @description 資産情報登録の成功を表す真偽値
              * @enum {boolean}
              */
             ok: true;
@@ -486,7 +433,11 @@ export interface components {
     };
     parameters: {
         /** @description 基準日（YYYY-MM-DD形式） */
-        AssetsRequestQueryParameter: string;
+        AssetsBaseDateQueryParameter: string;
+        /** @description 取得月数（基準日から過去何ヶ月分の資産情報を取得するかの数値） */
+        AssetsMonthsAgoQueryParameter: string | number;
+        /** @description 年次フラグ（12月だけを取得するかどうかのフラグ） */
+        AssetsYearEndOnlyQueryParameter: string | boolean;
     };
     requestBodies: {
         LoginRequestBody: {

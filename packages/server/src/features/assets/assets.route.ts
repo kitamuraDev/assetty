@@ -15,24 +15,31 @@ const assets = createHonoApp();
 assets.use('/*', jwtAuthMiddleware); // アクセストークンの検証
 
 /**
- * 基準月から13ヶ月分の資産データを取得
- *  - 例: 2025-01 ~ 2024-01
+ * 資産情報の取得
+ *
+ * クエリパラメータ:
+ * - `base_date`: 基準日。基準月として扱う（YYYY-MM-DD形式）
+ * - `months_ago`: 基準月を含めて取得する月数（12~60ヶ月 / 1~5年）
+ * - `year_end_only`: `true` の場合、12月のデータだけを取得する
+ *
+ * `year_end_only=true` を指定すると、各年の12月時点の資産情報を取得できる。
+ * レスポンスは常に月単位の資産情報で、`yearMonth` は対象月を表す。
  */
 assets.get(
-  '/monthly',
+  '/',
   customValidationErrorMiddleware('query', AssetsRequestQueryParameterSchema),
   async (c): Promise<ReturnType<typeof c.json<AssetInfoResponseType[]>>> => {
     const userId = c.get('userId');
-    const { base_date } = c.req.valid('query');
+    const { base_date, months_ago, year_end_only } = c.req.valid('query');
 
     const d1 = c.get('d1');
-    const monthlyStats = d1.$with('monthly_stats').as(
+    const assetStats = d1.$with('asset_stats').as(
       d1
         .select({
           yearMonth: sql<string>`strftime('%Y-%m', ${monthlyAssets.date})`.as('year_month'),
           assetCategoryId: monthlyAssets.assetCategoryId,
           amount: monthlyAssets.amount,
-          monthlyTotal: sql<number>`sum(${monthlyAssets.amount}) over (
+          total: sql<number>`sum(${monthlyAssets.amount}) over (
             partition by strftime('%Y-%m', ${monthlyAssets.date})
           )`.as('monthly_total'),
         })
@@ -40,103 +47,43 @@ assets.get(
         .where(
           and(
             eq(monthlyAssets.userId, userId),
-            gte(monthlyAssets.date, sql`date(${base_date}, '-12 months', 'start of month')`),
+            gte(monthlyAssets.date, sql`date(${base_date}, ${`-${months_ago - 1} months`}, 'start of month')`),
             lte(monthlyAssets.date, sql`date(${base_date}, 'start of month')`),
+            year_end_only ? eq(sql<string>`strftime('%m', ${monthlyAssets.date})`, '12') : undefined,
           ),
         ),
     );
 
     const result = await d1
-      .with(monthlyStats)
+      .with(assetStats)
       .select({
-        yearMonth: monthlyStats.yearMonth,
-        totalAssets: max(monthlyStats.monthlyTotal).mapWith(Number),
+        yearMonth: assetStats.yearMonth,
+        totalAssets: max(assetStats.total).mapWith(Number),
         assetsByCategories: sql<string>`json_group_array(
           json_object(
             'category', ${assetCategories.name},
-            'amount', ${monthlyStats.amount},
-            'rate', round(cast(${monthlyStats.amount} as real) / ${monthlyStats.monthlyTotal} * 100, 1)
+            'amount', ${assetStats.amount},
+            'rate', round(cast(${assetStats.amount} as real) / ${assetStats.total} * 100, 1)
           )
         )`,
       })
-      .from(monthlyStats)
-      .innerJoin(assetCategories, eq(monthlyStats.assetCategoryId, assetCategories.id))
-      .groupBy(sql`${monthlyStats.yearMonth}`)
-      .orderBy(asc(monthlyStats.yearMonth));
+      .from(assetStats)
+      .innerJoin(assetCategories, eq(assetStats.assetCategoryId, assetCategories.id))
+      .groupBy(sql`${assetStats.yearMonth}`)
+      .orderBy(asc(assetStats.yearMonth));
 
-    const responseData = result.map((row) => ({
+    const response = result.map((row) => ({
       yearMonth: row.yearMonth,
       totalAssets: row.totalAssets,
       assetsByCategories: JSON.parse(row.assetsByCategories) as AssetInfoResponseType['assetsByCategories'],
     }));
 
-    return c.json(responseData, 200);
+    return c.json(response, 200);
   },
 );
 
 /**
- * 基準年から5年分の資産データを取得
- *  - 例: 2025-12 ~ 2021-12
- */
-assets.get(
-  '/yearly',
-  customValidationErrorMiddleware('query', AssetsRequestQueryParameterSchema),
-  async (c): Promise<ReturnType<typeof c.json<AssetInfoResponseType[]>>> => {
-    const userId = c.get('userId');
-    const { base_date } = c.req.valid('query');
-
-    const d1 = c.get('d1');
-    const yearlyStats = d1.$with('yearly_stats').as(
-      d1
-        .select({
-          yearMonth: sql<string>`strftime('%Y-%m', ${monthlyAssets.date})`.as('year_month'),
-          assetCategoryId: monthlyAssets.assetCategoryId,
-          amount: monthlyAssets.amount,
-          yearlyTotal: sql<number>`sum(${monthlyAssets.amount}) over (
-            partition by strftime('%Y', ${monthlyAssets.date})
-          )`.as('yearly_total'),
-        })
-        .from(monthlyAssets)
-        .where(
-          and(
-            eq(monthlyAssets.userId, userId),
-            gte(monthlyAssets.date, sql`date(${base_date}, '-4 years', 'start of year')`),
-            lte(monthlyAssets.date, sql`date(${base_date}, 'start of month')`),
-            eq(sql<string>`strftime('%m', ${monthlyAssets.date})`, '12'),
-          ),
-        ),
-    );
-
-    const result = await d1
-      .with(yearlyStats)
-      .select({
-        yearMonth: yearlyStats.yearMonth,
-        totalAssets: max(yearlyStats.yearlyTotal).mapWith(Number),
-        assetsByCategories: sql<string>`json_group_array(
-          json_object(
-            'category', ${assetCategories.name},
-            'amount', ${yearlyStats.amount},
-            'rate', round(cast(${yearlyStats.amount} as real) / ${yearlyStats.yearlyTotal} * 100, 1)
-          )
-        )`,
-      })
-      .from(yearlyStats)
-      .innerJoin(assetCategories, eq(yearlyStats.assetCategoryId, assetCategories.id))
-      .groupBy(sql`${yearlyStats.yearMonth}`)
-      .orderBy(asc(yearlyStats.yearMonth));
-
-    const responseData = result.map((row) => ({
-      yearMonth: row.yearMonth,
-      totalAssets: row.totalAssets,
-      assetsByCategories: JSON.parse(row.assetsByCategories) as AssetInfoResponseType['assetsByCategories'],
-    }));
-
-    return c.json(responseData, 200);
-  },
-);
-
-/**
- * 資産データの登録
+ * 資産情報の登録
  */
 assets.post(
   '/',
