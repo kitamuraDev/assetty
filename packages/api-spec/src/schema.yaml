@@ -82,18 +82,20 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedErrorResponse'
   # ====================================================================================================
-  # 月次の資産情報取得
+  # 資産情報 取得/登録
   # ====================================================================================================
-  /assets/monthly:
+  /assets:
     get:
-      summary: 月次の資産情報取得
+      summary: 資産情報取得
       security:
         - AccessTokenCookieAuth: []
       parameters:
-        - $ref: '#/components/parameters/BaseDateQueryParameter'
+        - $ref: '#/components/parameters/AssetsBaseDateQueryParameter'
+        - $ref: '#/components/parameters/AssetsMonthsAgoQueryParameter'
+        - $ref: '#/components/parameters/AssetsYearEndOnlyQueryParameter'
       responses:
         '200':
-          description: 月次の資産情報取得成功
+          description: 資産情報取得成功
           content:
             application/json:
               schema:
@@ -104,29 +106,29 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedErrorResponse'
-  # ====================================================================================================
-  # 年次の資産情報取得
-  # ====================================================================================================
-  /assets/yearly:
-    get:
-      summary: 年次の資産情報取得
+    post:
+      summary: 月次の資産情報登録
       security:
         - AccessTokenCookieAuth: []
-      parameters:
-        - $ref: '#/components/parameters/BaseDateQueryParameter'
+      requestBody:
+        $ref: '#/components/requestBodies/CreateAssetRecordsRequestBody'
       responses:
-        '200':
-          description: 年次の資産情報取得成功
+        '201':
+          description: 資産情報登録成功
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AssetInfoResponse'
+                $ref: '#/components/schemas/CreateAssetRecordsSuccessResponse'
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '500':
+          description: 資産情報登録失敗
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetsRegistrationFailedErrorResponse'
   # ====================================================================================================
   # 資産カテゴリの取得
   # ====================================================================================================
@@ -146,33 +148,6 @@ paths:
                   $ref: '#/components/schemas/AssetCategoryResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedErrorResponse'
-  # ====================================================================================================
-  # 資産データ登録
-  # ====================================================================================================
-  /assets:
-    post:
-      summary: 月次の資産データ登録
-      security:
-        - AccessTokenCookieAuth: []
-      requestBody:
-        $ref: '#/components/requestBodies/CreateAssetRecordsRequestBody'
-      responses:
-        '201':
-          description: 資産データ登録成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateAssetRecordsSuccessResponse'
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedErrorResponse'
-        '500':
-          description: 資産データ登録失敗
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AssetsRegistrationFailedErrorResponse'
 
 components:
   requestBodies:
@@ -197,7 +172,7 @@ components:
         application/json:
           schema:
             type: array
-            description: 月次の資産データ登録 のリクエストボディ
+            description: 月次の資産情報登録 のリクエストボディ
             items:
               type: object
               properties:
@@ -214,14 +189,28 @@ components:
               required: [date, amount, assetCategoryId]
 
   parameters:
-    BaseDateQueryParameter:
-      name: baseDate
+    AssetsBaseDateQueryParameter:
+      name: base_date
       in: query
       description: 基準日（YYYY-MM-DD形式）
       required: true
       schema:
         type: string
         format: date
+    AssetsMonthsAgoQueryParameter:
+      name: months_ago
+      in: query
+      description: 取得月数（基準日から過去何ヶ月分の資産情報を取得するかの数値）
+      required: true
+      schema:
+        type: [string, integer]
+    AssetsYearEndOnlyQueryParameter:
+      name: year_end_only
+      in: query
+      description: 年次フラグ（12月だけを取得するかどうかのフラグ）
+      required: true
+      schema:
+        type: [string, boolean]
 
   responses:
     UnauthorizedErrorResponse:
@@ -441,11 +430,11 @@ components:
       required: [yearMonth, totalAssets, assetsByCategories]
     CreateAssetRecordsSuccessResponse:
       type: object
-      description: 資産データ登録成功時のレスポンス
+      description: 資産情報登録成功時のレスポンス
       properties:
         ok:
           type: boolean
-          description: 資産データ登録の成功を表す真偽値
+          description: 資産情報登録の成功を表す真偽値
           enum: [true]
       required: [ok]
 

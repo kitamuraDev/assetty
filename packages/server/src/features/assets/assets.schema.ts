@@ -1,27 +1,45 @@
-import type { BaseDateQueryParameterType, CreateAssetRecordsRequestBodyType } from '@api-spec/api-types';
+import type { AssetsRequestQueryParametersType, CreateAssetRecordsRequestBodyType } from '@api-spec/api-types';
 import {
   array,
+  check,
   endsWith,
   type GenericSchema,
   integer,
   isoDate,
+  literal,
+  maxValue,
   minValue,
   nonEmpty,
   number,
   object,
   pipe,
   string,
+  transform,
+  union,
 } from 'valibot';
 import { getMissingKeyValidationMessage } from '../../validation/messages';
 
-export const AssetsRequestQuerySchema = object(
+export const AssetsRequestQueryParameterSchema = object(
   {
-    baseDate: pipe(string(), isoDate('日付形式はYYYY-MM-DDである必要があります'), nonEmpty('基準日は必須です')),
+    base_date: pipe(string(), isoDate('日付形式はYYYY-MM-DDである必要があります')),
+    months_ago: pipe(
+      string(),
+      transform((v) => Number(v)),
+      check((v) => !Number.isNaN(v), '取得月数は数値である必要があります'),
+      number(),
+      integer('取得月数は整数である必要があります'),
+      minValue(12, '取得月数は12以上である必要があります'),
+      maxValue(60, '取得月数は60以下である必要があります'),
+    ),
+    year_end_only: pipe(
+      union([literal('true'), literal('false')], '年次フラグはtrueまたはfalseである必要があります'),
+      transform((v) => v === 'true'),
+    ),
   },
   getMissingKeyValidationMessage,
-) satisfies GenericSchema<{ baseDate: BaseDateQueryParameterType }>;
+) satisfies GenericSchema<AssetsRequestQueryParametersType>;
 
-export const CreateAssetsRequestBodySchema = array(
+export const CreateAssetRecordsRequestBodySchema = array(
   object(
     {
       date: pipe(

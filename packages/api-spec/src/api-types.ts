@@ -1,4 +1,4 @@
-import type { components } from './schema';
+import type { components, paths } from './schema';
 
 // ====================================================================================================
 // requestBodies
@@ -10,7 +10,7 @@ export type CreateAssetRecordsRequestBodyType =
 // ====================================================================================================
 // parameters
 // ====================================================================================================
-export type BaseDateQueryParameterType = components['parameters']['BaseDateQueryParameter'];
+export type AssetsRequestQueryParametersType = paths['/assets']['get']['parameters']['query'];
 
 // ====================================================================================================
 // schemas
