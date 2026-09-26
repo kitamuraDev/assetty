@@ -1,22 +1,31 @@
+import { env } from 'cloudflare:workers';
 import type { LoginSuccessResponseType } from '@api-spec/api-types';
 import { decode } from 'hono/jwt';
-import { getPlatformProxy } from 'wrangler';
 import app from '../..';
 import { ERROR_RESPONSE } from '../../middleware/error-response';
+import { type InsertUserType, resetUsersAndSeedTestUser } from '../../test/fixtures';
 import { getAccessTokenFromSetCookie, getSetCookieHeader, login, logout } from '../../test/helpers';
 
-const { env } = await getPlatformProxy<CloudflareBindings>();
+const user: InsertUserType = {
+  id: 'tfi4wB9ZRyhzVE7EhIyht',
+  name: 'Lillie',
+  password: 'Lillie1101',
+};
 
 describe('POST: /auth/login', () => {
+  beforeEach(async () => {
+    await resetUsersAndSeedTestUser({ d1Database: env.ASSETTY_D1, user });
+  });
+
   it('認証成功したときにユーザー名が返却されること', async () => {
-    const res = await login(env, { name: env.TEST_USER_NAME, password: env.TEST_USER_PASSWORD });
+    const res = await login(env, { name: user.name, password: user.password });
 
     expect(res.status).toBe(200);
-    expect((await res.json<LoginSuccessResponseType>()).name).toBe(env.TEST_USER_NAME);
+    expect((await res.json<LoginSuccessResponseType>()).name).toBe(user.name);
   });
 
   it('アクセストークン(JWT)のペイロードにsub,aud,iss,expが設定されていること', async () => {
-    const res = await login(env, { name: env.TEST_USER_NAME, password: env.TEST_USER_PASSWORD });
+    const res = await login(env, { name: user.name, password: user.password });
     const accessToken = getAccessTokenFromSetCookie(env, res.headers);
     const payload = decode(accessToken).payload;
 
@@ -27,7 +36,7 @@ describe('POST: /auth/login', () => {
   });
 
   it('アクセストークン(JWT)のaudとissが環境変数で設定している値と一致すること', async () => {
-    const res = await login(env, { name: env.TEST_USER_NAME, password: env.TEST_USER_PASSWORD });
+    const res = await login(env, { name: user.name, password: user.password });
     const accessToken = getAccessTokenFromSetCookie(env, res.headers);
     const payload = decode(accessToken).payload;
 
@@ -39,7 +48,7 @@ describe('POST: /auth/login', () => {
     const expectedExpiration = 60 * Number(env.JWT_EXPIRATION_MINUTES);
 
     const beforeLoginTime = Math.floor(Date.now() / 1000);
-    const res = await login(env, { name: env.TEST_USER_NAME, password: env.TEST_USER_PASSWORD });
+    const res = await login(env, { name: user.name, password: user.password });
     const afterLoginTime = Math.floor(Date.now() / 1000);
 
     const accessToken = getAccessTokenFromSetCookie(env, res.headers);
@@ -51,12 +60,12 @@ describe('POST: /auth/login', () => {
   });
 
   it('リクエストボディ(name)の欠損でバリデーションエラーを示す400番が返ること', async () => {
-    const res = await login(env, { password: env.TEST_USER_PASSWORD });
+    const res = await login(env, { password: user.password });
     expect(res.status).toBe(400);
   });
 
   it('リクエストボディ(password)の欠損でバリデーションエラーを示す400番が返ること', async () => {
-    const res = await login(env, { name: env.TEST_USER_NAME });
+    const res = await login(env, { name: user.name });
     expect(res.status).toBe(400);
   });
 
@@ -68,7 +77,7 @@ describe('POST: /auth/login', () => {
   it('存在しないユーザー名の場合、認証失敗を示す401番が返ること', async () => {
     const { status, ...expectedResponse } = ERROR_RESPONSE.INVALID_CREDENTIALS;
 
-    const res = await login(env, { name: 'unknown_user', password: env.TEST_USER_PASSWORD });
+    const res = await login(env, { name: 'unknown_user', password: user.password });
 
     expect(res.status).toBe(401);
     expect(await res.json()).toEqual(expectedResponse);
@@ -77,7 +86,7 @@ describe('POST: /auth/login', () => {
   it('パスワードに誤りがある場合、認証失敗を示す401番が返ること', async () => {
     const { status, ...expectedResponse } = ERROR_RESPONSE.INVALID_CREDENTIALS;
 
-    const res = await login(env, { name: env.TEST_USER_NAME, password: 'incorrect_password' });
+    const res = await login(env, { name: user.name, password: 'incorrect_password' });
 
     expect(res.status).toBe(401);
     expect(await res.json()).toEqual(expectedResponse);
@@ -86,7 +95,7 @@ describe('POST: /auth/login', () => {
 
 describe('POST: /auth/logout', async () => {
   it('/auth/logout を叩くとアクセストークンが削除されて空文字になること', async () => {
-    const loginResponse = await login(env, { name: env.TEST_USER_NAME, password: env.TEST_USER_PASSWORD });
+    const loginResponse = await login(env, { name: user.name, password: user.password });
     const cookie = getSetCookieHeader(loginResponse.headers);
 
     const logoutResponse = await logout(env, { cookie });
@@ -98,7 +107,7 @@ describe('POST: /auth/logout', async () => {
 
 describe('POST: /auth/check', async () => {
   it('認証情報が有効であれば200番を返す', async () => {
-    const loginResponse = await login(env, { name: env.TEST_USER_NAME, password: env.TEST_USER_PASSWORD });
+    const loginResponse = await login(env, { name: user.name, password: user.password });
     const cookie = getSetCookieHeader(loginResponse.headers);
 
     const res = await app.request('/api/auth/check', { method: 'GET', headers: { cookie: cookie } }, env);
