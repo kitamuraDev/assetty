@@ -1,19 +1,28 @@
+import { env } from 'cloudflare:workers';
 import { sign } from 'hono/jwt';
 import type { JWTPayload } from 'hono/utils/jwt/types';
-import { getPlatformProxy } from 'wrangler';
 import app from '..';
+import { type InsertUserType, resetUsersAndSeedTestUser } from '../test/fixtures';
 import { getSetCookieHeader, login, logout } from '../test/helpers';
 import { jwtAuthMiddleware } from './auth';
 import { ERROR_RESPONSE } from './error-response';
 
-const { env } = await getPlatformProxy<CloudflareBindings>();
+const user: InsertUserType = {
+  id: 'tfi4wB9ZRyhzVE7EhIyht',
+  name: 'Lillie',
+  password: 'Lillie1101',
+};
 
 describe('jwtAuthMiddleware', () => {
   app.use('/message', jwtAuthMiddleware); // アクセストークンの検証
   app.get('/message', (c) => c.json({ message: 'Assetty' }, 200));
 
+  beforeEach(async () => {
+    await resetUsersAndSeedTestUser({ d1Database: env.ASSETTY_D1, user });
+  });
+
   it('/api/message にリクエストする際、アクセストークンが有効であれば200番を返すこと', async () => {
-    const loginResponse = await login(env, { name: env.TEST_USER_NAME, password: env.TEST_USER_PASSWORD });
+    const loginResponse = await login(env, { name: user.name, password: user.password });
     const cookie = getSetCookieHeader(loginResponse.headers);
 
     const res = await app.request('/api/message', { method: 'GET', headers: { cookie: cookie } }, env);
@@ -24,7 +33,7 @@ describe('jwtAuthMiddleware', () => {
 
   it('/api/message にリクエストする際、アクセストークンが無効であれば401番を返すこと', async () => {
     const expectedSuccessResponse = { message: 'Assetty' };
-    const loginResponse = await login(env, { name: env.TEST_USER_NAME, password: env.TEST_USER_PASSWORD });
+    const loginResponse = await login(env, { name: user.name, password: user.password });
     const validCookie = getSetCookieHeader(loginResponse.headers);
 
     const successRes = await app.request('/api/message', { method: 'GET', headers: { cookie: validCookie } }, env);
