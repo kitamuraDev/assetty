@@ -1,7 +1,7 @@
 import { env } from 'cloudflare:workers';
 import app from '../..';
 import { ERROR_RESPONSE } from '../../middleware/error-response';
-import { type InsertUserType, resetUsersAndSeedTestUser } from '../../test/fixtures';
+import { type InsertUserType, seedTestUser } from '../../test/fixtures';
 import { getSetCookieHeader, login } from '../../test/helpers';
 
 const user: InsertUserType = {
@@ -12,7 +12,7 @@ const user: InsertUserType = {
 
 describe('GET: /user', () => {
   beforeEach(async () => {
-    await resetUsersAndSeedTestUser({ d1Database: env.ASSETTY_D1, user });
+    await seedTestUser({ d1Database: env.ASSETTY_D1, user });
   });
 
   it('ログイン済であればそのユーザーの情報を返すこと', async () => {
@@ -26,11 +26,11 @@ describe('GET: /user', () => {
   });
 
   it('未ログインであれば401番を返すこと', async () => {
-    const { status, ...expectedResponse } = ERROR_RESPONSE.INVALID_ACCESS_TOKEN;
+    const { status: expectedStatus, ...expectedResponse } = ERROR_RESPONSE.INVALID_ACCESS_TOKEN;
 
     const res = await app.request('/api/user', { method: 'GET' }, env);
 
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(expectedStatus);
     expect(await res.json()).toEqual(expectedResponse);
   });
 });
