@@ -61,4 +61,5 @@ export const CreateAssetRecordsRequestBodySchema = array(
     },
     getMissingKeyValidationMessage,
   ),
+  'リクエストボティは配列である必要があります',
 ) satisfies GenericSchema<CreateAssetRecordsRequestBodyType>;

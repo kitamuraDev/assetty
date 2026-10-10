@@ -9,10 +9,10 @@ import { environment } from '../../../environments/environment';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { AuthService } from '../../shared/services/auth.service';
 import { DateService } from '../../shared/services/date.service';
-import { AssetDetailsTableComponent } from './components/asset-details-table/asset-details-table.component';
-import { AssetSummaryCardComponent } from './components/asset-summary-card/asset-summary-card.component';
-import { AssetsBarChartComponent } from './components/assets-bar-chart/assets-bar-chart.component';
-import { ChartPeriodToggleComponent } from './components/chart-period-toggle/chart-period-toggle.component';
+import { AssetDetailsTableComponent } from './components/asset-details-table.component';
+import { AssetSummaryCardComponent } from './components/asset-summary-card.component';
+import { AssetsBarChartComponent } from './components/assets-bar-chart.component';
+import { ChartPeriodToggleComponent } from './components/chart-period-toggle.component';
 
 export type PeriodType = '月次' | '年次';
 
@@ -77,9 +77,10 @@ export default class HomeComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      const monthlyAssets = this.monthlyAssetsInfo;
-      if (monthlyAssets.hasValue()) {
-        this.convertToBarChartData(monthlyAssets.value(), '月次');
+      const periodType = this.selectedPeriodType();
+      const assetsInfo = periodType === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
+      if (assetsInfo.hasValue()) {
+        this.convertToBarChartData(assetsInfo.value(), periodType);
       }
     });
   }
@@ -109,7 +110,7 @@ export default class HomeComponent implements OnInit {
    * @param { active } クリックした棒グラフのグラフ情報
    */
   updateCurrentAssetInfo({ active }: { active?: object[] }): void {
-    const clickedIdx = (active as ActiveElement[])[0]?.index;
+    const clickedIdx = (active as ActiveElement[] | undefined)?.[0]?.index;
     if (clickedIdx === undefined) return;
 
     const assetsInfo = this.selectedPeriodType() === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
