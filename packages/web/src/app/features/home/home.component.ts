@@ -77,9 +77,10 @@ export default class HomeComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      const monthlyAssets = this.monthlyAssetsInfo;
-      if (monthlyAssets.hasValue()) {
-        this.convertToBarChartData(monthlyAssets.value(), '月次');
+      const periodType = this.selectedPeriodType();
+      const assetsInfo = periodType === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
+      if (assetsInfo.hasValue()) {
+        this.convertToBarChartData(assetsInfo.value(), periodType);
       }
     });
   }
@@ -109,7 +110,7 @@ export default class HomeComponent implements OnInit {
    * @param { active } クリックした棒グラフのグラフ情報
    */
   updateCurrentAssetInfo({ active }: { active?: object[] }): void {
-    const clickedIdx = (active as ActiveElement[])[0]?.index;
+    const clickedIdx = (active as ActiveElement[] | undefined)?.[0]?.index;
     if (clickedIdx === undefined) return;
 
     const assetsInfo = this.selectedPeriodType() === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;

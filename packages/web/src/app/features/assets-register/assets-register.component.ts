@@ -46,7 +46,7 @@ import { DateService } from '../../shared/services/date.service';
 
             <select
               multiple
-              size="1"
+              size="4"
               name="資産カテゴリ選択"
               [(ngModel)]="selectedAssetCategories"
               class="text-xs p-2 rounded-md border border-slate-300 text-gray-700"

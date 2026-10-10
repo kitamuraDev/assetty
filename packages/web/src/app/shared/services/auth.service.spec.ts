@@ -44,32 +44,28 @@ describe('AuthService', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['/']);
     });
 
-    it('ログインに失敗したら、エラーレスポンスのメッセージが alert に表示されること', async () => {
+    it('ログインに失敗したら、エラーメッセージがalertに表示されること', async () => {
       mockServer.use(
         http.post(`${API_BASE_URL}/auth/login`, () => {
           return HttpResponse.json<ErrorResponseType>(ERROR_RESPONSE.INVALID_CREDENTIALS, { status: 401 });
         }),
       );
-      const alertSpy = vi.spyOn(window, 'alert');
 
       await service.login({ name: 'invalid_user_name', password: 'invalid_password' });
 
-      expect(alertSpy).toHaveBeenCalledWith(
-        'ユーザー名またはパスワードが正しくないためログインできませんでした。入力内容をご確認のうえ、再度お試しください。',
-      );
+      expect(window.alert).toHaveBeenCalledWith(ERROR_RESPONSE.INVALID_CREDENTIALS.message);
     });
 
-    it('アプリ側で用意していないエラーが起きた場合、「予期しないエラーが発生しました」というメッセージが alert に表示されること', async () => {
+    it('想定外のエラーが起きた場合、予期しないエラーがalertに表示されること', async () => {
       mockServer.use(
         http.post(`${API_BASE_URL}/auth/login`, () => {
           return HttpResponse.error();
         }),
       );
-      const alertSpy = vi.spyOn(window, 'alert');
 
       await service.login({ name: 'valid_user_name', password: 'valid_password' });
 
-      expect(alertSpy).toHaveBeenCalledWith('予期しないエラーが発生しました');
+      expect(window.alert).toHaveBeenCalledWith('予期しないエラーが発生しました');
     });
   });
 
@@ -87,17 +83,16 @@ describe('AuthService', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['/login']);
     });
 
-    it('アプリ側で用意していないエラーが起きた場合、「予期しないエラーが発生しました」というメッセージが alert に表示されること', async () => {
+    it('想定外のエラーが起きた場合、予期しないエラーがalertに表示されること', async () => {
       mockServer.use(
         http.post(`${API_BASE_URL}/auth/logout`, () => {
           return HttpResponse.error();
         }),
       );
-      const alertSpy = vi.spyOn(window, 'alert');
 
       await service.logout();
 
-      expect(alertSpy).toHaveBeenCalledWith('予期しないエラーが発生しました');
+      expect(window.alert).toHaveBeenCalledWith('予期しないエラーが発生しました');
     });
   });
 
