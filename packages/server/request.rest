@@ -1,10 +1,8 @@
 @devBaseUrl = http://localhost:8787
 @prodBaseUrl = https://assetty-server.kitamuradev.workers.dev
 @basePath = api
-@user1Name = Lillie
-@user1Password = Lillie1101
-@user2Name = Garcello
-@user2Password = Garcello0319
+@userName = Lillie
+@userPassword = Lillie1101
 
 ### ==============================
 ### POST: /auth/login
@@ -14,8 +12,8 @@ POST {{devBaseUrl}}/{{basePath}}/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "{{user1Name}}",
-  "password": "{{user1Password}}"
+  "name": "{{userName}}",
+  "password": "{{userPassword}}"
 }
 
 ###
@@ -24,8 +22,8 @@ POST {{prodBaseUrl}}/{{basePath}}/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "{{user1Name}}",
-  "password": "{{user1Password}}"
+  "name": "{{userName}}",
+  "password": "{{userPassword}}"
 }
 
 ### ==============================
