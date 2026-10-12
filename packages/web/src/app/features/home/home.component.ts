@@ -52,7 +52,7 @@ export default class HomeComponent implements OnInit {
   private readonly dateService = inject(DateService);
 
   private readonly monthlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
-    url: `${this.API_BASE_URL}/assets?base_date=${this.dateService.getToday()}&months_ago=13&year_end_only=false`,
+    url: `${this.API_BASE_URL}/assets?base_date=${this.dateService.getToday()}&months_ago=12&year_end_only=false`,
     method: 'GET',
     credentials: 'include',
   }));
@@ -80,7 +80,7 @@ export default class HomeComponent implements OnInit {
       const periodType = this.selectedPeriodType();
       const assetsInfo = periodType === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
       if (assetsInfo.hasValue()) {
-        this.convertToBarChartData(assetsInfo.value(), periodType);
+        this.convertToBarChartData(assetsInfo.value());
       }
     });
   }
@@ -101,7 +101,7 @@ export default class HomeComponent implements OnInit {
 
     const assetsInfo = type === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
     if (assetsInfo.hasValue()) {
-      this.convertToBarChartData(assetsInfo.value(), type);
+      this.convertToBarChartData(assetsInfo.value());
     }
   }
 
@@ -114,9 +114,7 @@ export default class HomeComponent implements OnInit {
     if (clickedIdx === undefined) return;
 
     const assetsInfo = this.selectedPeriodType() === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
-    const assetIndex =
-      this.selectedPeriodType() === '月次' && assetsInfo.value()?.length === 13 ? clickedIdx + 1 : clickedIdx; // 月次データが13件の場合のみ先頭除外分を調整
-    const currentAssetInfo = assetsInfo.value()?.[assetIndex];
+    const currentAssetInfo = assetsInfo.value()?.[clickedIdx];
 
     this.currentAssetInfo.set(currentAssetInfo);
   }
@@ -124,22 +122,18 @@ export default class HomeComponent implements OnInit {
   /**
    * 棒グラフ描画用のデータに変換する
    * @param assetsInfo 資産情報の配列
-   * @param periodType 期間タイプ
    */
-  private convertToBarChartData(assetsInfo: AssetInfoResponseType[], periodType: PeriodType): void {
-    // 月次データが13件の場合のみ先頭を除外（棒グラフには12件のみ表示する）※月次データは当月を含む過去13ヶ月分のデータが最大件数です
-    const chartData = periodType === '月次' && assetsInfo.length === 13 ? assetsInfo.slice(1) : assetsInfo;
-
-    const labels = chartData.map((item) => {
+  private convertToBarChartData(assetsInfo: AssetInfoResponseType[]): void {
+    const labels = assetsInfo.map((item) => {
       const [year, month] = item.yearMonth.split('-');
       return `${year?.slice(2)}/${month}`;
     });
     const categories = [
-      ...new Set(chartData.flatMap((item) => item.assetsByCategories.map((asset) => asset.category))),
+      ...new Set(assetsInfo.flatMap((item) => item.assetsByCategories.map((asset) => asset.category))),
     ];
 
     const datasets = categories.map((category) => {
-      const data = chartData.map((item) => {
+      const data = assetsInfo.map((item) => {
         const asset = item.assetsByCategories.find((asset) => asset.category === category);
         return asset ? asset.amount : 0;
       });

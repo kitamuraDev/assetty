@@ -58,11 +58,11 @@ GET {{prodBaseUrl}}/{{basePath}}/user HTTP/1.1
 ### ==============================
 ### GET: /assets
 ### ==============================
-GET {{devBaseUrl}}/{{basePath}}/assets?base_date=2025-12-01&months_ago=13&year_end_only=false HTTP/1.1
+GET {{devBaseUrl}}/{{basePath}}/assets?base_date=2025-12-01&months_ago=12&year_end_only=false HTTP/1.1
 
 ###
 
-GET {{prodBaseUrl}}/{{basePath}}/assets?base_date=2025-12-01&months_ago=13&year_end_only=false HTTP/1.1
+GET {{prodBaseUrl}}/{{basePath}}/assets?base_date=2025-12-01&months_ago=12&year_end_only=false HTTP/1.1
 
 ### ==============================
 ### POST: /assets
