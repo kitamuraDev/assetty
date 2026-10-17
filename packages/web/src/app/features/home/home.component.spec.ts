@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/vitest';
 
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { By } from '@angular/platform-browser';
 import type { AssetInfoResponseType, UserInfoResponseType } from '@api-spec/api-types';
 import { render, screen, within } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
@@ -8,6 +9,7 @@ import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { environment } from '../../../environments/environment';
+import { AssetsBarChartComponent } from './components/assets-bar-chart.component';
 import HomeComponent from './home.component';
 
 const monthlyAssets: AssetInfoResponseType[] = [
@@ -241,7 +243,12 @@ describe('HomeComponent', () => {
     });
     await screen.findByText('2026-01');
 
-    fixture.componentInstance.updateCurrentAssetInfo({ active: [{ index: chartIndex }] });
+    // テスト対象の画面から AssetsBarChartComponent が配置された DebugElement を探して Angular Injector からコンポーネントのインスタンスを取得する
+    const chart = fixture.debugElement
+      .query(By.directive(AssetsBarChartComponent))
+      .injector.get(AssetsBarChartComponent);
+    chart.onChartClick({ active: [{ index: chartIndex }] });
+
     fixture.detectChanges();
 
     // 資産合計カード
@@ -271,7 +278,11 @@ describe('HomeComponent', () => {
     await user.click(screen.getByRole('button', { name: '年次' }));
     await screen.findByText('2025-12');
 
-    fixture.componentInstance.updateCurrentAssetInfo({ active: [{ index: chartIndex }] });
+    const chart = fixture.debugElement
+      .query(By.directive(AssetsBarChartComponent))
+      .injector.get(AssetsBarChartComponent);
+    chart.onChartClick({ active: [{ index: chartIndex }] });
+
     fixture.detectChanges();
 
     // 資産合計カード
@@ -293,7 +304,11 @@ describe('HomeComponent', () => {
     });
     await screen.findByText('2026-01');
 
-    fixture.componentInstance.updateCurrentAssetInfo({ active: [{}] });
+    const chart = fixture.debugElement
+      .query(By.directive(AssetsBarChartComponent))
+      .injector.get(AssetsBarChartComponent);
+    chart.onChartClick({ active: [{}] });
+
     fixture.detectChanges();
 
     // 資産合計カード

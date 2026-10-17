@@ -2,7 +2,7 @@ import { httpResource } from '@angular/common/http';
 import { Component, computed, DestroyRef, inject, linkedSignal, type OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { AssetInfoResponseType } from '@api-spec/api-types';
-import type { ActiveElement, ChartData } from 'chart.js';
+import type { ChartData } from 'chart.js';
 import { interval } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -36,7 +36,7 @@ import type { PeriodType } from './home.types';
         <app-chart-period-toggle [(periodType)]="selectedPeriodType" />
 
         <!-- 資産内訳の棒グラフ -->
-        <app-assets-bar-chart [barChartData]="barChartData()" (updateCurrentAssetInfo)="updateCurrentAssetInfo($event)" />
+        <app-assets-bar-chart [barChartData]="barChartData()" (selectedIndex)="updateCurrentAssetInfo($event)" />
 
         <!-- 資産内訳のテーブル -->
         <app-asset-details-table [assetInfo]="currentAssetInfo()" />
@@ -87,14 +87,11 @@ export default class HomeComponent implements OnInit {
 
   /**
    * 現在の資産情報を更新する
-   * @param { active } クリックした棒グラフのグラフ情報
+   * @param index 選択した棒グラフのインデックス
    */
-  updateCurrentAssetInfo({ active }: { active?: object[] }): void {
-    const clickedIdx = (active as ActiveElement[] | undefined)?.[0]?.index;
-    if (clickedIdx === undefined) return;
-
+  updateCurrentAssetInfo(index: number): void {
     const assetsInfo = this.selectedAssetsInfo();
-    const currentAssetInfo = assetsInfo.value()?.[clickedIdx];
+    const currentAssetInfo = assetsInfo.value()?.[index];
 
     this.currentAssetInfo.set(currentAssetInfo);
   }
