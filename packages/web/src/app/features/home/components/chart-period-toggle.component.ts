@@ -1,5 +1,5 @@
 import { Component, model } from '@angular/core';
-import type { PeriodType } from '../home.component';
+import type { PeriodType } from '../home.types';
 
 // TODO: 本来であれば、単一のボタン単位でコンポーネントに切り出したいところなので余裕があるときにリファクタリングする
 @Component({

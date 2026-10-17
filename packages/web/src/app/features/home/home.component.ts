@@ -13,8 +13,7 @@ import { AssetDetailsTableComponent } from './components/asset-details-table.com
 import { AssetSummaryCardComponent } from './components/asset-summary-card.component';
 import { AssetsBarChartComponent } from './components/assets-bar-chart.component';
 import { ChartPeriodToggleComponent } from './components/chart-period-toggle.component';
-
-export type PeriodType = '月次' | '年次';
+import type { PeriodType } from './home.types';
 
 @Component({
   selector: 'app-home',
