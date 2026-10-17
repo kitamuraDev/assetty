@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { Component, DestroyRef, effect, inject, linkedSignal, type OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, linkedSignal, type OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { AssetInfoResponseType } from '@api-spec/api-types';
 import type { ActiveElement, ChartData } from 'chart.js';
@@ -37,7 +37,7 @@ export type PeriodType = '月次' | '年次';
         <app-chart-period-toggle [periodType]="selectedPeriodType()" (changePeriodType)="changePeriodType($event)" />
 
         <!-- 資産内訳の棒グラフ -->
-        <app-assets-bar-chart [barChartData]="barChartData" (updateCurrentAssetInfo)="updateCurrentAssetInfo($event)" />
+        <app-assets-bar-chart [barChartData]="barChartData()" (updateCurrentAssetInfo)="updateCurrentAssetInfo($event)" />
 
         <!-- 資産内訳のテーブル -->
         <app-asset-details-table [assetInfo]="currentAssetInfo()" />
@@ -69,21 +69,12 @@ export default class HomeComponent implements OnInit {
 
     return assetsInfo.value()?.at(-1);
   });
+  barChartData = computed<ChartData<'bar'>>(() => {
+    const selectedPeriod = this.selectedPeriodType();
+    const assetsInfo = selectedPeriod === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
 
-  barChartData: ChartData<'bar'> = {
-    labels: [],
-    datasets: [],
-  };
-
-  constructor() {
-    effect(() => {
-      const periodType = this.selectedPeriodType();
-      const assetsInfo = periodType === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
-      if (assetsInfo.hasValue()) {
-        this.convertToBarChartData(assetsInfo.value());
-      }
-    });
-  }
+    return assetsInfo.hasValue() ? this.convertToBarChartData(assetsInfo.value()) : { labels: [], datasets: [] };
+  });
 
   ngOnInit(): void {
     // 1分ごとに認証状態を確認し、認証の有効期限が切れていたらログインページへ遷移させる
@@ -98,11 +89,6 @@ export default class HomeComponent implements OnInit {
    */
   changePeriodType(type: PeriodType): void {
     this.selectedPeriodType.set(type);
-
-    const assetsInfo = type === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
-    if (assetsInfo.hasValue()) {
-      this.convertToBarChartData(assetsInfo.value());
-    }
   }
 
   /**
@@ -120,10 +106,11 @@ export default class HomeComponent implements OnInit {
   }
 
   /**
-   * 棒グラフ描画用のデータに変換する
+   * 棒グラフ描画用のデータに変換して返す
    * @param assetsInfo 資産情報の配列
+   * @returns 棒グラフ描画用データ
    */
-  private convertToBarChartData(assetsInfo: AssetInfoResponseType[]): void {
+  private convertToBarChartData(assetsInfo: AssetInfoResponseType[]): ChartData<'bar'> {
     const labels = assetsInfo.map((item) => {
       const [year, month] = item.yearMonth.split('-');
       return `${year?.slice(2)}/${month}`;
@@ -143,9 +130,6 @@ export default class HomeComponent implements OnInit {
       };
     });
 
-    this.barChartData = {
-      labels,
-      datasets,
-    };
+    return { labels, datasets };
   }
 }
