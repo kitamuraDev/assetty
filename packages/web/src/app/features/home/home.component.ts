@@ -34,7 +34,7 @@ export type PeriodType = '月次' | '年次';
         <app-asset-summary-card [assetInfo]="currentAssetInfo()" />
 
         <!-- 月次/年次の切り替えボタン -->
-        <app-chart-period-toggle [periodType]="selectedPeriodType()" (changePeriodType)="changePeriodType($event)" />
+        <app-chart-period-toggle [(periodType)]="selectedPeriodType" />
 
         <!-- 資産内訳の棒グラフ -->
         <app-assets-bar-chart [barChartData]="barChartData()" (updateCurrentAssetInfo)="updateCurrentAssetInfo($event)" />
@@ -81,14 +81,6 @@ export default class HomeComponent implements OnInit {
     interval(60000)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.authService.verifyAuth());
-  }
-
-  /**
-   * 期間（月次/年次）タイプを変更する
-   * @param type 期間タイプ
-   */
-  changePeriodType(type: PeriodType): void {
-    this.selectedPeriodType.set(type);
   }
 
   /**
