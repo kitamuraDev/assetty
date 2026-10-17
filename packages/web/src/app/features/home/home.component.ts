@@ -63,16 +63,19 @@ export default class HomeComponent implements OnInit {
   }));
 
   selectedPeriodType = signal<PeriodType>('月次');
-  currentAssetInfo = linkedSignal(() => {
-    const selectedPeriod = this.selectedPeriodType();
-    const assetsInfo = selectedPeriod === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
 
+  private selectedAssetsInfo = computed(() => {
+    const selectedPeriod = this.selectedPeriodType();
+    return selectedPeriod === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
+  });
+
+  currentAssetInfo = linkedSignal(() => {
+    const assetsInfo = this.selectedAssetsInfo();
     return assetsInfo.value()?.at(-1);
   });
-  barChartData = computed<ChartData<'bar'>>(() => {
-    const selectedPeriod = this.selectedPeriodType();
-    const assetsInfo = selectedPeriod === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
 
+  barChartData = computed<ChartData<'bar'>>(() => {
+    const assetsInfo = this.selectedAssetsInfo();
     return assetsInfo.hasValue() ? this.convertToBarChartData(assetsInfo.value()) : { labels: [], datasets: [] };
   });
 
@@ -91,7 +94,7 @@ export default class HomeComponent implements OnInit {
     const clickedIdx = (active as ActiveElement[] | undefined)?.[0]?.index;
     if (clickedIdx === undefined) return;
 
-    const assetsInfo = this.selectedPeriodType() === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
+    const assetsInfo = this.selectedAssetsInfo();
     const currentAssetInfo = assetsInfo.value()?.[clickedIdx];
 
     this.currentAssetInfo.set(currentAssetInfo);
