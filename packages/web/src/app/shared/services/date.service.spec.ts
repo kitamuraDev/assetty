@@ -14,12 +14,12 @@ describe('DateService', () => {
     service = TestBed.inject(DateService);
   });
 
-  describe('generatePast13YearMonths', () => {
-    it('現在月を含む過去13か月分を降順で返すこと', () => {
+  describe('generatePast12YearMonths', () => {
+    it('現在月を含む過去12ヶ月分を降順で返すこと', () => {
       vi.useFakeTimers();
       vi.setSystemTime(new Date(2026, 7, 24)); // 2026年8月24日を現在日時として設定
 
-      expect(service.generatePast13YearMonths()).toEqual([
+      expect(service.generatePast12YearMonths()).toEqual([
         '2026-08',
         '2026-07',
         '2026-06',
@@ -32,7 +32,6 @@ describe('DateService', () => {
         '2025-11',
         '2025-10',
         '2025-09',
-        '2025-08',
       ]);
     });
   });

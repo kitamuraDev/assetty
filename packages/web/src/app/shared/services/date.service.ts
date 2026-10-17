@@ -5,13 +5,13 @@ import { Injectable } from '@angular/core';
 })
 export class DateService {
   /**
-   * 現在の月を含めた過去13か月分の年月配列を生成する関数
+   * 現在の月を含めた過去12ヶ月分の年月配列を生成する関数
    * @returns YYYY-MM形式の年月の配列
    */
-  generatePast13YearMonths(): string[] {
+  generatePast12YearMonths(): string[] {
     const date = new Date();
 
-    return Array.from({ length: 13 }, (_, i) => {
+    return Array.from({ length: 12 }, (_, i) => {
       const currentMonthDate = new Date(date.getFullYear(), date.getMonth() - i, 1); // 各月を1日に設定
 
       return this.formatYearMonth(currentMonthDate);

@@ -13,15 +13,6 @@ import AssetsRegisterComponent from './assets-register.component';
 
 const monthlyAssets: AssetInfoResponseType[] = [
   {
-    yearMonth: '2025-01',
-    totalAssets: 15_000_000,
-    assetsByCategories: [
-      { category: '現金', amount: 4_123_456, rate: 27.49 },
-      { category: '投資信託', amount: 8_765_432, rate: 58.44 },
-      { category: '年金', amount: 2_111_112, rate: 14.07 },
-    ],
-  },
-  {
     yearMonth: '2025-02',
     totalAssets: 15_100_000,
     assetsByCategories: [
@@ -179,7 +170,7 @@ describe('AssetsRegisterComponent', () => {
     );
   });
 
-  it('年月プルダウンで現在月を含む13ヶ月を選択できること', async () => {
+  it('年月プルダウンで現在月を含む12ヶ月を選択できること', async () => {
     await render(AssetsRegisterComponent, {
       providers: [provideHttpClient(withFetch())],
     });
@@ -187,7 +178,7 @@ describe('AssetsRegisterComponent', () => {
     const yearMonthSelect = screen.getByLabelText('年月');
     const options = within(yearMonthSelect).getAllByRole('option');
 
-    expect(options).toHaveLength(13);
+    expect(options).toHaveLength(12);
     expect(options.map((option) => option.getAttribute('value'))).toEqual([
       '2026-01',
       '2025-12',
@@ -201,7 +192,6 @@ describe('AssetsRegisterComponent', () => {
       '2025-04',
       '2025-03',
       '2025-02',
-      '2025-01',
     ]);
   });
 

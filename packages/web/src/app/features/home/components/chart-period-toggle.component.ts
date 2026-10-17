@@ -1,7 +1,6 @@
-import { Component, input, output } from '@angular/core';
-import type { PeriodType } from '../home.component';
+import { Component, model } from '@angular/core';
+import type { PeriodType } from '../home.types';
 
-// TODO: 本来であれば、単一のボタン単位でコンポーネントに切り出したいところなので余裕があるときにリファクタリングする
 @Component({
   selector: 'app-chart-period-toggle',
   imports: [],
@@ -9,7 +8,7 @@ import type { PeriodType } from '../home.component';
     <div class="flex gap-1 p-2 rounded-lg bg-white shadow-sm">
       <button
         type="button"
-        (click)="changePeriodType.emit('月次')"
+        (click)="periodType.set('月次')"
         class="flex-1 p-2 rounded-md text-gray-700 cursor-pointer"
         [class.shadow-sm]="periodType() === '月次'"
       >
@@ -17,7 +16,7 @@ import type { PeriodType } from '../home.component';
       </button>
       <button
         type="button"
-        (click)="changePeriodType.emit('年次')"
+        (click)="periodType.set('年次')"
         class="flex-1 p-2 rounded-md text-gray-700 cursor-pointer"
         [class.shadow-sm]="periodType() === '年次'"
       >
@@ -27,6 +26,5 @@ import type { PeriodType } from '../home.component';
   `,
 })
 export class ChartPeriodToggleComponent {
-  periodType = input.required<PeriodType>();
-  changePeriodType = output<PeriodType>();
+  periodType = model.required<PeriodType>();
 }

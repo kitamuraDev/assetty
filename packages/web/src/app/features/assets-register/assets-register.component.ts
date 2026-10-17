@@ -32,7 +32,7 @@ import { DateService } from '../../shared/services/date.service';
               [(ngModel)]="selectedYearMonth"
               class="text-xs p-2 rounded-md border border-slate-300 text-gray-700"
             >
-              @for (month of past13YearMonths; track $index) {
+              @for (month of past12YearMonths; track $index) {
                 <option [value]="month">{{ month | date: 'yyyy年MM月' }}</option>
               }
             </select>
@@ -100,7 +100,7 @@ export default class AssetsRegisterComponent implements OnInit {
   private readonly assetsService = inject(AssetsService);
 
   private readonly monthlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
-    url: `${this.API_BASE_URL}/assets?base_date=${this.dateService.getToday()}&months_ago=13&year_end_only=false`,
+    url: `${this.API_BASE_URL}/assets?base_date=${this.dateService.getToday()}&months_ago=12&year_end_only=false`,
     method: 'GET',
     credentials: 'include',
   }));
@@ -117,7 +117,7 @@ export default class AssetsRegisterComponent implements OnInit {
     return assets?.find((a) => a.yearMonth === selectedYearMonth);
   });
 
-  readonly past13YearMonths = this.dateService.generatePast13YearMonths();
+  readonly past12YearMonths = this.dateService.generatePast12YearMonths();
   selectedYearMonth = signal(this.dateService.getCurrentYearMonth());
 
   readonly assetCategoriesWithStatus = computed(() => {
