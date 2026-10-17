@@ -62,19 +62,19 @@ export default class HomeComponent implements OnInit {
     credentials: 'include',
   }));
 
-  selectedPeriodType = signal<PeriodType>('月次');
+  readonly selectedPeriodType = signal<PeriodType>('月次');
 
-  private selectedAssetsInfo = computed(() => {
+  private readonly selectedAssetsInfo = computed(() => {
     const selectedPeriod = this.selectedPeriodType();
     return selectedPeriod === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
   });
 
-  currentAssetInfo = linkedSignal(() => {
+  readonly currentAssetInfo = linkedSignal(() => {
     const assetsInfo = this.selectedAssetsInfo();
     return assetsInfo.value()?.at(-1);
   });
 
-  barChartData = computed<ChartData<'bar'>>(() => {
+  readonly barChartData = computed<ChartData<'bar'>>(() => {
     const assetsInfo = this.selectedAssetsInfo();
     return assetsInfo.hasValue() ? this.convertToBarChartData(assetsInfo.value()) : { labels: [], datasets: [] };
   });
