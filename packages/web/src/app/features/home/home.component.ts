@@ -1,6 +1,7 @@
 import { httpResource } from '@angular/common/http';
 import { Component, computed, DestroyRef, inject, linkedSignal, type OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import type { AssetInfoResponseType } from '@api-spec/api-types';
 import type { ChartData } from 'chart.js';
 import { interval } from 'rxjs';
@@ -13,34 +14,70 @@ import { AssetDetailsTableComponent } from './components/asset-details-table.com
 import { AssetSummaryCardComponent } from './components/asset-summary-card.component';
 import { AssetsBarChartComponent } from './components/assets-bar-chart.component';
 import { ChartPeriodToggleComponent } from './components/chart-period-toggle.component';
+import { HomeStatusCardComponent } from './components/home-status-card.component';
 import type { AssetsDataAvailability, PeriodType } from './home.types';
 
 @Component({
   selector: 'app-home',
   imports: [
+    RouterLink,
     HeaderComponent,
     AssetSummaryCardComponent,
     ChartPeriodToggleComponent,
     AssetsBarChartComponent,
     AssetDetailsTableComponent,
+    HomeStatusCardComponent,
   ],
   template: `
     <app-header />
 
     <main class="max-w-5xl mx-auto p-6 bg-slate-50 min-h-[calc(100svh-89px)]">
-      <div class="flex flex-col gap-6">
-        <!-- 選択月の資産合計のカード -->
-        <app-asset-summary-card [assetInfo]="currentAssetInfo()" />
-
-        <!-- 月次/年次の切り替えボタン -->
-        <app-chart-period-toggle [(periodType)]="selectedPeriodType" [assetsDataAvailability]="assetsDataAvailability()" />
-
-        <!-- 資産内訳の棒グラフ -->
-        <app-assets-bar-chart [barChartData]="barChartData()" (selectedIndex)="updateCurrentAssetInfo($event)" />
-
-        <!-- 資産内訳のテーブル -->
-        <app-asset-details-table [assetInfo]="currentAssetInfo()" />
-      </div>
+      @let availability = assetsDataAvailability();
+      @switch (availability) {
+        @case ('error') {
+          <app-home-status-card
+            title="資産情報の読み込み失敗"
+            message="資産情報を読み込めませんでした。時間をおいて再度お試しください。"
+          >
+            <button
+              type="button"
+              (click)="monthlyAssetsInfo.reload(); yearlyAssetsInfo.reload()"
+              class="inline-flex justify-center items-center gap-2 px-5 py-3 rounded-lg bg-black text-white cursor-pointer hover:opacity-70 transition-opacity"
+            >
+              再読み込み
+            </button>
+          </app-home-status-card>
+        }
+        @case ('none') {
+          <app-home-status-card
+            title="資産情報が未登録です"
+            message="資産情報を登録すると、資産の推移や内訳を確認できるようになります。まずは現在の資産情報を登録しましょう。"
+          >
+            <a
+              routerLink="/register/assets"
+              class="inline-flex justify-center items-center gap-2 px-5 py-3 rounded-lg bg-black text-white cursor-pointer hover:opacity-70 transition-opacity"
+            >
+              資産情報を登録する
+            </a>
+          </app-home-status-card>
+        }
+        @case ('both')
+        @case ('monthly-only')
+        @case ('yearly-only') {
+          <div class="flex flex-col gap-6">
+            <!-- 選択月の資産合計のカード -->
+            <app-asset-summary-card [assetInfo]="currentAssetInfo()" />
+            <!-- 月次/年次の切り替えボタン -->
+            <app-chart-period-toggle [(periodType)]="selectedPeriodType" [assetsDataAvailability]="assetsDataAvailability()" />
+            <!-- 資産内訳の棒グラフ -->
+            <app-assets-bar-chart [barChartData]="barChartData()" (selectedIndex)="updateCurrentAssetInfo($event)" />
+            <!-- 資産内訳のテーブル -->
+            <app-asset-details-table [assetInfo]="currentAssetInfo()" />
+          </div>
+        }
+        <!-- TODO: 以下の Exhaustive type checking は記述に不備はないが現在のAngular compiler 21.1.5 が構文未対応のためビルドが通らない。なのでバージョンを上げた時にコメントアウトを外すこと -->
+        <!-- @default never; -->
+      }
     </main>
   `,
 })
@@ -50,18 +87,19 @@ export default class HomeComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly dateService = inject(DateService);
 
-  private readonly monthlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
+  protected readonly monthlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
     url: `${this.API_BASE_URL}/assets?base_date=${this.dateService.getToday()}&months_ago=12&year_end_only=false`,
     method: 'GET',
     credentials: 'include',
   }));
-  private readonly yearlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
+  protected readonly yearlyAssetsInfo = httpResource<AssetInfoResponseType[]>(() => ({
     url: `${this.API_BASE_URL}/assets?base_date=${this.dateService.getToday()}&months_ago=60&year_end_only=true`,
     method: 'GET',
     credentials: 'include',
   }));
 
   readonly assetsDataAvailability = computed<AssetsDataAvailability>(() => {
+    if (this.monthlyAssetsInfo.error() || this.yearlyAssetsInfo.error()) return 'error';
     if (!this.monthlyAssetsInfo.hasValue() || !this.yearlyAssetsInfo.hasValue()) return 'none';
 
     const hasMonthlyAssets = this.monthlyAssetsInfo.value().length > 0;

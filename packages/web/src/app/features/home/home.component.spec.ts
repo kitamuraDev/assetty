@@ -257,7 +257,7 @@ describe('HomeComponent', () => {
     expect(screen.getByText('18,100,000')).toBeVisible();
   });
 
-  it('月次と年次のデータが存在するときは、月次が選択されてどちらのボタンも有効であること', async () => {
+  it('月次と年次のデータが存在するとき、月次が選択されてどちらのボタンも有効であること', async () => {
     const { fixture } = await render(HomeComponent, {
       providers: [provideHttpClient(withFetch())],
     });
@@ -284,6 +284,48 @@ describe('HomeComponent', () => {
     expect(screen.queryByText('22,345,678')).not.toBeInTheDocument();
     expect(screen.getByText('2026-01')).toBeVisible();
     expect(screen.getByText('18,100,000')).toBeVisible();
+  });
+
+  it('資産データが存在しないとき、資産情報登録への案内が表示されること', async () => {
+    mockServer.use(
+      http.get(`${API_BASE_URL}/assets`, () => {
+        return HttpResponse.json([]);
+      }),
+    );
+
+    await render(HomeComponent, {
+      providers: [provideHttpClient(withFetch())],
+    });
+
+    // 資産情報登録への案内が表示されること
+    expect(screen.getByRole('heading', { name: '資産情報が未登録です' })).toBeVisible();
+    expect(screen.getByRole('link', { name: '資産情報を登録する' })).toHaveAttribute('href', '/register/assets');
+
+    // 資産合計カードと内訳テーブルは表示されないこと
+    expect(screen.queryByText('2026-01')).not.toBeInTheDocument();
+    expect(screen.queryByText('18,100,000')).not.toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
+
+  it('資産データの取得に失敗したとき、失敗した旨の案内が表示されること', async () => {
+    mockServer.use(
+      http.get(`${API_BASE_URL}/assets`, () => {
+        return HttpResponse.error();
+      }),
+    );
+
+    await render(HomeComponent, {
+      providers: [provideHttpClient(withFetch())],
+    });
+
+    // 失敗した旨の案内が表示されること
+    expect(await screen.findByRole('heading', { name: '資産情報の読み込み失敗' })).toBeVisible();
+    expect(screen.getByRole('button', { name: '再読み込み' })).toBeVisible();
+
+    // 資産合計カードと内訳テーブルは表示されないこと
+    expect(screen.queryByText('2026-01')).not.toBeInTheDocument();
+    expect(screen.queryByText('18,100,000')).not.toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
   });
 
   it('年次から月次に選択を切り替えたとき、月次の最新データが資産合計カードと内訳テーブルに表示されること', async () => {
@@ -336,32 +378,6 @@ describe('HomeComponent', () => {
     expect(within(table).getByText('9,789,012')).toBeVisible();
     expect(within(table).getByText('年金')).toBeVisible();
     expect(within(table).getByText('2,632,087')).toBeVisible();
-  });
-
-  it('資産データが存在しないとき、資産合計カードと内訳テーブルにデータが表示されないこと', async () => {
-    mockServer.use(
-      http.get(`${API_BASE_URL}/assets`, () => {
-        return HttpResponse.json([]);
-      }),
-    );
-
-    const { fixture } = await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
-    });
-    // 空配列の応答処理と画面反映を待ってから、データが表示されないことを確認する
-    await fixture.whenStable();
-    fixture.detectChanges();
-
-    // 資産合計カード
-    // queryByTextは未検出でも例外にならずnullを返すため、存在しないことを確認できる
-    expect(screen.queryByText('2026-01')).not.toBeInTheDocument();
-    expect(screen.queryByText('18,100,000')).not.toBeInTheDocument();
-
-    // 内訳テーブル
-    const table = screen.getByRole('table');
-    expect(within(table).queryByText('現金')).not.toBeInTheDocument();
-    expect(within(table).queryByText('投資信託')).not.toBeInTheDocument();
-    expect(within(table).queryByText('年金')).not.toBeInTheDocument();
   });
 
   it.each(
