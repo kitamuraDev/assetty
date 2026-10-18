@@ -207,6 +207,127 @@ describe('HomeComponent', () => {
     expect(within(table).getByText('3,876,544')).toBeVisible();
   });
 
+  it('月次データがないとき、年次が選択されて月次ボタンが無効になること', async () => {
+    mockServer.use(
+      http.get(`${API_BASE_URL}/assets`, ({ request }) => {
+        const yearEndOnly = new URL(request.url).searchParams.get('year_end_only');
+        return HttpResponse.json(yearEndOnly === 'true' ? yearlyAssets : []);
+      }),
+    );
+
+    const { fixture } = await render(HomeComponent, {
+      providers: [provideHttpClient(withFetch())],
+    });
+
+    // 年次が選択されて月次ボタンが無効になること
+    expect(await screen.findByText('2025-12')).toBeVisible();
+    expect(fixture.componentInstance.assetsDataAvailability()).toBe('yearly-only');
+    expect(fixture.componentInstance.selectedPeriodType()).toBe('年次');
+    expect(screen.getByRole('button', { name: '月次' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: '年次' })).toBeEnabled();
+
+    // 無効になってる月次をクリックしても年次の現在月からデータが切り替わらないこと
+    await user.click(screen.getByRole('button', { name: '月次' }));
+    expect(screen.getByText('2025-12')).toBeVisible();
+    expect(screen.getByText('22,345,678')).toBeVisible();
+  });
+
+  it('年次データがないとき、月次が選択されて年次ボタンが無効になること', async () => {
+    mockServer.use(
+      http.get(`${API_BASE_URL}/assets`, ({ request }) => {
+        const yearEndOnly = new URL(request.url).searchParams.get('year_end_only');
+        return HttpResponse.json(yearEndOnly === 'true' ? [] : monthlyAssets);
+      }),
+    );
+
+    const { fixture } = await render(HomeComponent, {
+      providers: [provideHttpClient(withFetch())],
+    });
+
+    // 月次が選択されて年次ボタンが無効になること
+    expect(await screen.findByText('2026-01')).toBeVisible();
+    expect(fixture.componentInstance.assetsDataAvailability()).toBe('monthly-only');
+    expect(fixture.componentInstance.selectedPeriodType()).toBe('月次');
+    expect(screen.getByRole('button', { name: '月次' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: '年次' })).toBeDisabled();
+
+    // 無効になってる年次をクリックしても月次の現在月からデータが切り替わらないこと
+    await user.click(screen.getByRole('button', { name: '年次' }));
+    expect(screen.getByText('2026-01')).toBeVisible();
+    expect(screen.getByText('18,100,000')).toBeVisible();
+  });
+
+  it('月次と年次のデータが存在するとき、月次が選択されてどちらのボタンも有効であること', async () => {
+    const { fixture } = await render(HomeComponent, {
+      providers: [provideHttpClient(withFetch())],
+    });
+
+    // 月次が選択されてどちらのボタンも有効であること
+    expect(await screen.findByText('2026-01')).toBeVisible();
+    expect(fixture.componentInstance.assetsDataAvailability()).toBe('both');
+    expect(fixture.componentInstance.selectedPeriodType()).toBe('月次');
+    expect(screen.getByRole('button', { name: '月次' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: '年次' })).toBeEnabled();
+
+    // 年次をクリックしたら年次の最新データに切り替わること
+    await user.click(screen.getByRole('button', { name: '年次' }));
+
+    expect(screen.queryByText('2026-01')).not.toBeInTheDocument();
+    expect(screen.queryByText('18,100,000')).not.toBeInTheDocument();
+    expect(screen.getByText('2025-12')).toBeVisible();
+    expect(screen.getByText('22,345,678')).toBeVisible();
+
+    // 月次をクリックしたら月次の最新データに切り替わること
+    await user.click(screen.getByRole('button', { name: '月次' }));
+
+    expect(screen.queryByText('2025-12')).not.toBeInTheDocument();
+    expect(screen.queryByText('22,345,678')).not.toBeInTheDocument();
+    expect(screen.getByText('2026-01')).toBeVisible();
+    expect(screen.getByText('18,100,000')).toBeVisible();
+  });
+
+  it('資産データが存在しないとき、資産情報登録への案内が表示されること', async () => {
+    mockServer.use(
+      http.get(`${API_BASE_URL}/assets`, () => {
+        return HttpResponse.json([]);
+      }),
+    );
+
+    await render(HomeComponent, {
+      providers: [provideHttpClient(withFetch())],
+    });
+
+    // 資産情報登録への案内が表示されること
+    expect(screen.getByRole('heading', { name: '資産情報が未登録です' })).toBeVisible();
+    expect(screen.getByRole('link', { name: '資産情報を登録する' })).toHaveAttribute('href', '/register/assets');
+
+    // 資産合計カードと内訳テーブルは表示されないこと
+    expect(screen.queryByText('2026-01')).not.toBeInTheDocument();
+    expect(screen.queryByText('18,100,000')).not.toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
+
+  it('資産データの取得に失敗したとき、失敗した旨の案内が表示されること', async () => {
+    mockServer.use(
+      http.get(`${API_BASE_URL}/assets`, () => {
+        return HttpResponse.error();
+      }),
+    );
+
+    await render(HomeComponent, {
+      providers: [provideHttpClient(withFetch())],
+    });
+
+    // 失敗した旨の案内が表示されること
+    expect(await screen.findByRole('heading', { name: '資産情報の読み込み失敗' })).toBeVisible();
+    expect(screen.getByRole('button', { name: '再読み込み' })).toBeVisible();
+
+    // 資産合計カードと内訳テーブルは表示されないこと
+    expect(screen.queryByText('2026-01')).not.toBeInTheDocument();
+    expect(screen.queryByText('18,100,000')).not.toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
+
   it('年次から月次に選択を切り替えたとき、月次の最新データが資産合計カードと内訳テーブルに表示されること', async () => {
     await render(HomeComponent, {
       providers: [provideHttpClient(withFetch())],
@@ -220,6 +341,33 @@ describe('HomeComponent', () => {
 
     // 資産合計カード
     expect(await screen.findByText('2026-01')).toBeVisible();
+    expect(screen.getByText('18,100,000')).toBeVisible();
+
+    // 内訳テーブル
+    const table = screen.getByRole('table');
+    expect(within(table).getByText('現金')).toBeVisible();
+    expect(within(table).getByText('5,678,901')).toBeVisible();
+    expect(within(table).getByText('投資信託')).toBeVisible();
+    expect(within(table).getByText('9,789,012')).toBeVisible();
+    expect(within(table).getByText('年金')).toBeVisible();
+    expect(within(table).getByText('2,632,087')).toBeVisible();
+  });
+
+  it('グラフが選択されなかったとき、資産合計カードと内訳テーブルは初期データのままであること', async () => {
+    const { fixture } = await render(HomeComponent, {
+      providers: [provideHttpClient(withFetch())],
+    });
+    await screen.findByText('2026-01');
+
+    const chart = fixture.debugElement
+      .query(By.directive(AssetsBarChartComponent))
+      .injector.get(AssetsBarChartComponent);
+    chart.onChartClick({ active: [{}] });
+
+    fixture.detectChanges();
+
+    // 資産合計カード
+    expect(screen.getByText('2026-01')).toBeVisible();
     expect(screen.getByText('18,100,000')).toBeVisible();
 
     // 内訳テーブル
@@ -296,58 +444,5 @@ describe('HomeComponent', () => {
       expect(within(table).getByText(category.amount.toLocaleString('en-US'))).toBeVisible();
       expect(within(table).getByText(String(category.rate))).toBeVisible();
     }
-  });
-
-  it('グラフが選択されなかったとき、資産合計カードと内訳テーブルは初期データのままであること', async () => {
-    const { fixture } = await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
-    });
-    await screen.findByText('2026-01');
-
-    const chart = fixture.debugElement
-      .query(By.directive(AssetsBarChartComponent))
-      .injector.get(AssetsBarChartComponent);
-    chart.onChartClick({ active: [{}] });
-
-    fixture.detectChanges();
-
-    // 資産合計カード
-    expect(screen.getByText('2026-01')).toBeVisible();
-    expect(screen.getByText('18,100,000')).toBeVisible();
-
-    // 内訳テーブル
-    const table = screen.getByRole('table');
-    expect(within(table).getByText('現金')).toBeVisible();
-    expect(within(table).getByText('5,678,901')).toBeVisible();
-    expect(within(table).getByText('投資信託')).toBeVisible();
-    expect(within(table).getByText('9,789,012')).toBeVisible();
-    expect(within(table).getByText('年金')).toBeVisible();
-    expect(within(table).getByText('2,632,087')).toBeVisible();
-  });
-
-  it('資産データが存在しないとき、資産合計カードと内訳テーブルにデータが表示されないこと', async () => {
-    mockServer.use(
-      http.get(`${API_BASE_URL}/assets`, () => {
-        return HttpResponse.json([]);
-      }),
-    );
-
-    const { fixture } = await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
-    });
-    // 空配列の応答処理と画面反映を待ってから、データが表示されないことを確認する
-    await fixture.whenStable();
-    fixture.detectChanges();
-
-    // 資産合計カード
-    // queryByTextは未検出でも例外にならずnullを返すため、存在しないことを確認できる
-    expect(screen.queryByText('2026-01')).not.toBeInTheDocument();
-    expect(screen.queryByText('18,100,000')).not.toBeInTheDocument();
-
-    // 内訳テーブル
-    const table = screen.getByRole('table');
-    expect(within(table).queryByText('現金')).not.toBeInTheDocument();
-    expect(within(table).queryByText('投資信託')).not.toBeInTheDocument();
-    expect(within(table).queryByText('年金')).not.toBeInTheDocument();
   });
 });
