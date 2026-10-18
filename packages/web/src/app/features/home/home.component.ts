@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { Component, computed, DestroyRef, inject, linkedSignal, type OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, linkedSignal, type OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { AssetInfoResponseType } from '@api-spec/api-types';
 import type { ChartData } from 'chart.js';
@@ -13,7 +13,7 @@ import { AssetDetailsTableComponent } from './components/asset-details-table.com
 import { AssetSummaryCardComponent } from './components/asset-summary-card.component';
 import { AssetsBarChartComponent } from './components/assets-bar-chart.component';
 import { ChartPeriodToggleComponent } from './components/chart-period-toggle.component';
-import type { PeriodType } from './home.types';
+import type { AssetsDataAvailability, PeriodType } from './home.types';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +33,7 @@ import type { PeriodType } from './home.types';
         <app-asset-summary-card [assetInfo]="currentAssetInfo()" />
 
         <!-- 月次/年次の切り替えボタン -->
-        <app-chart-period-toggle [(periodType)]="selectedPeriodType" />
+        <app-chart-period-toggle [(periodType)]="selectedPeriodType" [assetsDataAvailability]="assetsDataAvailability()" />
 
         <!-- 資産内訳の棒グラフ -->
         <app-assets-bar-chart [barChartData]="barChartData()" (selectedIndex)="updateCurrentAssetInfo($event)" />
@@ -61,16 +61,32 @@ export default class HomeComponent implements OnInit {
     credentials: 'include',
   }));
 
-  readonly selectedPeriodType = signal<PeriodType>('月次');
+  readonly assetsDataAvailability = computed<AssetsDataAvailability>(() => {
+    if (!this.monthlyAssetsInfo.hasValue() || !this.yearlyAssetsInfo.hasValue()) return 'none';
+
+    const hasMonthlyAssets = this.monthlyAssetsInfo.value().length > 0;
+    const hasYearlyAssets = this.yearlyAssetsInfo.value().length > 0;
+
+    if (hasMonthlyAssets && hasYearlyAssets) return 'both';
+    if (hasMonthlyAssets) return 'monthly-only';
+    if (hasYearlyAssets) return 'yearly-only';
+
+    return 'none';
+  });
+
+  readonly selectedPeriodType = linkedSignal<AssetsDataAvailability, PeriodType>({
+    source: this.assetsDataAvailability,
+    computation: (availability) => (availability === 'yearly-only' ? '年次' : '月次'),
+  });
 
   private readonly selectedAssetsInfo = computed(() => {
     const selectedPeriod = this.selectedPeriodType();
     return selectedPeriod === '月次' ? this.monthlyAssetsInfo : this.yearlyAssetsInfo;
   });
 
-  readonly currentAssetInfo = linkedSignal(() => {
-    const assetsInfo = this.selectedAssetsInfo();
-    return assetsInfo.value()?.at(-1);
+  readonly currentAssetInfo = linkedSignal({
+    source: this.selectedAssetsInfo,
+    computation: (assetsInfo) => assetsInfo.value()?.at(-1),
   });
 
   readonly barChartData = computed<ChartData<'bar'>>(() => {
