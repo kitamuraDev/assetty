@@ -298,13 +298,40 @@ describe('HomeComponent', () => {
     });
 
     // 資産情報登録への案内が表示されること
-    expect(screen.getByRole('heading', { name: '資産情報が未登録です' })).toBeVisible();
+    expect(await screen.findByRole('heading', { name: '資産情報が未登録です' })).toBeVisible();
     expect(screen.getByRole('link', { name: '資産情報を登録する' })).toHaveAttribute('href', '/register/assets');
 
     // 資産合計カードと内訳テーブルは表示されないこと
     expect(screen.queryByText('2026-01')).not.toBeInTheDocument();
     expect(screen.queryByText('18,100,000')).not.toBeInTheDocument();
     expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
+
+  it('資産データの取得中のとき、データ取得中である旨の案内が表示されること', async () => {
+    let releaseAssetsResponse!: () => void;
+    const assetsResponseReleased = new Promise<void>((resolve) => {
+      releaseAssetsResponse = resolve;
+    });
+
+    mockServer.use(
+      http.get(`${API_BASE_URL}/assets`, async ({ request }) => {
+        const yearEndOnly = new URL(request.url).searchParams.get('year_end_only');
+        await assetsResponseReleased;
+        return HttpResponse.json(yearEndOnly === 'true' ? yearlyAssets : monthlyAssets);
+      }),
+    );
+
+    await render(HomeComponent, {
+      providers: [provideHttpClient(withFetch())],
+    });
+
+    expect(await screen.findByRole('heading', { name: '資産情報を読み込み中です' })).toBeVisible();
+    expect(screen.getByText('資産情報を取得しています。しばらくお待ちください。')).toBeVisible();
+
+    releaseAssetsResponse();
+
+    expect(await screen.findByText('2026-01')).toBeVisible();
+    expect(screen.getByText('18,100,000')).toBeVisible();
   });
 
   it('資産データの取得に失敗したとき、失敗した旨の案内が表示されること', async () => {

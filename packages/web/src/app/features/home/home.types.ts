@@ -3,10 +3,11 @@
  *  - monthly-only: 月次の資産データのみが存在する
  *  - yearly-only: 年次の資産データのみが存在する
  *  - both: 両方の資産データが存在する
- *  - none: どちらかの取得が未確定の場合、または両方の資産データが存在しない
+ *  - none: 両方の資産データが存在しない
  *  - error: 月次または年次の資産データ取得に失敗した
+ *  - loading: 月次または年次の資産データを取得中、または取得値がまだないとき
  */
-export type AssetsDataAvailability = 'monthly-only' | 'yearly-only' | 'both' | 'none' | 'error';
+export type AssetsDataAvailability = 'monthly-only' | 'yearly-only' | 'both' | 'none' | 'error' | 'loading';
 
 /**
  * 資産推移グラフで選択する集計期間を表す

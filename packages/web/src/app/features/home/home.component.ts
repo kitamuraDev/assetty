@@ -48,6 +48,12 @@ import type { AssetsDataAvailability, PeriodType } from './home.types';
             </button>
           </app-home-status-card>
         }
+        @case ('loading') {
+          <app-home-status-card
+            title="資産情報を読み込み中です"
+            message="資産情報を取得しています。しばらくお待ちください。"
+          />
+        }
         @case ('none') {
           <app-home-status-card
             title="資産情報が未登録です"
@@ -100,16 +106,21 @@ export default class HomeComponent implements OnInit {
 
   readonly assetsDataAvailability = computed<AssetsDataAvailability>(() => {
     if (this.monthlyAssetsInfo.error() || this.yearlyAssetsInfo.error()) return 'error';
-    if (!this.monthlyAssetsInfo.hasValue() || !this.yearlyAssetsInfo.hasValue()) return 'none';
+    if (this.monthlyAssetsInfo.isLoading() || this.yearlyAssetsInfo.isLoading()) return 'loading';
 
-    const hasMonthlyAssets = this.monthlyAssetsInfo.value().length > 0;
-    const hasYearlyAssets = this.yearlyAssetsInfo.value().length > 0;
+    if (this.monthlyAssetsInfo.hasValue() && this.yearlyAssetsInfo.hasValue()) {
+      const hasMonthly = this.monthlyAssetsInfo.value().length > 0;
+      const hasYearly = this.yearlyAssetsInfo.value().length > 0;
 
-    if (hasMonthlyAssets && hasYearlyAssets) return 'both';
-    if (hasMonthlyAssets) return 'monthly-only';
-    if (hasYearlyAssets) return 'yearly-only';
+      if (hasMonthly && hasYearly) return 'both';
+      if (hasMonthly) return 'monthly-only';
+      if (hasYearly) return 'yearly-only';
 
-    return 'none';
+      return 'none';
+    }
+
+    // hasValue() === false は「配列が空」ではなく、「まだ値がない」状態のため、loadingを返す
+    return 'loading';
   });
 
   readonly selectedPeriodType = linkedSignal<AssetsDataAvailability, PeriodType>({
