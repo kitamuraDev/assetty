@@ -2,7 +2,6 @@ import type { AssetsRequestQueryParametersType, CreateAssetRecordsRequestBodyTyp
 import {
   array,
   check,
-  endsWith,
   type GenericSchema,
   integer,
   isoDate,
@@ -13,6 +12,7 @@ import {
   number,
   object,
   pipe,
+  safeParse,
   string,
   transform,
   union,
@@ -39,14 +39,29 @@ export const AssetsRequestQueryParameterSchema = object(
   getMissingKeyValidationMessage,
 ) satisfies GenericSchema<AssetsRequestQueryParametersType>;
 
+const CreateAssetRecordDateBaseSchema = pipe(
+  string('日付は文字列である必要があります'),
+  nonEmpty('日付は必須です'),
+  isoDate('日付形式はYYYY-MM-DDである必要があります'),
+);
+
 export const CreateAssetRecordsRequestBodySchema = array(
   object(
     {
       date: pipe(
-        string(),
-        isoDate('日付形式はYYYY-MM-DDである必要があります'),
-        nonEmpty('日付は必須です'),
-        endsWith('-01', '月初日（YYYY-MM-01形式）である必要があります'),
+        CreateAssetRecordDateBaseSchema,
+
+        // checkはtrueで検証成功となる。ベーススキーマの失敗時は!successをtrueにして追加エラーを防ぐためにORの否定形を取ってる
+        check(
+          // biome-ignore format: 上下でフォーマットを統一したい
+          (date) => !safeParse(CreateAssetRecordDateBaseSchema, date).success || date.endsWith('-01'),
+          '月初日（YYYY-MM-01形式）である必要があります',
+        ),
+        check(
+          // biome-ignore format: 上下でフォーマットを統一したい
+          (date) => !safeParse(CreateAssetRecordDateBaseSchema, date).success || date <= new Date().toISOString().slice(0, 10),
+          '未来の日付は登録できません',
+        ),
       ),
       amount: pipe(
         number('金額は数値である必要があります'),
