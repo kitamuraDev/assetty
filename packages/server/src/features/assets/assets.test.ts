@@ -351,7 +351,7 @@ describe('/assets', () => {
       {
         name: 'dateが文字列でなければ400番を返すこと',
         body: JSON.stringify([{ date: 20260601, amount: 1, assetCategoryId: 1 }]),
-        messages: ['Invalid type: Expected string but received 20260601'],
+        messages: ['日付は文字列である必要があります'],
       },
       {
         name: 'dateがYYYY-MM-DD形式でなければ400番を返すこと',
@@ -361,16 +361,18 @@ describe('/assets', () => {
       {
         name: 'dateが空文字であれば400番を返すこと',
         body: JSON.stringify([{ date: '', amount: 1, assetCategoryId: 1 }]),
-        messages: [
-          '日付形式はYYYY-MM-DDである必要があります',
-          '日付は必須です',
-          '月初日（YYYY-MM-01形式）である必要があります',
-        ],
+        messages: ['日付は必須です', '日付形式はYYYY-MM-DDである必要があります'],
       },
       {
         name: 'dateが月初日でなければ400番を返すこと',
         body: JSON.stringify([{ date: '2026-06-02', amount: 1, assetCategoryId: 1 }]),
         messages: ['月初日（YYYY-MM-01形式）である必要があります'],
+      },
+      // NOTE: 以下のテストは現実が 2099-12-01 を超えたときに成功するようになるため、日付を固定するのが望ましい。しかし些細な問題なので時間のあるときに是正する
+      {
+        name: 'dateが未来の日付であれば400番を返すこと',
+        body: JSON.stringify([{ date: '2099-12-01', amount: 1, assetCategoryId: 1 }]),
+        messages: ['未来の日付は登録できません'],
       },
       {
         name: 'amountが欠損していれば400番を返すこと',
