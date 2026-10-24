@@ -228,16 +228,48 @@ describe('AssetsRegisterComponent', () => {
     }
   });
 
-  it('資産カテゴリが未選択のときは登録ボタンが非活性であること', async () => {
-    await render(AssetsRegisterComponent, {
+  it('選択した全ての資産カテゴリに1以上の金額が入力されるまで登録ボタンが非活性であること', async () => {
+    const { fixture } = await render(AssetsRegisterComponent, {
       providers: [provideHttpClient(withFetch())],
     });
+    const registerButton = screen.getByRole('button', { name: '資産情報を登録する' });
 
     // 資産カテゴリの選択肢がすべて見つかる（DOM上に存在する）まで待つ
     await Promise.all(assetCategories.map(async ({ name }) => await screen.findByRole('option', { name })));
 
     expect(screen.queryByRole('spinbutton')).not.toBeInTheDocument(); // 画面上に何らかの数値入力ボックスが存在しないこと
-    expect(screen.getByRole('button', { name: '資産情報を登録する' })).toBeDisabled();
+    expect(registerButton).toBeDisabled(); // 資産カテゴリが未選択のため非活性
+
+    // 年月/資産カテゴリ 選択
+    // NOTE: `user.selectOptions`で資産カテゴリも複数選択するのが定石だが意図した要素が選択されない不具合？があるので`componentInstance`を直接書き換えている
+    await user.selectOptions(screen.getByLabelText('年月'), '2026-01');
+    fixture.componentInstance.selectedAssetCategories.set([
+      { id: 1, name: '現金' },
+      { id: 2, name: '債券' },
+      { id: 3, name: '国内株式' },
+    ]);
+    fixture.detectChanges();
+
+    expect(registerButton).toBeDisabled(); // 1以上の金額が入力されていないため非活性
+
+    const cashAmount = screen.getByRole('spinbutton', { name: '現金' });
+    await user.clear(cashAmount);
+    await user.type(cashAmount, '2738173');
+    expect(registerButton).toBeDisabled(); // 他の資産カテゴリに1以上の金額が入力されていないため非活性
+
+    const bondAmount = screen.getByRole('spinbutton', { name: '債券' });
+    await user.clear(bondAmount);
+    await user.type(bondAmount, '9218381');
+    expect(registerButton).toBeDisabled(); // 他の資産カテゴリに1以上の金額が入力されていないため非活性
+
+    const stockAmount = screen.getByRole('spinbutton', { name: '国内株式' });
+    await user.clear(stockAmount);
+    await user.type(stockAmount, '19829.4');
+    expect(registerButton).toBeDisabled(); // 整数ではないため非活性
+
+    await user.clear(stockAmount);
+    await user.type(stockAmount, '1982948');
+    expect(registerButton).toBeEnabled(); // 選択した全ての資産カテゴリに1以上の金額が入力されたため活性
   });
 
   it('資産情報の登録に成功したら、登録完了のメッセージがalertに表示されること', async () => {
@@ -284,6 +316,11 @@ describe('AssetsRegisterComponent', () => {
     await user.selectOptions(screen.getByLabelText('年月'), '2026-01');
     await user.selectOptions(screen.getByLabelText('資産カテゴリ'), screen.getByRole('option', { name: '債券' }));
 
+    // 金額 入力
+    const amountInput = screen.getByRole('spinbutton', { name: '債券' });
+    await user.clear(amountInput);
+    await user.type(amountInput, '1');
+
     // 登録ボタン 押下
     await user.click(screen.getByRole('button', { name: '資産情報を登録する' }));
     await fixture.whenStable();
@@ -306,6 +343,11 @@ describe('AssetsRegisterComponent', () => {
     // 年月/資産カテゴリ 選択
     await user.selectOptions(screen.getByLabelText('年月'), '2026-01');
     await user.selectOptions(screen.getByLabelText('資産カテゴリ'), screen.getByRole('option', { name: '債券' }));
+
+    // 金額 入力
+    const amountInput = screen.getByRole('spinbutton', { name: '債券' });
+    await user.clear(amountInput);
+    await user.type(amountInput, '1');
 
     // 登録ボタン 押下
     await user.click(screen.getByRole('button', { name: '資産情報を登録する' }));

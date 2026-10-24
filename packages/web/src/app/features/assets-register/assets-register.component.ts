@@ -5,12 +5,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import type { AssetCategoryResponseType, AssetInfoResponseType } from '@api-spec/api-types';
 import { interval } from 'rxjs';
+import { array, integer, looseObject, minLength, minValue, number, pipe, safeParse } from 'valibot';
 
 import { environment } from '../../../environments/environment';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { AssetsService } from '../../shared/services/assets.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { DateService } from '../../shared/services/date.service';
+
+const SelectedAssetCategoriesWithAmountSchema = pipe(
+  array(looseObject({ amount: pipe(number(), integer(), minValue(1)) })),
+  minLength(1),
+);
 
 @Component({
   selector: 'app-assets-register',
@@ -82,7 +88,7 @@ import { DateService } from '../../shared/services/date.service';
           type="button"
           aria-label="資産情報を登録する"
           (click)="onRegister()"
-          [disabled]="selectedAssetCategories().length === 0"
+          [disabled]="!canRegister()"
           class="flex justify-center items-center gap-2 p-3 mt-6 text-base rounded-lg bg-black text-white cursor-pointer hover:opacity-70 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
         >
           登録
@@ -110,15 +116,15 @@ export default class AssetsRegisterComponent implements OnInit {
     credentials: 'include',
   }));
 
+  readonly past12YearMonths = this.dateService.generatePast12YearMonths();
+  selectedYearMonth = signal(this.dateService.getCurrentYearMonth());
+
   private readonly selectedAssetsInfo = computed(() => {
     const selectedYearMonth = this.selectedYearMonth();
     const assets = this.monthlyAssetsInfo.value();
 
     return assets?.find((a) => a.yearMonth === selectedYearMonth);
   });
-
-  readonly past12YearMonths = this.dateService.generatePast12YearMonths();
-  selectedYearMonth = signal(this.dateService.getCurrentYearMonth());
 
   readonly assetCategoriesWithStatus = computed(() => {
     const assetCategoriesRef = this.assetCategories;
@@ -139,9 +145,14 @@ export default class AssetsRegisterComponent implements OnInit {
   });
   selectedAssetCategories = signal<{ id: number; name: string }[]>([]);
 
-  selectedAssetCategoriesWithAmount = linkedSignal(() => {
-    return this.selectedAssetCategories().map((category) => ({ ...category, amount: 0 }));
+  selectedAssetCategoriesWithAmount = linkedSignal({
+    source: this.selectedAssetCategories,
+    computation: (categories) => categories.map((category) => ({ ...category, amount: 0 })),
   });
+
+  canRegister(): boolean {
+    return safeParse(SelectedAssetCategoriesWithAmountSchema, this.selectedAssetCategoriesWithAmount()).success;
+  }
 
   async onRegister(): Promise<void> {
     if (!confirm('資産情報を登録しますか？')) return;
