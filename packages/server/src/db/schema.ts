@@ -1,3 +1,4 @@
+import type { AssetCategoryResponseType } from '@api-spec/api-types';
 import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 import { nanoid } from 'nanoid';
@@ -20,7 +21,7 @@ export const users = sqliteTable('users', {
  */
 export const assetCategories = sqliteTable('asset_categories', {
   id: integer('id').primaryKey(),
-  name: text('name').unique().notNull(),
+  name: text('name').$type<AssetCategoryResponseType['name']>().unique().notNull(),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
 });

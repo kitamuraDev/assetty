@@ -10,7 +10,7 @@ import type { AssetInfoResponseType } from '@api-spec/api-types';
       <table class="w-full">
         <thead class="border-b border-slate-200 bg-slate-50">
           <tr>
-            <th class="px-4 py-3 text-left text-sm text-gray-700">資産クラス</th>
+            <th class="px-4 py-3 text-left text-sm text-gray-700">資産カテゴリ</th>
             <th class="px-4 py-3 text-right text-sm text-gray-700">時価評価額</th>
             <th class="px-4 py-3 text-right text-sm text-gray-700">保有割合</th>
           </tr>

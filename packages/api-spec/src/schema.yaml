@@ -387,6 +387,10 @@ components:
           type: string
           description: ユーザー名
       required: [id, name]
+    AssetCategory:
+      type: string
+      description: 資産カテゴリ名
+      enum: [現金, 債券, 国内株式, 海外株式, 投資信託, 現物不動産, REIT, コモディティ, 暗号資産, 年金, 保険, その他]
     AssetCategoryResponse:
       type: object
       description: 資産カテゴリ
@@ -395,7 +399,7 @@ components:
           type: number
           description: 資産カテゴリID
         name:
-          type: string
+          $ref: '#/components/schemas/AssetCategory'
           description: 資産カテゴリ名
       required: [id, name]
     AssetAllocationSchema:
@@ -403,7 +407,7 @@ components:
       description: 資産内訳
       properties:
         category:
-          type: string
+          $ref: '#/components/schemas/AssetCategory'
           description: 資産カテゴリ名
         amount:
           type: number
