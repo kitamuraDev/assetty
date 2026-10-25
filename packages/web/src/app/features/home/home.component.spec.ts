@@ -407,69 +407,65 @@ describe('HomeComponent', () => {
     expect(within(table).getByText('2,632,087')).toBeVisible();
   });
 
-  it.each(
-    monthlyAssets.map((asset, chartIndex) => ({ asset, chartIndex })),
-  )('月次グラフで$asset.yearMonthを選択したとき、資産合計カードと内訳テーブルが切り替わること', async ({
-    asset,
-    chartIndex,
-  }) => {
-    const { fixture } = await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
-    });
-    await screen.findByText('2026-01');
+  it.each(monthlyAssets.map((asset, chartIndex) => ({ asset, chartIndex })))(
+    '月次グラフで$asset.yearMonthを選択したとき、資産合計カードと内訳テーブルが切り替わること',
+    async ({ asset, chartIndex }) => {
+      const { fixture } = await render(HomeComponent, {
+        providers: [provideHttpClient(withFetch())],
+      });
+      await screen.findByText('2026-01');
 
-    // テスト対象の画面から AssetsBarChartComponent が配置された DebugElement を探して Angular Injector からコンポーネントのインスタンスを取得する
-    const chart = fixture.debugElement
-      .query(By.directive(AssetsBarChartComponent))
-      .injector.get(AssetsBarChartComponent);
-    chart.onChartClick({ active: [{ index: chartIndex }] });
+      // テスト対象の画面から AssetsBarChartComponent が配置された DebugElement を探して Angular Injector からコンポーネントのインスタンスを取得する
+      const chart = fixture.debugElement
+        .query(By.directive(AssetsBarChartComponent))
+        .injector.get(AssetsBarChartComponent);
+      chart.onChartClick({ active: [{ index: chartIndex }] });
 
-    fixture.detectChanges();
+      fixture.detectChanges();
 
-    // 資産合計カード
-    expect(screen.getByText(asset.yearMonth)).toBeVisible();
-    expect(screen.getByText(asset.totalAssets.toLocaleString('en-US'))).toBeVisible();
+      // 資産合計カード
+      expect(screen.getByText(asset.yearMonth)).toBeVisible();
+      expect(screen.getByText(asset.totalAssets.toLocaleString('en-US'))).toBeVisible();
 
-    // 内訳テーブル
-    const table = screen.getByRole('table');
-    for (const category of asset.assetsByCategories) {
-      expect(within(table).getByText(category.category)).toBeVisible();
-      expect(within(table).getByText(category.amount.toLocaleString('en-US'))).toBeVisible();
-      expect(within(table).getByText(String(category.rate))).toBeVisible();
-    }
-  });
+      // 内訳テーブル
+      const table = screen.getByRole('table');
+      for (const category of asset.assetsByCategories) {
+        expect(within(table).getByText(category.category)).toBeVisible();
+        expect(within(table).getByText(category.amount.toLocaleString('en-US'))).toBeVisible();
+        expect(within(table).getByText(String(category.rate))).toBeVisible();
+      }
+    },
+  );
 
-  it.each(
-    yearlyAssets.map((asset, chartIndex) => ({ asset, chartIndex })),
-  )('年次グラフで$asset.yearMonthを選択したとき、資産合計カードと内訳テーブルが切り替わること', async ({
-    asset,
-    chartIndex,
-  }) => {
-    const { fixture } = await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
-    });
-    await screen.findByText('2026-01');
+  it.each(yearlyAssets.map((asset, chartIndex) => ({ asset, chartIndex })))(
+    '年次グラフで$asset.yearMonthを選択したとき、資産合計カードと内訳テーブルが切り替わること',
+    async ({ asset, chartIndex }) => {
+      const { fixture } = await render(HomeComponent, {
+        providers: [provideHttpClient(withFetch())],
+      });
+      await screen.findByText('2026-01');
 
-    await user.click(screen.getByRole('button', { name: '年次' }));
-    await screen.findByText('2025-12');
+      await user.click(screen.getByRole('button', { name: '年次' }));
+      await screen.findByText('2025-12');
 
-    const chart = fixture.debugElement
-      .query(By.directive(AssetsBarChartComponent))
-      .injector.get(AssetsBarChartComponent);
-    chart.onChartClick({ active: [{ index: chartIndex }] });
+      const chart = fixture.debugElement
+        .query(By.directive(AssetsBarChartComponent))
+        .injector.get(AssetsBarChartComponent);
+      chart.onChartClick({ active: [{ index: chartIndex }] });
 
-    fixture.detectChanges();
+      fixture.detectChanges();
 
-    // 資産合計カード
-    expect(screen.getByText(asset.yearMonth)).toBeVisible();
-    expect(screen.getByText(asset.totalAssets.toLocaleString('en-US'))).toBeVisible();
+      // 資産合計カード
+      expect(screen.getByText(asset.yearMonth)).toBeVisible();
+      expect(screen.getByText(asset.totalAssets.toLocaleString('en-US'))).toBeVisible();
 
-    // 内訳テーブル
-    const table = screen.getByRole('table');
-    for (const category of asset.assetsByCategories) {
-      expect(within(table).getByText(category.category)).toBeVisible();
-      expect(within(table).getByText(category.amount.toLocaleString('en-US'))).toBeVisible();
-      expect(within(table).getByText(String(category.rate))).toBeVisible();
-    }
-  });
+      // 内訳テーブル
+      const table = screen.getByRole('table');
+      for (const category of asset.assetsByCategories) {
+        expect(within(table).getByText(category.category)).toBeVisible();
+        expect(within(table).getByText(category.amount.toLocaleString('en-US'))).toBeVisible();
+        expect(within(table).getByText(String(category.rate))).toBeVisible();
+      }
+    },
+  );
 });

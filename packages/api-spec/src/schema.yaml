@@ -1,7 +1,7 @@
-openapi: '3.1.1'
+openapi: "3.1.1"
 info:
   title: ASSETTY API
-  version: '1.0'
+  version: "1.0"
 servers:
   - url: http://localhost:8787/api
 paths:
@@ -12,9 +12,9 @@ paths:
     post:
       summary: ログイン
       requestBody:
-        $ref: '#/components/requestBodies/LoginRequestBody'
+        $ref: "#/components/requestBodies/LoginRequestBody"
       responses:
-        '200':
+        "200":
           description: ログイン成功
           headers:
             Set-Cookie:
@@ -24,15 +24,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginSuccessResponse'
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '401':
+                $ref: "#/components/schemas/LoginSuccessResponse"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
+        "401":
           description: ログイン失敗（ユーザーが存在しないか、パスワードが正しくない）
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InvalidCredentialsErrorResponse'
+                $ref: "#/components/schemas/InvalidCredentialsErrorResponse"
   # ====================================================================================================
   # ログアウト
   # ====================================================================================================
@@ -40,7 +40,7 @@ paths:
     post:
       summary: ログアウト
       responses:
-        '204':
+        "204":
           description: ログアウト成功
           headers:
             Set-Cookie:
@@ -56,14 +56,14 @@ paths:
       security:
         - AccessTokenCookieAuth: []
       responses:
-        '200':
+        "200":
           description: 認証成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthCheckResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedErrorResponse'
+                $ref: "#/components/schemas/AuthCheckResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedErrorResponse"
   # ====================================================================================================
   # ユーザー情報取得
   # ====================================================================================================
@@ -73,14 +73,14 @@ paths:
       security:
         - AccessTokenCookieAuth: []
       responses:
-        '200':
+        "200":
           description: ユーザー情報取得成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserInfoResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedErrorResponse'
+                $ref: "#/components/schemas/UserInfoResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedErrorResponse"
   # ====================================================================================================
   # 資産情報 取得/登録
   # ====================================================================================================
@@ -90,45 +90,45 @@ paths:
       security:
         - AccessTokenCookieAuth: []
       parameters:
-        - $ref: '#/components/parameters/AssetsBaseDateQueryParameter'
-        - $ref: '#/components/parameters/AssetsMonthsAgoQueryParameter'
-        - $ref: '#/components/parameters/AssetsYearEndOnlyQueryParameter'
+        - $ref: "#/components/parameters/AssetsBaseDateQueryParameter"
+        - $ref: "#/components/parameters/AssetsMonthsAgoQueryParameter"
+        - $ref: "#/components/parameters/AssetsYearEndOnlyQueryParameter"
       responses:
-        '200':
+        "200":
           description: 資産情報取得成功
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AssetInfoResponse'
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedErrorResponse'
+                  $ref: "#/components/schemas/AssetInfoResponse"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedErrorResponse"
     post:
       summary: 月次の資産情報登録
       security:
         - AccessTokenCookieAuth: []
       requestBody:
-        $ref: '#/components/requestBodies/CreateAssetRecordsRequestBody'
+        $ref: "#/components/requestBodies/CreateAssetRecordsRequestBody"
       responses:
-        '201':
+        "201":
           description: 資産情報登録成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateAssetRecordsSuccessResponse'
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedErrorResponse'
-        '500':
+                $ref: "#/components/schemas/CreateAssetRecordsSuccessResponse"
+        "400":
+          $ref: "#/components/responses/ValidationErrorResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedErrorResponse"
+        "500":
           description: 資産情報登録失敗
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AssetsRegistrationFailedErrorResponse'
+                $ref: "#/components/schemas/AssetsRegistrationFailedErrorResponse"
   # ====================================================================================================
   # 資産カテゴリの取得
   # ====================================================================================================
@@ -138,16 +138,16 @@ paths:
       security:
         - AccessTokenCookieAuth: []
       responses:
-        '200':
+        "200":
           description: 資産カテゴリの取得成功
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AssetCategoryResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedErrorResponse'
+                  $ref: "#/components/schemas/AssetCategoryResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedErrorResponse"
 
 components:
   requestBodies:
@@ -218,13 +218,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/InvalidAccessTokenErrorResponse'
+            $ref: "#/components/schemas/InvalidAccessTokenErrorResponse"
     ValidationErrorResponse:
       description: バリデーションエラー
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ValidationErrorResponse'
+            $ref: "#/components/schemas/ValidationErrorResponse"
 
   schemas:
     ErrorDetails:
@@ -239,12 +239,12 @@ components:
     ErrorResponse:
       description: エラー種別ごとのレスポンスを包含する共通型
       oneOf:
-        - $ref: '#/components/schemas/ValidationErrorResponse'
-        - $ref: '#/components/schemas/InvalidCredentialsErrorResponse'
-        - $ref: '#/components/schemas/InvalidAccessTokenErrorResponse'
-        - $ref: '#/components/schemas/NotFoundErrorResponse'
-        - $ref: '#/components/schemas/AssetsRegistrationFailedErrorResponse'
-        - $ref: '#/components/schemas/InternalServerErrorResponse'
+        - $ref: "#/components/schemas/ValidationErrorResponse"
+        - $ref: "#/components/schemas/InvalidCredentialsErrorResponse"
+        - $ref: "#/components/schemas/InvalidAccessTokenErrorResponse"
+        - $ref: "#/components/schemas/NotFoundErrorResponse"
+        - $ref: "#/components/schemas/AssetsRegistrationFailedErrorResponse"
+        - $ref: "#/components/schemas/InternalServerErrorResponse"
     ValidationErrorResponse:
       type: object
       description: バリデーションエラー
@@ -262,7 +262,7 @@ components:
           type: string
           enum: [入力内容に誤りがあるため処理を完了できませんでした。各項目をご確認のうえ、再度お試しください。]
         errors:
-          $ref: '#/components/schemas/ErrorDetails'
+          $ref: "#/components/schemas/ErrorDetails"
       required: [code, title, message]
     InvalidCredentialsErrorResponse:
       type: object
@@ -279,9 +279,12 @@ components:
           enum: [ログイン情報をご確認ください]
         message:
           type: string
-          enum: [ユーザー名またはパスワードが正しくないためログインできませんでした。入力内容をご確認のうえ、再度お試しください。]
+          enum:
+            [
+              ユーザー名またはパスワードが正しくないためログインできませんでした。入力内容をご確認のうえ、再度お試しください。,
+            ]
         errors:
-          $ref: '#/components/schemas/ErrorDetails'
+          $ref: "#/components/schemas/ErrorDetails"
       required: [code, title, message]
     InvalidAccessTokenErrorResponse:
       type: object
@@ -300,7 +303,7 @@ components:
           type: string
           enum: [認証情報が無効または期限切れのため処理を続行できませんでした。再度ログインしてからお試しください。]
         errors:
-          $ref: '#/components/schemas/ErrorDetails'
+          $ref: "#/components/schemas/ErrorDetails"
       required: [code, title, message]
     NotFoundErrorResponse:
       type: object
@@ -317,9 +320,10 @@ components:
           enum: [対象の情報をご確認ください]
         message:
           type: string
-          enum: [指定された情報は見つからないか、すでに削除されています。指定された内容をご確認のうえ、再度お試しください。]
+          enum:
+            [指定された情報は見つからないか、すでに削除されています。指定された内容をご確認のうえ、再度お試しください。]
         errors:
-          $ref: '#/components/schemas/ErrorDetails'
+          $ref: "#/components/schemas/ErrorDetails"
       required: [code, title, message]
     AssetsRegistrationFailedErrorResponse:
       type: object
@@ -336,9 +340,12 @@ components:
           enum: [資産情報の登録を再度お試しください]
         message:
           type: string
-          enum: [資産情報の登録中に問題が発生しました。しばらく時間をおいてから再度お試しください。解決しない場合は、管理者にお問い合わせください。]
+          enum:
+            [
+              資産情報の登録中に問題が発生しました。しばらく時間をおいてから再度お試しください。解決しない場合は、管理者にお問い合わせください。,
+            ]
         errors:
-          $ref: '#/components/schemas/ErrorDetails'
+          $ref: "#/components/schemas/ErrorDetails"
       required: [code, title, message]
     InternalServerErrorResponse:
       type: object
@@ -355,9 +362,12 @@ components:
           enum: [時間をおいて再度お試しください]
         message:
           type: string
-          enum: [サーバーで予期しない問題が発生したため処理を完了できませんでした。しばらく時間をおいてから再度お試しください。解決しない場合は、管理者にお問い合わせください。]
+          enum:
+            [
+              サーバーで予期しない問題が発生したため処理を完了できませんでした。しばらく時間をおいてから再度お試しください。解決しない場合は、管理者にお問い合わせください。,
+            ]
         errors:
-          $ref: '#/components/schemas/ErrorDetails'
+          $ref: "#/components/schemas/ErrorDetails"
       required: [code, title, message]
     LoginSuccessResponse:
       type: object
@@ -399,7 +409,7 @@ components:
           type: number
           description: 資産カテゴリID
         name:
-          $ref: '#/components/schemas/AssetCategory'
+          $ref: "#/components/schemas/AssetCategory"
           description: 資産カテゴリ名
       required: [id, name]
     AssetAllocationSchema:
@@ -407,7 +417,7 @@ components:
       description: 資産内訳
       properties:
         category:
-          $ref: '#/components/schemas/AssetCategory'
+          $ref: "#/components/schemas/AssetCategory"
           description: 資産カテゴリ名
         amount:
           type: number
@@ -430,7 +440,7 @@ components:
           type: array
           description: カテゴリー別の資産情報
           items:
-            $ref: '#/components/schemas/AssetAllocationSchema'
+            $ref: "#/components/schemas/AssetAllocationSchema"
       required: [yearMonth, totalAssets, assetsByCategories]
     CreateAssetRecordsSuccessResponse:
       type: object

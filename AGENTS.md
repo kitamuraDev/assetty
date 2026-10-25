@@ -6,22 +6,6 @@
 - 必要に応じて、ユーザに質問を行い要求を明確にすること
 - フレームワークやライブラリの使い方を聞かれたら`技術スタック`セクションのリンクから公式ドキュメントを参照すること
 
-## プロジェクト構成
-
-- root
-  - package.json
-  - tsconfig.json
-  - packages
-    - api-spec
-      - package.json
-      - tsconfig.json
-    - server
-      - package.json
-      - tsconfig.json
-    - web
-      - package.json
-      - tsconfig.json
-
 ## 技術スタック
 
 ### root
@@ -67,6 +51,8 @@
   - [Tailwind CSS](https://tailwindcss.com/)
 - チャート
   - [ng2-charts](https://valor-software.com/ng2-charts/)
+- バリデーション
+  - [Valibot](https://valibot.dev/)
 - テスト
   - [Vitest](https://vitest.dev/)
   - [Angular Testing Library](https://testing-library.com/docs/angular-testing-library/intro/)

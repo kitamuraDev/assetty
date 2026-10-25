@@ -31,45 +31,45 @@
 
 1. `git init`
 2. `mise use bun@latest`
-    - `bun@latest` のインストール
-    - `mise.toml` の生成
+   - `bun@latest` のインストール
+   - `mise.toml` の生成
 3. `bun init`
 4. package.json の整備
-    - workspaces の設定
-    - メタ情報（description や version など）の設定
+   - workspaces の設定
+   - メタ情報（description や version など）の設定
 5. プロジェクト整備
-    - `tsconfig.json` の設定
-    - 不要ファイルの削除など
+   - `tsconfig.json` の設定
+   - 不要ファイルの削除など
 6. pre-commit 環境を構築
-    - lefthook
-    - biome
+   - lefthook
+   - biome
 
 #### web
 
 1. `bun create @angular web`
 2. プロジェクト整備
-    - `tsconfig.json` の設定
-    - 不要ファイルの削除など
+   - `tsconfig.json` の設定
+   - 不要ファイルの削除など
 3. `wrangler.jsonc` を手動で作成
-    - これがないと workers にデプロイできない
+   - これがないと workers にデプロイできない
 
 #### server
 
 1. `bun create cloudflare@latest server`
 2. プロジェクト整備
-    - `tsconfig.json` の設定
-    - 不要ファイルの削除など
+   - `tsconfig.json` の設定
+   - 不要ファイルの削除など
 3. D1 + Drizzle 環境構築
-    - [参考](https://github.com/kitamuraDev/crud-webapi-with-hono/blob/main/README.md)
-    - 注意: D1のAPIトークン（`CLOUDFLARE_D1_TOKEN`）を作成するときは必ず `開始日` も設定すること
+   - [参考](https://github.com/kitamuraDev/crud-webapi-with-hono/blob/main/README.md)
+   - 注意: D1のAPIトークン（`CLOUDFLARE_D1_TOKEN`）を作成するときは必ず `開始日` も設定すること
 4. D1 と繋いで、データを取得&返却をするサンプルを書いて疎通確認する
 
 #### api-spec
 
 1. `bun init`
 2. プロジェクト整備
-    - `tsconfig.json` の設定
-    - 不要ファイルの削除など
+   - `tsconfig.json` の設定
+   - 不要ファイルの削除など
 3. サンプルスキーマから `openapi-typescript` で型定義を生成できるか確認する
 4. 3 で生成した型定義を `server` と `web` のどちらからか参照する設定を行い、参照できるか確認する
 
@@ -77,8 +77,8 @@
 
 1. pre-commit 時にテスト/リント/フォーマットが期待通りに動くか確認する
 2. デプロイして本番環境でも問題なく動くか確認する
-    - [server](https://dash.cloudflare.com/1bb29f99325f1fc901be8e1c2e58c5f6/workers/services/view/assetty-server/production/settings)
-    - [web](https://dash.cloudflare.com/1bb29f99325f1fc901be8e1c2e58c5f6/workers/services/view/assetty-web/production/settings)
+   - [server](https://dash.cloudflare.com/1bb29f99325f1fc901be8e1c2e58c5f6/workers/services/view/assetty-server/production/settings)
+   - [web](https://dash.cloudflare.com/1bb29f99325f1fc901be8e1c2e58c5f6/workers/services/view/assetty-web/production/settings)
 3. README.md / AGENTS.md の整備
 
 ## DBスキーマを変更する手順

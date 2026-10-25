@@ -206,27 +206,27 @@ describe('AssetsRegisterComponent', () => {
     expect(screen.getByLabelText('年月')).toHaveValue(currentYearMonth);
   });
 
-  it.each(monthlyAssets)('$yearMonthに登録済みの資産カテゴリは選択できないこと', async ({
-    yearMonth,
-    assetsByCategories,
-  }) => {
-    await render(AssetsRegisterComponent, {
-      providers: [provideHttpClient(withFetch())],
-    });
+  it.each(monthlyAssets)(
+    '$yearMonthに登録済みの資産カテゴリは選択できないこと',
+    async ({ yearMonth, assetsByCategories }) => {
+      await render(AssetsRegisterComponent, {
+        providers: [provideHttpClient(withFetch())],
+      });
 
-    await user.selectOptions(screen.getByLabelText('年月'), yearMonth);
+      await user.selectOptions(screen.getByLabelText('年月'), yearMonth);
 
-    // 登録済みカテゴリは選択不可、未登録カテゴリは選択可能であること
-    const registeredCategoryNames = assetsByCategories.map(({ category }) => category);
-    for (const { name } of assetCategories) {
-      const option = screen.getByRole('option', { name });
-      if (registeredCategoryNames.includes(name)) {
-        expect(option).toBeDisabled();
-      } else {
-        expect(option).toBeEnabled();
+      // 登録済みカテゴリは選択不可、未登録カテゴリは選択可能であること
+      const registeredCategoryNames = assetsByCategories.map(({ category }) => category);
+      for (const { name } of assetCategories) {
+        const option = screen.getByRole('option', { name });
+        if (registeredCategoryNames.includes(name)) {
+          expect(option).toBeDisabled();
+        } else {
+          expect(option).toBeEnabled();
+        }
       }
-    }
-  });
+    },
+  );
 
   it('選択した全ての資産カテゴリに1以上の金額が入力されるまで登録ボタンが非活性であること', async () => {
     const { fixture } = await render(AssetsRegisterComponent, {
