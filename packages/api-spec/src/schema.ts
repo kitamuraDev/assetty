@@ -377,17 +377,22 @@ export interface components {
             /** @description ユーザー名 */
             name: string;
         };
+        /**
+         * @description 資産カテゴリ名
+         * @enum {string}
+         */
+        AssetCategory: "現金" | "債券" | "国内株式" | "海外株式" | "投資信託" | "現物不動産" | "REIT" | "コモディティ" | "暗号資産" | "年金" | "保険" | "その他";
         /** @description 資産カテゴリ */
         AssetCategoryResponse: {
             /** @description 資産カテゴリID */
             id: number;
             /** @description 資産カテゴリ名 */
-            name: string;
+            name: components["schemas"]["AssetCategory"];
         };
         /** @description 資産内訳 */
         AssetAllocationSchema: {
             /** @description 資産カテゴリ名 */
-            category: string;
+            category: components["schemas"]["AssetCategory"];
             /** @description カテゴリーの資産額 */
             amount: number;
             /** @description 全体に占める割合（%） */
