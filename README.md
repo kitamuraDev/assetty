@@ -1,8 +1,8 @@
 # assetty
 
-資産管理SaaS Assetty ... Asset + Tidy（資産を整理する）
+Assetty: Asset + Tidy（資産を整理する）
 
-## セットアップについて
+## 環境構築について
 
 ### 前提
 
@@ -19,9 +19,9 @@
 1. `package.json(root)` > `version` を更新
 2. `git commit`
 3. `git tag <vn.n.n> <commit-id>`
-4. `git push origin --tags`
+4. `git push origin HEAD --tags`
 
-## 環境構築について
+## モノレポの環境構築メモ
 
 `root` → `web` → `server` → `api-spec` の順番で構築を進める
 
@@ -90,6 +90,23 @@
 5. `bun run db:migrate:local` でローカルDBにマイグレーションを適用させる
 6. テストを実行して不具合が起きていないか確認する
 7. `bun run db:migrate:remote` で本番DBにマイグレーションを適用させる
+
+## Angularのバージョンアップ手順
+
+### 背景
+
+当プロジェクトはモノレポ構成のため、`packages/web`に移動してAngular公式のアップデートガイド通りの手順でバージョンアップを実施しようとすると、依存関係の参照で失敗してしまう。なぜならアプリの依存関係を構成しているロックファイル（`bun.lock`）がルートディレクトリに存在しており、`packages/web`からでは参照できないから。<br />
+そのため、Angularのバージョンアップを行うためだけに`packages/web`をコピーして、モノレポ環境の外に出してバージョンアップを行ってからモノレポ側に適用させるという手段を取る。以下に手順を示す
+
+### 手順
+
+1. `packages/web`をモノレポ環境の外に出して単体でビルドが通るようにする
+2. 公式ガイド通りにアップデートを実施
+3. `ng update`を実行して「`We analyzed your package.json and everything seems to be in order. Good work!`」が出力されればアップデート完了
+4. 差分確認
+5. 差分をモノレポ側に反映
+6. クリーンビルド（`node_modules`, `bun.lock`を削除して`bun i`を実行）する
+7. `build`, `dev`, `test`, `typecheck`が通るか確認
 
 ## モノレポについて
 

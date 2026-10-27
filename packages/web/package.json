@@ -10,14 +10,14 @@
     "watch": "ng build --watch --configuration development"
   },
   "dependencies": {
-    "@angular/aria": "^21.2.5",
-    "@angular/cdk": "^21.2.5",
-    "@angular/common": "^21.1.0",
-    "@angular/compiler": "^21.1.0",
-    "@angular/core": "^21.1.0",
-    "@angular/forms": "^21.1.0",
-    "@angular/platform-browser": "^21.1.0",
-    "@angular/router": "^21.1.0",
+    "@angular/aria": "^22.2.4",
+    "@angular/cdk": "^22.2.4",
+    "@angular/common": "^22.2.3",
+    "@angular/compiler": "^22.2.3",
+    "@angular/core": "^22.2.3",
+    "@angular/forms": "^22.2.3",
+    "@angular/platform-browser": "^22.2.3",
+    "@angular/router": "^22.2.3",
     "chart.js": "^4.5.1",
     "ng2-charts": "^10.0.0",
     "rxjs": "~7.8.0",
@@ -25,9 +25,9 @@
     "valibot": "^1.2.0"
   },
   "devDependencies": {
-    "@angular/build": "^21.1.4",
-    "@angular/cli": "^21.1.4",
-    "@angular/compiler-cli": "^21.1.0",
+    "@angular/build": "^22.2.4",
+    "@angular/cli": "^22.2.4",
+    "@angular/compiler-cli": "^22.2.3",
     "@tailwindcss/postcss": "^4.1.12",
     "@testing-library/angular": "^19.2.1",
     "@testing-library/dom": "^10.4.1",
@@ -37,7 +37,7 @@
     "msw": "^2.12.14",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.12",
-    "typescript": "~5.9.2",
+    "typescript": "~6.0.3",
     "vitest": "^4.1.11",
     "wrangler": "^4.151.0"
   }

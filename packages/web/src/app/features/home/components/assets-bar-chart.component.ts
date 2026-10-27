@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import type { ChartConfiguration, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { array, integer, looseObject, minValue, number, object, optional, pipe, safeParse } from 'valibot';
@@ -18,6 +18,7 @@ const ChartClickEventSchema = object({
 @Component({
   selector: 'app-assets-bar-chart',
   imports: [BaseChartDirective],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section class="p-4 rounded-lg bg-white shadow-sm">
       <canvas

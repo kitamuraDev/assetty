@@ -1,10 +1,11 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import type { AssetInfoResponseType } from '@api-spec/api-types';
 
 @Component({
   selector: 'app-asset-details-table',
   imports: [DecimalPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section class="rounded-lg bg-white shadow-sm overflow-hidden">
       <table class="w-full">

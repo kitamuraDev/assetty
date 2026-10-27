@@ -1,7 +1,7 @@
 import { Menu, MenuContent, MenuItem, MenuTrigger } from '@angular/aria/menu';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { httpResource } from '@angular/common/http';
-import { Component, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import type { UserInfoResponseType } from '@api-spec/api-types';
@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-header',
   imports: [RouterLink, Menu, MenuContent, MenuItem, MenuTrigger, OverlayModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @let user = userInfo.value();
     @let userNameInitial = user?.name?.at(0);
