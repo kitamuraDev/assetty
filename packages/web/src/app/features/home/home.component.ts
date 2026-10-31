@@ -90,8 +90,7 @@ import type { AssetsDataAvailability, PeriodType } from './home.types';
             <app-asset-details-table [assetInfo]="currentAssetInfo()" />
           </div>
         }
-        <!-- TODO: 以下の Exhaustive type checking は記述に不備はないが現在のAngular compiler 21.1.5 が構文未対応のためビルドが通らない。なのでバージョンを上げた時にコメントアウトを外すこと -->
-        <!-- @default never; -->
+        @default never;
       }
     </main>
   `,
