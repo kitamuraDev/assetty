@@ -1,8 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class DateService {
   /**
    * 現在の月を含めた過去12ヶ月分の年月配列を生成する関数

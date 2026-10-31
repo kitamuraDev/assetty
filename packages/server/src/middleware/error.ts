@@ -47,9 +47,9 @@ export const customValidationErrorMiddleware = <
   schema: TSchema,
 ) => {
   return sValidator(target, schema, (result, _c) => {
-    if (result.success) return result.data;
-
-    const errors = result.error.map((e) => ({ message: e.message }));
-    throw new HTTPException(400, { cause: { code: 'VALIDATION_ERROR', errors } satisfies ErrorCause });
+    if (!result.success) {
+      const errors = result.error.map((e) => ({ message: e.message }));
+      throw new HTTPException(400, { cause: { code: 'VALIDATION_ERROR', errors } satisfies ErrorCause });
+    }
   });
 };

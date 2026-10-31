@@ -1,11 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class PageTitleService {
   private readonly titleService = inject(Title);
   private readonly router = inject(Router);

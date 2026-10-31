@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import type { UserInfoResponseType } from '@api-spec/api-types';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
@@ -35,7 +35,7 @@ describe('HeaderComponent', () => {
     );
 
     await render(HeaderComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     const userIcon = screen.getByRole('button', { name: 'ユーザーメニューを開閉する' });

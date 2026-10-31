@@ -1,8 +1,8 @@
 # assetty
 
-資産管理SaaS Assetty ... Asset + Tidy（資産を整理する）
+Assetty: Asset + Tidy（資産を整理する）
 
-## セットアップについて
+## 環境構築について
 
 ### 前提
 
@@ -19,9 +19,9 @@
 1. `package.json(root)` > `version` を更新
 2. `git commit`
 3. `git tag <vn.n.n> <commit-id>`
-4. `git push origin --tags`
+4. `git push origin HEAD --tags`
 
-## 環境構築について
+## モノレポの環境構築メモ
 
 `root` → `web` → `server` → `api-spec` の順番で構築を進める
 
@@ -31,45 +31,45 @@
 
 1. `git init`
 2. `mise use bun@latest`
-    - `bun@latest` のインストール
-    - `mise.toml` の生成
+   - `bun@latest` のインストール
+   - `mise.toml` の生成
 3. `bun init`
 4. package.json の整備
-    - workspaces の設定
-    - メタ情報（description や version など）の設定
+   - workspaces の設定
+   - メタ情報（description や version など）の設定
 5. プロジェクト整備
-    - `tsconfig.json` の設定
-    - 不要ファイルの削除など
+   - `tsconfig.json` の設定
+   - 不要ファイルの削除など
 6. pre-commit 環境を構築
-    - lefthook
-    - biome
+   - lefthook
+   - biome
 
 #### web
 
 1. `bun create @angular web`
 2. プロジェクト整備
-    - `tsconfig.json` の設定
-    - 不要ファイルの削除など
+   - `tsconfig.json` の設定
+   - 不要ファイルの削除など
 3. `wrangler.jsonc` を手動で作成
-    - これがないと workers にデプロイできない
+   - これがないと workers にデプロイできない
 
 #### server
 
 1. `bun create cloudflare@latest server`
 2. プロジェクト整備
-    - `tsconfig.json` の設定
-    - 不要ファイルの削除など
+   - `tsconfig.json` の設定
+   - 不要ファイルの削除など
 3. D1 + Drizzle 環境構築
-    - [参考](https://github.com/kitamuraDev/crud-webapi-with-hono/blob/main/README.md)
-    - 注意: D1のAPIトークン（`CLOUDFLARE_D1_TOKEN`）を作成するときは必ず `開始日` も設定すること
+   - [参考](https://github.com/kitamuraDev/crud-webapi-with-hono/blob/main/README.md)
+   - 注意: D1のAPIトークン（`CLOUDFLARE_D1_TOKEN`）を作成するときは必ず `開始日` も設定すること
 4. D1 と繋いで、データを取得&返却をするサンプルを書いて疎通確認する
 
 #### api-spec
 
 1. `bun init`
 2. プロジェクト整備
-    - `tsconfig.json` の設定
-    - 不要ファイルの削除など
+   - `tsconfig.json` の設定
+   - 不要ファイルの削除など
 3. サンプルスキーマから `openapi-typescript` で型定義を生成できるか確認する
 4. 3 で生成した型定義を `server` と `web` のどちらからか参照する設定を行い、参照できるか確認する
 
@@ -77,8 +77,8 @@
 
 1. pre-commit 時にテスト/リント/フォーマットが期待通りに動くか確認する
 2. デプロイして本番環境でも問題なく動くか確認する
-    - [server](https://dash.cloudflare.com/1bb29f99325f1fc901be8e1c2e58c5f6/workers/services/view/assetty-server/production/settings)
-    - [web](https://dash.cloudflare.com/1bb29f99325f1fc901be8e1c2e58c5f6/workers/services/view/assetty-web/production/settings)
+   - [server](https://dash.cloudflare.com/1bb29f99325f1fc901be8e1c2e58c5f6/workers/services/view/assetty-server/production/settings)
+   - [web](https://dash.cloudflare.com/1bb29f99325f1fc901be8e1c2e58c5f6/workers/services/view/assetty-web/production/settings)
 3. README.md / AGENTS.md の整備
 
 ## DBスキーマを変更する手順
@@ -90,6 +90,23 @@
 5. `bun run db:migrate:local` でローカルDBにマイグレーションを適用させる
 6. テストを実行して不具合が起きていないか確認する
 7. `bun run db:migrate:remote` で本番DBにマイグレーションを適用させる
+
+## Angularのバージョンアップ手順
+
+### 背景
+
+当プロジェクトはモノレポ構成のため、`packages/web`に移動してAngular公式のアップデートガイド通りの手順でバージョンアップを実施しようとすると、依存関係の参照で失敗してしまう。なぜならアプリの依存関係を構成しているロックファイル（`bun.lock`）がルートディレクトリに存在しており、`packages/web`からでは参照できないから。<br />
+そのため、Angularのバージョンアップを行うためだけに`packages/web`をコピーして、モノレポ環境の外に出してバージョンアップを行ってからモノレポ側に適用させるという手段を取る。以下に手順を示す
+
+### 手順
+
+1. `packages/web`をモノレポ環境の外に出して単体でビルドが通るようにする
+2. 公式ガイド通りにアップデートを実施
+3. `ng update`を実行して「`We analyzed your package.json and everything seems to be in order. Good work!`」が出力されればアップデート完了
+4. 差分確認
+5. 差分をモノレポ側に反映
+6. クリーンビルド（`node_modules`, `bun.lock`を削除して`bun i`を実行）する
+7. `build`, `dev`, `test`, `typecheck`が通るか確認
 
 ## モノレポについて
 

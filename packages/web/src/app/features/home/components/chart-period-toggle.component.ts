@@ -3,7 +3,6 @@ import type { AssetsDataAvailability, PeriodType } from '../home.types';
 
 @Component({
   selector: 'app-chart-period-toggle',
-  imports: [],
   template: `
     @let monthlyDisabled = assetsDataAvailability() === 'yearly-only';
     @let yearlyDisabled = assetsDataAvailability() === 'monthly-only';

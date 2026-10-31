@@ -1,4 +1,4 @@
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
@@ -20,7 +20,7 @@ describe('AssetsService', () => {
   });
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     service = TestBed.inject(AssetsService);

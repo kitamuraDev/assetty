@@ -41,7 +41,7 @@ import { AuthService } from '../../services/auth.service';
       <menu ngMenu #userMenu="ngMenu" class="w-[70vw] max-w-70 p-4 rounded-lg bg-slate-50 shadow-sm">
         <ng-template ngMenuContent>
 
-          <li ngMenuItem value="ユーザープロフィール" class="flex items-center gap-3">
+          <li ngMenuItem class="flex items-center gap-3">
             <span class="shrink-0 grid place-content-center h-10 w-10 rounded-full text-lg font-bold bg-black text-white">{{ userNameInitial }}</span>
             <div class="flex flex-col items-start min-w-0 text-sm text-slate-700">
               <span class="w-full truncate font-bold">{{ user?.name }}</span>
@@ -51,7 +51,7 @@ import { AuthService } from '../../services/auth.service';
 
           <hr class="mt-5 mb-3 -mx-4 border-slate-300" />
 
-          <li ngMenuItem value="マイページ">
+          <li ngMenuItem>
             <a
               routerLink="/"
               aria-label="マイページへ遷移する"
@@ -62,7 +62,7 @@ import { AuthService } from '../../services/auth.service';
             </a>
           </li>
 
-          <li ngMenuItem value="資産情報登録">
+          <li ngMenuItem>
             <a
               routerLink="/register/assets"
               aria-label="資産情報登録ページへ遷移する"
@@ -73,7 +73,7 @@ import { AuthService } from '../../services/auth.service';
             </a>
           </li>
 
-          <li ngMenuItem value="ログアウト">
+          <li ngMenuItem>
             <button
               type="button"
               (click)="onLogout()"

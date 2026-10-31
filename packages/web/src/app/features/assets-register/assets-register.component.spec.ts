@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import type { AssetCategoryResponseType, AssetInfoResponseType, UserInfoResponseType } from '@api-spec/api-types';
 import { render, screen, within } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
@@ -172,7 +172,7 @@ describe('AssetsRegisterComponent', () => {
 
   it('年月プルダウンで現在月を含む12ヶ月を選択できること', async () => {
     await render(AssetsRegisterComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     const yearMonthSelect = screen.getByLabelText('年月');
@@ -197,7 +197,7 @@ describe('AssetsRegisterComponent', () => {
 
   it('年月プルダウンの初期値が現在月であること', async () => {
     await render(AssetsRegisterComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     const now = new Date();
@@ -206,31 +206,31 @@ describe('AssetsRegisterComponent', () => {
     expect(screen.getByLabelText('年月')).toHaveValue(currentYearMonth);
   });
 
-  it.each(monthlyAssets)('$yearMonthに登録済みの資産カテゴリは選択できないこと', async ({
-    yearMonth,
-    assetsByCategories,
-  }) => {
-    await render(AssetsRegisterComponent, {
-      providers: [provideHttpClient(withFetch())],
-    });
+  it.each(monthlyAssets)(
+    '$yearMonthに登録済みの資産カテゴリは選択できないこと',
+    async ({ yearMonth, assetsByCategories }) => {
+      await render(AssetsRegisterComponent, {
+        providers: [provideHttpClient()],
+      });
 
-    await user.selectOptions(screen.getByLabelText('年月'), yearMonth);
+      await user.selectOptions(screen.getByLabelText('年月'), yearMonth);
 
-    // 登録済みカテゴリは選択不可、未登録カテゴリは選択可能であること
-    const registeredCategoryNames = assetsByCategories.map(({ category }) => category);
-    for (const { name } of assetCategories) {
-      const option = screen.getByRole('option', { name });
-      if (registeredCategoryNames.includes(name)) {
-        expect(option).toBeDisabled();
-      } else {
-        expect(option).toBeEnabled();
+      // 登録済みカテゴリは選択不可、未登録カテゴリは選択可能であること
+      const registeredCategoryNames = assetsByCategories.map(({ category }) => category);
+      for (const { name } of assetCategories) {
+        const option = screen.getByRole('option', { name });
+        if (registeredCategoryNames.includes(name)) {
+          expect(option).toBeDisabled();
+        } else {
+          expect(option).toBeEnabled();
+        }
       }
-    }
-  });
+    },
+  );
 
   it('選択した全ての資産カテゴリに1以上の金額が入力されるまで登録ボタンが非活性であること', async () => {
     const { fixture } = await render(AssetsRegisterComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
     const registerButton = screen.getByRole('button', { name: '資産情報を登録する' });
 
@@ -281,7 +281,7 @@ describe('AssetsRegisterComponent', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
 
     const { fixture } = await render(AssetsRegisterComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     // 年月/資産カテゴリ 選択
@@ -309,7 +309,7 @@ describe('AssetsRegisterComponent', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
 
     const { fixture } = await render(AssetsRegisterComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     // 年月/資産カテゴリ 選択
@@ -337,7 +337,7 @@ describe('AssetsRegisterComponent', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
 
     const { fixture } = await render(AssetsRegisterComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     // 年月/資産カテゴリ 選択
