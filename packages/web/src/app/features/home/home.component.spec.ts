@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
 import type { AssetInfoResponseType, UserInfoResponseType } from '@api-spec/api-types';
 import { render, screen, within } from '@testing-library/angular';
@@ -168,7 +168,7 @@ describe('HomeComponent', () => {
 
   it('初期表示のとき、月次の最新データが資産合計カードと内訳テーブルに表示されること', async () => {
     await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     // 資産合計カード
@@ -187,7 +187,7 @@ describe('HomeComponent', () => {
 
   it('年次を選択したとき、年次の最新データが資産合計カードと内訳テーブルに表示されること', async () => {
     await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
     await screen.findByText('2026-01');
 
@@ -216,7 +216,7 @@ describe('HomeComponent', () => {
     );
 
     const { fixture } = await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     // 年次が選択されて月次ボタンが無効になること
@@ -241,7 +241,7 @@ describe('HomeComponent', () => {
     );
 
     const { fixture } = await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     // 月次が選択されて年次ボタンが無効になること
@@ -259,7 +259,7 @@ describe('HomeComponent', () => {
 
   it('月次と年次のデータが存在するとき、月次が選択されてどちらのボタンも有効であること', async () => {
     const { fixture } = await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     // 月次が選択されてどちらのボタンも有効であること
@@ -294,7 +294,7 @@ describe('HomeComponent', () => {
     );
 
     await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     // 資産情報登録への案内が表示されること
@@ -322,7 +322,7 @@ describe('HomeComponent', () => {
     );
 
     await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     expect(await screen.findByRole('heading', { name: '資産情報を読み込み中です' })).toBeVisible();
@@ -342,7 +342,7 @@ describe('HomeComponent', () => {
     );
 
     await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     // 失敗した旨の案内が表示されること
@@ -357,7 +357,7 @@ describe('HomeComponent', () => {
 
   it('年次から月次に選択を切り替えたとき、月次の最新データが資産合計カードと内訳テーブルに表示されること', async () => {
     await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
     await screen.findByText('2026-01');
 
@@ -382,7 +382,7 @@ describe('HomeComponent', () => {
 
   it('グラフが選択されなかったとき、資産合計カードと内訳テーブルは初期データのままであること', async () => {
     const { fixture } = await render(HomeComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
     await screen.findByText('2026-01');
 
@@ -411,7 +411,7 @@ describe('HomeComponent', () => {
     '月次グラフで$asset.yearMonthを選択したとき、資産合計カードと内訳テーブルが切り替わること',
     async ({ asset, chartIndex }) => {
       const { fixture } = await render(HomeComponent, {
-        providers: [provideHttpClient(withFetch())],
+        providers: [provideHttpClient()],
       });
       await screen.findByText('2026-01');
 
@@ -441,7 +441,7 @@ describe('HomeComponent', () => {
     '年次グラフで$asset.yearMonthを選択したとき、資産合計カードと内訳テーブルが切り替わること',
     async ({ asset, chartIndex }) => {
       const { fixture } = await render(HomeComponent, {
-        providers: [provideHttpClient(withFetch())],
+        providers: [provideHttpClient()],
       });
       await screen.findByText('2026-01');
 

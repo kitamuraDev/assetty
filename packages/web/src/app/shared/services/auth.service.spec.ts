@@ -1,4 +1,4 @@
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import type { AuthCheckResponseType, ErrorResponseType, LoginSuccessResponseType } from '@api-spec/api-types';
@@ -23,7 +23,7 @@ describe('AuthService', () => {
   });
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     service = TestBed.inject(AuthService);

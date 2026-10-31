@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/vitest';
 
 import { Location } from '@angular/common';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import type { ErrorResponseType, LoginSuccessResponseType } from '@api-spec/api-types';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
@@ -36,7 +36,7 @@ describe('LoginComponent', () => {
     );
 
     const { fixture } = await render(LoginComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
     const location = fixture.componentRef.injector.get(Location);
 
@@ -60,7 +60,7 @@ describe('LoginComponent', () => {
     );
 
     const { fixture } = await render(LoginComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     const usernameInput = screen.getByLabelText('ユーザー名');
@@ -83,7 +83,7 @@ describe('LoginComponent', () => {
     );
 
     const { fixture } = await render(LoginComponent, {
-      providers: [provideHttpClient(withFetch())],
+      providers: [provideHttpClient()],
     });
 
     const usernameInput = screen.getByLabelText('ユーザー名');
