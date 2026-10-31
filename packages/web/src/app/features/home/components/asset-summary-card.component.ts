@@ -1,11 +1,10 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import type { AssetInfoResponseType } from '@api-spec/api-types';
 
 @Component({
   selector: 'app-asset-summary-card',
   imports: [DecimalPipe],
-  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section class="p-4 rounded-lg bg-white shadow-sm">
       <time class="text-sm text-gray-700 mb-1">{{ assetInfo()?.yearMonth }}</time>

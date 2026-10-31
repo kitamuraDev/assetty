@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
+import { Component, input, model } from '@angular/core';
 import type { AssetsDataAvailability, PeriodType } from '../home.types';
 
 @Component({
   selector: 'app-chart-period-toggle',
-  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @let monthlyDisabled = assetsDataAvailability() === 'yearly-only';
     @let yearlyDisabled = assetsDataAvailability() === 'monthly-only';

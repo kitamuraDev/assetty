@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-home-status-card',
-  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section class="max-w-xl mx-auto mt-16 p-8 rounded-xl border border-slate-200 bg-white shadow-sm">
       <h2 class="text-xl font-semibold text-slate-900">{{ title() }}</h2>

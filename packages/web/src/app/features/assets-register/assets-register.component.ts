@@ -1,15 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  linkedSignal,
-  type OnInit,
-  signal,
-} from '@angular/core';
+import { Component, computed, DestroyRef, inject, linkedSignal, type OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import type { AssetCategoryResponseType, AssetInfoResponseType } from '@api-spec/api-types';
@@ -30,7 +21,6 @@ const SelectedAssetCategoriesWithAmountSchema = pipe(
 @Component({
   selector: 'app-assets-register',
   imports: [DatePipe, FormsModule, HeaderComponent],
-  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <app-header />
 

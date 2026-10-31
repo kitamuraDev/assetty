@@ -1,13 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  linkedSignal,
-  type OnInit,
-} from '@angular/core';
+import { Component, computed, DestroyRef, inject, linkedSignal, type OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import type { AssetInfoResponseType } from '@api-spec/api-types';
@@ -36,7 +28,6 @@ import type { AssetsDataAvailability, PeriodType } from './home.types';
     AssetDetailsTableComponent,
     HomeStatusCardComponent,
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <app-header />
 

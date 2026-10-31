@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormField, form, validateStandardSchema } from '@angular/forms/signals';
 import { LoginRequestBodySchema, loginModel } from '../../shared/schemas/auth.schema';
 import { AuthService } from '../../shared/services/auth.service';
@@ -7,7 +7,6 @@ import { AuthService } from '../../shared/services/auth.service';
 @Component({
   selector: 'app-login',
   imports: [FormField, NgClass],
-  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './login.component.html',
 })
 export default class LoginComponent {
