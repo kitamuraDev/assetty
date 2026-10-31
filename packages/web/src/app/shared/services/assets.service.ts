@@ -1,14 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import type { CreateAssetRecordsRequestBodyType, CreateAssetRecordsSuccessResponseType } from '@api-spec/api-types';
 import { firstValueFrom } from 'rxjs';
 import { safeParse } from 'valibot';
 import { environment } from '../../../environments/environment';
 import { HttpErrorResponseSchema } from '../schemas/api-error.schema';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class AssetsService {
   private readonly API_BASE_URL = environment.API_BASE_URL;
   private readonly http = inject(HttpClient);

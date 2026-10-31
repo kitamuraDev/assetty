@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Router } from '@angular/router';
 import type { AuthCheckResponseType, LoginRequestBodyType, LoginSuccessResponseType } from '@api-spec/api-types';
 import { firstValueFrom } from 'rxjs';
@@ -7,9 +7,7 @@ import { safeParse } from 'valibot';
 import { environment } from '../../../environments/environment';
 import { HttpErrorResponseSchema } from '../schemas/api-error.schema';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class AuthService {
   private readonly API_BASE_URL = environment.API_BASE_URL;
   private readonly router = inject(Router);
