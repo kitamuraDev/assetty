@@ -1,7 +1,7 @@
 import { NgClass } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormField, form, validateStandardSchema } from '@angular/forms/signals';
-import { LoginRequestBodySchema, loginModel } from '../../shared/schemas/auth.schema';
+import { LoginRequestBodySchema, loginModel } from '../../shared/schemas/auth';
 import { AuthService } from '../../shared/services/auth';
 
 @Component({

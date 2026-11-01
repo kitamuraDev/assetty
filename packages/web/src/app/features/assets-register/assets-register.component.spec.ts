@@ -8,7 +8,7 @@ import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { environment } from '../../../environments/environment';
-import { ERROR_RESPONSE } from '../../shared/schemas/api-error.schema';
+import { ERROR_RESPONSE } from '../../shared/schemas/api-error';
 import AssetsRegisterComponent from './assets-register.component';
 
 const monthlyAssets: AssetInfoResponseType[] = [

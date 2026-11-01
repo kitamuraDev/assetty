@@ -5,7 +5,7 @@ import type { AuthCheckResponseType, ErrorResponseType, LoginSuccessResponseType
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { environment } from '../../../environments/environment';
-import { ERROR_RESPONSE } from '../schemas/api-error.schema';
+import { ERROR_RESPONSE } from '../schemas/api-error';
 import { AuthService } from './auth';
 
 const mockServer = setupServer();
