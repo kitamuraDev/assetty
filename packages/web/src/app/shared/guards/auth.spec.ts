@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import type { Mocked } from 'vitest';
 import { AuthService } from '../services/auth';
-import { authGuard } from './auth.guard';
+import { authGuard } from './auth';
 
 @Component({ selector: 'app-protected', template: '<h1>Protected Page</h1>' })
 class Protected {}
