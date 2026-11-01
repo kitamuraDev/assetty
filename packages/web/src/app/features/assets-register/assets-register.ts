@@ -8,7 +8,7 @@ import { interval } from 'rxjs';
 import { array, integer, looseObject, minLength, minValue, number, pipe, safeParse } from 'valibot';
 
 import { environment } from '../../../environments/environment';
-import { HeaderComponent } from '../../shared/components/header/header.component';
+import { HeaderComponent } from '../../shared/components/header/header';
 import { AssetsService } from '../../shared/services/assets';
 import { AuthService } from '../../shared/services/auth';
 import { DateService } from '../../shared/services/date';

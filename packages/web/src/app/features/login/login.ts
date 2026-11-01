@@ -7,7 +7,7 @@ import { AuthService } from '../../shared/services/auth';
 @Component({
   selector: 'app-login',
   imports: [FormField, NgClass],
-  templateUrl: './login.component.html',
+  templateUrl: './login.html',
 })
 export default class LoginComponent {
   private readonly authService = inject(AuthService);

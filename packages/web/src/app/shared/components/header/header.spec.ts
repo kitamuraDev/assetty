@@ -7,7 +7,7 @@ import userEvent from '@testing-library/user-event';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { environment } from '../../../../environments/environment';
-import { HeaderComponent } from './header.component';
+import { HeaderComponent } from './header';
 
 const mockServer = setupServer();
 const API_BASE_URL = environment.API_BASE_URL;

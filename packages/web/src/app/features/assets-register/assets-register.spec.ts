@@ -9,7 +9,7 @@ import { setupServer } from 'msw/node';
 
 import { environment } from '../../../environments/environment';
 import { ERROR_RESPONSE } from '../../shared/schemas/api-error';
-import AssetsRegisterComponent from './assets-register.component';
+import AssetsRegisterComponent from './assets-register';
 
 const monthlyAssets: AssetInfoResponseType[] = [
   {

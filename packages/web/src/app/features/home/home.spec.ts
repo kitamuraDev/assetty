@@ -9,8 +9,8 @@ import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { environment } from '../../../environments/environment';
-import { AssetsBarChartComponent } from './components/assets-bar-chart.component';
-import HomeComponent from './home.component';
+import { AssetsBarChartComponent } from './components/assets-bar-chart';
+import HomeComponent from './home';
 
 const monthlyAssets: AssetInfoResponseType[] = [
   {
