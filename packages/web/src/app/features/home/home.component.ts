@@ -8,8 +8,8 @@ import { interval } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { HeaderComponent } from '../../shared/components/header/header.component';
-import { AuthService } from '../../shared/services/auth.service';
-import { DateService } from '../../shared/services/date.service';
+import { AuthService } from '../../shared/services/auth';
+import { DateService } from '../../shared/services/date';
 import { AssetDetailsTableComponent } from './components/asset-details-table.component';
 import { AssetSummaryCardComponent } from './components/asset-summary-card.component';
 import { AssetsBarChartComponent } from './components/assets-bar-chart.component';

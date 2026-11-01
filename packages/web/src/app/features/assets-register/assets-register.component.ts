@@ -9,9 +9,9 @@ import { array, integer, looseObject, minLength, minValue, number, pipe, safePar
 
 import { environment } from '../../../environments/environment';
 import { HeaderComponent } from '../../shared/components/header/header.component';
-import { AssetsService } from '../../shared/services/assets.service';
-import { AuthService } from '../../shared/services/auth.service';
-import { DateService } from '../../shared/services/date.service';
+import { AssetsService } from '../../shared/services/assets';
+import { AuthService } from '../../shared/services/auth';
+import { DateService } from '../../shared/services/date';
 
 const SelectedAssetCategoriesWithAmountSchema = pipe(
   array(looseObject({ amount: pipe(number(), integer(), minValue(1)) })),

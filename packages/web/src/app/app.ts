@@ -1,6 +1,6 @@
 import { Component, inject, type OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { PageTitleService } from './shared/services/page-title.service';
+import { PageTitleService } from './shared/services/page-title';
 
 @Component({
   selector: 'app-root',
