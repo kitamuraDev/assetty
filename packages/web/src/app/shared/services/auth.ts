@@ -5,7 +5,7 @@ import type { AuthCheckResponseType, LoginRequestBodyType, LoginSuccessResponseT
 import { firstValueFrom } from 'rxjs';
 import { safeParse } from 'valibot';
 import { environment } from '../../../environments/environment';
-import { HttpErrorResponseSchema } from '../schemas/api-error.schema';
+import { HttpErrorResponseSchema } from '../schemas/api-error';
 
 @Service()
 export class AuthService {

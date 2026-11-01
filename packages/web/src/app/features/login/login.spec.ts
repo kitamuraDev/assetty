@@ -9,8 +9,8 @@ import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { environment } from '../../../environments/environment';
-import { ERROR_RESPONSE } from '../../shared/schemas/api-error.schema';
-import LoginComponent from './login.component';
+import { ERROR_RESPONSE } from '../../shared/schemas/api-error';
+import LoginComponent from './login';
 
 const mockServer = setupServer();
 const API_BASE_URL = environment.API_BASE_URL;

@@ -3,8 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import type { Mocked } from 'vitest';
-import { AuthService } from '../services/auth.service';
-import { authGuard } from './auth.guard';
+import { AuthService } from '../services/auth';
+import { authGuard } from './auth';
 
 @Component({ selector: 'app-protected', template: '<h1>Protected Page</h1>' })
 class Protected {}

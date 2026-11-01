@@ -7,14 +7,14 @@ import type { ChartData } from 'chart.js';
 import { interval } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { HeaderComponent } from '../../shared/components/header/header.component';
-import { AuthService } from '../../shared/services/auth.service';
-import { DateService } from '../../shared/services/date.service';
-import { AssetDetailsTableComponent } from './components/asset-details-table.component';
-import { AssetSummaryCardComponent } from './components/asset-summary-card.component';
-import { AssetsBarChartComponent } from './components/assets-bar-chart.component';
-import { ChartPeriodToggleComponent } from './components/chart-period-toggle.component';
-import { HomeStatusCardComponent } from './components/home-status-card.component';
+import { HeaderComponent } from '../../shared/components/header/header';
+import { AuthService } from '../../shared/services/auth';
+import { DateService } from '../../shared/services/date';
+import { AssetDetailsTableComponent } from './components/asset-details-table';
+import { AssetSummaryCardComponent } from './components/asset-summary-card';
+import { AssetsBarChartComponent } from './components/assets-bar-chart';
+import { ChartPeriodToggleComponent } from './components/chart-period-toggle';
+import { HomeStatusCardComponent } from './components/home-status-card';
 import type { AssetsDataAvailability, PeriodType } from './home.types';
 
 @Component({

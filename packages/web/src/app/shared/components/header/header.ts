@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
 
 import type { UserInfoResponseType } from '@api-spec/api-types';
 import { environment } from '../../../../environments/environment';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-header',

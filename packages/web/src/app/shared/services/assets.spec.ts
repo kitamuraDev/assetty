@@ -3,8 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { environment } from '../../../environments/environment';
-import { ERROR_RESPONSE } from '../schemas/api-error.schema';
-import { AssetsService } from './assets.service';
+import { ERROR_RESPONSE } from '../schemas/api-error';
+import { AssetsService } from './assets';
 
 const mockServer = setupServer();
 const API_BASE_URL = environment.API_BASE_URL;
