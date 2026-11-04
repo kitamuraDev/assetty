@@ -95,7 +95,7 @@ export class HeaderComponent {
   private readonly authService = inject(AuthService);
 
   readonly userInfo = httpResource<UserInfoResponseType>(() => ({
-    url: `${this.API_BASE_URL}/user`,
+    url: `${this.API_BASE_URL}/me`,
     method: 'GET',
     credentials: 'include',
   }));

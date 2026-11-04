@@ -10,7 +10,7 @@ const user: InsertUserType = {
   password: 'Lillie1101',
 };
 
-describe('GET: /user', () => {
+describe('GET: /me', () => {
   beforeEach(async () => {
     await seedTestUser({ d1Database: env.ASSETTY_D1, user });
   });
@@ -19,7 +19,7 @@ describe('GET: /user', () => {
     const loginResponse = await login(env, { name: user.name, password: user.password });
     const cookie = getSetCookieHeader(loginResponse.headers);
 
-    const res = await app.request('/api/user', { method: 'GET', headers: { cookie: cookie } }, env);
+    const res = await app.request('/api/me', { method: 'GET', headers: { cookie: cookie } }, env);
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ id: user.id, name: user.name });
@@ -28,7 +28,7 @@ describe('GET: /user', () => {
   it('未ログインであれば401番を返すこと', async () => {
     const { status: expectedStatus, ...expectedResponse } = ERROR_RESPONSE.INVALID_ACCESS_TOKEN;
 
-    const res = await app.request('/api/user', { method: 'GET' }, env);
+    const res = await app.request('/api/me', { method: 'GET' }, env);
 
     expect(res.status).toBe(expectedStatus);
     expect(await res.json()).toEqual(expectedResponse);
