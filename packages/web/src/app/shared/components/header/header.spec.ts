@@ -22,14 +22,14 @@ describe('HeaderComponent', () => {
     user = userEvent.setup();
   });
 
-  it('/user のAPIコールが有効な場合は、ユーザーメニューに取得したユーザー情報が表示されること', async () => {
+  it('/me のAPIコールが有効な場合は、ユーザーメニューに取得したユーザー情報が表示されること', async () => {
     const expectedUserInfo: UserInfoResponseType = {
       id: 'tfi4wB9ZRyhzVE7EhIyht',
       name: 'Lillie',
     };
 
     mockServer.use(
-      http.get(`${API_BASE_URL}/user`, () => {
+      http.get(`${API_BASE_URL}/me`, () => {
         return HttpResponse.json<UserInfoResponseType>(expectedUserInfo, { status: 200 });
       }),
     );

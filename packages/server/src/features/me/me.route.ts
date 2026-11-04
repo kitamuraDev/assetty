@@ -6,10 +6,10 @@ import { users } from '../../db/schema';
 import { jwtAuthMiddleware } from '../../middleware/auth';
 import type { ErrorCause } from '../../middleware/error';
 
-const user = createHonoApp();
-user.use('/*', jwtAuthMiddleware); // アクセストークンの検証
+const me = createHonoApp();
+me.use('/*', jwtAuthMiddleware); // アクセストークンの検証
 
-user.get('/', async (c): Promise<ReturnType<typeof c.json<UserInfoResponseType>>> => {
+me.get('/', async (c): Promise<ReturnType<typeof c.json<UserInfoResponseType>>> => {
   const userId = c.get('userId');
 
   const d1 = c.get('d1');
@@ -24,4 +24,4 @@ user.get('/', async (c): Promise<ReturnType<typeof c.json<UserInfoResponseType>>
   return c.json(result, 200);
 });
 
-export default user;
+export default me;

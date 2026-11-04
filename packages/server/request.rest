@@ -47,13 +47,13 @@ GET {{devBaseUrl}}/{{basePath}}/auth/check HTTP/1.1
 GET {{prodBaseUrl}}/{{basePath}}/auth/check HTTP/1.1
 
 ### ==============================
-### GET: /user
+### GET: /me
 ### ==============================
-GET {{devBaseUrl}}/{{basePath}}/user HTTP/1.1
+GET {{devBaseUrl}}/{{basePath}}/me HTTP/1.1
 
 ###
 
-GET {{prodBaseUrl}}/{{basePath}}/user HTTP/1.1
+GET {{prodBaseUrl}}/{{basePath}}/me HTTP/1.1
 
 ### ==============================
 ### GET: /assets

@@ -156,7 +156,7 @@ describe('HomeComponent', () => {
     user = userEvent.setup();
 
     mockServer.use(
-      http.get(`${API_BASE_URL}/user`, () => {
+      http.get(`${API_BASE_URL}/me`, () => {
         return HttpResponse.json<UserInfoResponseType>({ id: 'tfi4wB9ZRyhzVE7EhIyht', name: 'Lillie' });
       }),
       http.get(`${API_BASE_URL}/assets`, ({ request }) => {

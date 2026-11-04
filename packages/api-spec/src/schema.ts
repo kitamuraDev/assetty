@@ -125,7 +125,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user": {
+    "/me": {
         parameters: {
             query?: never;
             header?: never;
