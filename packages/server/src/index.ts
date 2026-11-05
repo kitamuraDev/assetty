@@ -1,8 +1,8 @@
 import { createHonoApp } from './app';
 
-import assets from './features/assets/assets.route';
-import auth from './features/auth/auth.route';
-import me from './features/me/me.route';
+import assets from './routes/assets/assets.route';
+import auth from './routes/auth/auth.route';
+import me from './routes/me/me.route';
 
 // biome-ignore format: basePathとrouteを分けるために以下の形を維持する
 const app = createHonoApp().basePath('/api')
