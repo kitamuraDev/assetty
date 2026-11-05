@@ -9,7 +9,7 @@ import { createHonoApp } from '../../app';
 import { users } from '../../db/schema';
 import { jwtAuthMiddleware } from '../../middleware/auth';
 import { customValidationErrorMiddleware, type ErrorCause } from '../../middleware/error';
-import { LoginRequestBodySchema } from './auth.schema';
+import { LoginRequestBodySchema } from './schema';
 
 const auth = createHonoApp();
 

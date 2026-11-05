@@ -9,7 +9,7 @@ import { createHonoApp } from '../../app';
 import { assetCategories, monthlyAssets } from '../../db/schema';
 import { jwtAuthMiddleware } from '../../middleware/auth';
 import { customValidationErrorMiddleware, type ErrorCause } from '../../middleware/error';
-import { AssetsRequestQueryParameterSchema, CreateAssetRecordsRequestBodySchema } from './assets.schema';
+import { AssetsRequestQueryParameterSchema, CreateAssetRecordsRequestBodySchema } from './schema';
 
 const assets = createHonoApp();
 assets.use('/*', jwtAuthMiddleware); // アクセストークンの検証
