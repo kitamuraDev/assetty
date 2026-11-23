@@ -24,6 +24,8 @@ export default defineConfig(async () => {
       cloudflareTest({
         wrangler: { configPath: './wrangler.jsonc' },
         miniflare: {
+          // Vitestが内部で node:inspector を利用するため、Node.js互換モードを有効にして、node:inspectorを利用できるようにする
+          compatibilityFlags: ['nodejs_compat', 'enable_nodejs_inspector_module'],
           bindings: { TEST_MIGRATIONS: migrations },
         },
       }),
